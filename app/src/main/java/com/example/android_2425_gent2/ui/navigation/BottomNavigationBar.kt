@@ -23,7 +23,6 @@ fun BottomNavigationBar(navController: NavHostController, modifier: Modifier) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route)
-                    item.badgeCount++
                 },
                 icon = {
                     BadgedBox(badge = {
