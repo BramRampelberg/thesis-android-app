@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +20,6 @@ import com.example.android_2425_gent2.ui.screens.reservations_page.partials.Rese
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationTypeSelectionDropDownMenu
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ReservationsPage(modifier: Modifier = Modifier) {

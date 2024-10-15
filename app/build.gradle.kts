@@ -2,22 +2,23 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.android_2425_gent2"
     compileSdk = 34
-
+    
     defaultConfig {
         applicationId = "com.example.android_2425_gent2"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -41,7 +42,7 @@ android {
 }
 
 dependencies {
-
+    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,15 +60,22 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
-
+    
     // Room
+    annotationProcessor(libs.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.rxjava3)
+    testImplementation(libs.androidx.room.testing)
+    implementation("com.google.dagger:dagger-compiler:2.51.1")
+    ksp("com.google.dagger:dagger-compiler:2.51.1")
+    
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
+    
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
 }
