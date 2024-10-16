@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ReservationEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val reservationId: Int,
     val boatId: Int,
     val timeSlotId: Int,
 )

@@ -8,7 +8,7 @@ import com.example.android_2425_gent2.data.local.entity.ReservationEntity
 data class ReservationWithBoatEntity(
     @Embedded val boat: BoatEntity,
     @Relation(
-        parentColumn = "id",
+        parentColumn = "reservationId",
         entityColumn = "boatId",
     )
     val reservation: ReservationEntity

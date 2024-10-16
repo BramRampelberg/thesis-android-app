@@ -5,5 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class BoatEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val boatId: Int,
 )

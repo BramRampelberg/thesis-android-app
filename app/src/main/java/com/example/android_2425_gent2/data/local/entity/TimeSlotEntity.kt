@@ -7,7 +7,8 @@ import java.time.LocalTime
 
 @Entity
 data class TimeSlotEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val timeSlotId: Int,
     val date: LocalDate,
     val start: LocalTime,
     val end: LocalTime,

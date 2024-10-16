@@ -1,7 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -19,7 +17,6 @@ import com.example.android_2425_gent2.ui.screens.reservations_page.partials.Rese
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationList
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationTypeSelectionDropDownMenu
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ReservationsPage(modifier: Modifier = Modifier) {
