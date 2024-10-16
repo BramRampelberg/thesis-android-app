@@ -11,7 +11,7 @@ import com.example.android_2425_gent2.data.local.entity.linking_entities.UserWit
 @Dao
 interface UserDao {
     @Transaction
-    @Query("SELECT * FROM userentity WHERE userId = :userId")
+    @Query("SELECT * FROM user WHERE userId = :userId")
     suspend fun getUserWithReservations(userId: Int): UserWithReservationsEntity
 
     @Insert

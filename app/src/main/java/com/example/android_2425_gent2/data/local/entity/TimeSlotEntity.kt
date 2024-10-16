@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 import java.time.LocalTime
 
-@Entity
+@Entity(tableName = "time_slot")
 data class TimeSlotEntity(
     @PrimaryKey(autoGenerate = true)
     val timeSlotId: Int,

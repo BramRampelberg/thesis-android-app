@@ -21,18 +21,28 @@ import com.example.android_2425_gent2.data.local.entity.UserReservationCrossRef
         TimeSlotEntity::class,
         UserReservationCrossRef::class
     ],
-
+    exportSchema = false,
     version = 1
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+    companion object {
+        @Volatile
+        private var Instance: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            return Instance ?: synchronized(this) {
+                Room.databaseBuilder(
+                    context,
+                    AppDatabase::class.java,
+                    "app_database"
+                ).build().also { Instance = it }
+            }
+
+        }
+    }
+
+
     abstract fun userDao(): UserDao
     abstract fun reservationDao(): ReservationDao
-}
-
-fun getDb(context: Context): AppDatabase {
-    return Room.databaseBuilder(
-        context,
-        AppDatabase::class.java, "database-name"
-    ).build()
 }
