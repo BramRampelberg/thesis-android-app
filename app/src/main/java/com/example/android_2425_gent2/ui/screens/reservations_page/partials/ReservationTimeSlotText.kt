@@ -18,6 +18,6 @@ fun ReservationTimeSlotText(reservation: Reservation, modifier: Modifier) {
                 TIME_FORMATTER
             )
         }",
-        fontSize = 40.sp
+        fontSize = 32.sp
     )
 }

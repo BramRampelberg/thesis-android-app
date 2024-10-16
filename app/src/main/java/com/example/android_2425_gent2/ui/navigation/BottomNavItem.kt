@@ -6,15 +6,16 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.android_2425_gent2.R
 
 enum class BottomNavItem(
     val route: String,
     val icon: ImageVector,
-    val label: String,
+    val labelStringResourceId: Int,
     var badgeCount: Int
 ) {
-    Home("home", Icons.Default.Home, "Home", 0),
-    Calendar("calendar", Icons.Default.DateRange, "Calender", 0),
-    Notifications("notifications", Icons.Default.Notifications, "Notificaties", 0),
-    Profile("profile", Icons.Default.Person, "Profiel", 0)
+    Home("home", Icons.Default.Home, R.string.home, 0),
+    Calendar("calendar", Icons.Default.DateRange, R.string.calendar, 0),
+    Notifications("notifications", Icons.Default.Notifications, R.string.reservations, 0),
+    Profile("profile", Icons.Default.Person, R.string.profile, 0)
 }

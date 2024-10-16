@@ -9,15 +9,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import java.util.Locale
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController, modifier: Modifier) {
     NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
-
+        
         BottomNavItem.entries.forEach { item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
@@ -36,7 +38,13 @@ fun BottomNavigationBar(navController: NavHostController, modifier: Modifier) {
                         )
                     }
                 },
-                label = { Text(item.label) }
+                label = {
+                    Text(stringResource(item.labelStringResourceId).replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.getDefault()
+                        ) else it.toString()
+                    })
+                }
             )
         }
     }

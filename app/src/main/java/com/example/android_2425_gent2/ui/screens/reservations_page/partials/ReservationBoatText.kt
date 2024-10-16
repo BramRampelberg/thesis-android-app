@@ -10,14 +10,14 @@ import com.example.android_2425_gent2.data.model.Reservation
 import java.util.Locale
 
 @Composable
-fun ReservationDateText(reservation: Reservation, modifier: Modifier) {
+fun ReservationBoatText(reservation: Reservation, modifier: Modifier) {
     Text(
         "${
-            stringResource(R.string.date).replaceFirstChar {
+            stringResource(R.string.boat).replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }: ${reservation.timeSlot.date}", fontSize = 20.sp
+        }: ${reservation.boat.name}", fontSize = 20.sp
     )
 }

@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page.partials
 
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +37,6 @@ fun ReservationTypeSelectionDropDownMenu(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor()
-                .width(220.dp)
         )
         DropdownMenu(
             expanded = expanded,

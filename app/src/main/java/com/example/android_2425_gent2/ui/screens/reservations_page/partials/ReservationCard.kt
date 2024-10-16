@@ -1,7 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page.partials
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.data.model.Reservation
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReservationCard(
     reservation: Reservation,
@@ -26,6 +23,7 @@ fun ReservationCard(
         Column(modifier = modifier.padding(8.dp)) {
             ReservationDateText(reservation, modifier)
             ReservationTimeSlotText(reservation, modifier)
+            ReservationBoatText(reservation, modifier)
         }
     }
 }

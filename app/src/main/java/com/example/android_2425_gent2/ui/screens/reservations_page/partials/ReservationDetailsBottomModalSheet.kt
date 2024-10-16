@@ -14,6 +14,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +36,10 @@ fun ReservationDetailsBottomModalSheet(
     ModalBottomSheet(
         onDismissRequest = {
             onSelectedReservationChange(null)
-        }
+        },
+        sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -46,8 +50,14 @@ fun ReservationDetailsBottomModalSheet(
                 Box(modifier.height(16.dp))
                 ReservationDateText(selectedReservation, modifier = modifier)
                 ReservationTimeSlotText(selectedReservation, modifier = modifier)
+                ReservationBoatText(selectedReservation, modifier = modifier)
+                Spacer(modifier.height(20.dp))
+                Text("Gegevens ophalen batterij:", fontSize = 20.sp)
+                Text("Naam: Phillipe van Achter")
+                Text("Tel.: +32 478 85 74 75")
+                Text("E-mail: phillipe.van.achter@gmail.com")
             }
-            Spacer(modifier.height(100.dp))
+            Spacer(modifier.height(60.dp))
             ElevatedButton(
                 onClick = {
                 },
