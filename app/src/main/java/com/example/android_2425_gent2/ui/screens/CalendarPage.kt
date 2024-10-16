@@ -1,57 +1,63 @@
 package com.example.android_2425_gent2.ui.screens
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsPage
 
 @Composable
 fun CalendarPage(modifier: Modifier = Modifier) {
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedTab: ReservationTab by remember { mutableStateOf(ReservationTab.RESERVE) }
 
     Column(modifier = modifier.fillMaxSize()) {
         TabRow(
-            selectedTabIndex = selectedTab,
+            selectedTabIndex = selectedTab.tabIndex,
             containerColor = Color.White,
             contentColor = Color.DarkGray,
             divider = {}, // Remove the default divider
             indicator = { tabPositions ->
                 SecondaryIndicator(
                     Modifier
-                        .tabIndicatorOffset(tabPositions[selectedTab])
+                        .tabIndicatorOffset(tabPositions[selectedTab.tabIndex])
                         .padding(horizontal = 24.dp)
                         .height(4.dp),
                     color = Color.Black
                 )
             }
         ) {
+            val reserveSelected: Boolean = selectedTab == ReservationTab.RESERVE
             Tab(
-                selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
+                selected = selectedTab == ReservationTab.RESERVE,
+                onClick = { selectedTab = ReservationTab.RESERVE },
                 text = {
                     Text(
                         "Reserveer",
                         fontSize = 16.sp,
-                        fontWeight = if (selectedTab == 0) FontWeight.Bold else FontWeight.Normal,
-                        color = if (selectedTab == 0) Color.Black else Color.Gray
+                        fontWeight = if (reserveSelected) FontWeight.Bold else FontWeight.Normal,
+                        color = if (reserveSelected) Color.Black else Color.Gray
                     )
                 },
                 modifier = Modifier.padding(8.dp)
             )
+            val reservationsSelected: Boolean = selectedTab == ReservationTab.RESERVATIONS
             Tab(
-                selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
+                selected = reservationsSelected,
+                onClick = { selectedTab = ReservationTab.RESERVATIONS },
                 text = {
                     Text(
                         "Uw reservaties",
                         fontSize = 16.sp,
-                        fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Normal,
-                        color = if (selectedTab == 1) Color.Black else Color.Gray
+                        fontWeight = if (reservationsSelected) FontWeight.Bold else FontWeight.Normal,
+                        color = if (reservationsSelected) Color.Black else Color.Gray
                     )
                 },
                 modifier = Modifier.padding(8.dp)
@@ -59,8 +65,13 @@ fun CalendarPage(modifier: Modifier = Modifier) {
         }
 
         when (selectedTab) {
-            0 -> Text("Reserveer tab geselecteerd") // Placeholder voor de reserveer tab
-            1 -> Text("Uw reservaties tab geselecteerd") // Placeholder voor de reservaties tab
+            ReservationTab.RESERVE -> Text("Reserveer tab geselecteerd") // Placeholder voor de reserveer tab
+            ReservationTab.RESERVATIONS -> ReservationsPage() // Placeholder voor de reservaties tab
         }
     }
+}
+
+enum class ReservationTab(val tabIndex: Int) {
+    RESERVE(tabIndex = 0),
+    RESERVATIONS(tabIndex = 1)
 }
