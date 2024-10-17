@@ -12,11 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarView
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsPage
+import java.time.LocalDate
 
 @Composable
 fun CalendarPage(modifier: Modifier = Modifier) {
     var selectedTab: ReservationTab by remember { mutableStateOf(ReservationTab.RESERVE) }
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
         TabRow(
@@ -65,7 +68,7 @@ fun CalendarPage(modifier: Modifier = Modifier) {
         }
 
         when (selectedTab) {
-            ReservationTab.RESERVE -> Text("Reserveer tab geselecteerd") // Placeholder voor de reserveer tab
+            ReservationTab.RESERVE -> CalendarView(onDateSelected = { selectedDate = it }, selectedDate = selectedDate)
             ReservationTab.RESERVATIONS -> ReservationsPage() // Placeholder voor de reservaties tab
         }
     }
