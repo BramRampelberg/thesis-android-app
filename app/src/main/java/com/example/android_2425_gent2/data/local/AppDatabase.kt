@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.android_2425_gent2.data.local.dao.ReservationDao
 import com.example.android_2425_gent2.data.local.dao.UserDao
+import com.example.android_2425_gent2.data.local.dao.UserReservationDao
 import com.example.android_2425_gent2.data.local.entity.BoatEntity
 import com.example.android_2425_gent2.data.local.entity.ReservationEntity
 import com.example.android_2425_gent2.data.local.entity.TimeSlotEntity
@@ -41,8 +42,8 @@ abstract class AppDatabase : RoomDatabase() {
 
         }
     }
-
-
+    
     abstract fun userDao(): UserDao
     abstract fun reservationDao(): ReservationDao
+    abstract fun userReservationDao(): UserReservationDao
 }
