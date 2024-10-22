@@ -1,13 +1,23 @@
 package com.example.android_2425_gent2.network // Adjust the package name accordingly
 
-import com.example.android_2425_gent2.data.remote.model.Reservation
+
+import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.http.Url
+
 
 interface ApiService {
-    @GET("api/Reservation/user/2")
-    suspend fun getReservations(): List<Reservation>
 
+    @GET("/api/TimeSlot/range")
+    suspend fun getTimeSlots(
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
+    ): TimeSlotResponse
 }
+
 
 

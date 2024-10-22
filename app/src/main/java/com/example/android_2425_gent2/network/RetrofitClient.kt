@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2.network // Make sure this matches your package structure
+package com.example.android_2425_gent2.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
