@@ -11,13 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.example.android_2425_gent2.data.remote.model.Reservation
+import com.example.android_2425_gent2.data.remote.model.RemoteReservation
 import com.example.android_2425_gent2.network.RetrofitClient
+
 //import com.example.android_2425_gent2.ui.screens.MainScreen
-import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +37,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
-    val reservationsState = remember { mutableStateOf(emptyList<Reservation>()) }
+    val reservationsState = remember { mutableStateOf(emptyList<RemoteReservation>()) }
     val isLoading = remember { mutableStateOf(true) }
     val errorMessage = remember { mutableStateOf("") }
-
+    
     LaunchedEffect(Unit) {
         isLoading.value = true
         try {
@@ -53,13 +51,13 @@ fun MainScreen() {
             isLoading.value = false
         }
     }
-
+    
     if (isLoading.value) {
         Text("Loading...")
     } else if (errorMessage.value.isNotEmpty()) {
         Text(errorMessage.value)
     } else {
-
+        
         LazyColumn {
             items(reservationsState.value) { reservation ->
                 Text("Reservation ID: ${reservation.id}, Start: ${reservation.start}")

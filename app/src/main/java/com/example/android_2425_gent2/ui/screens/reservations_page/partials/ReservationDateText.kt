@@ -18,6 +18,6 @@ fun ReservationDateText(reservation: Reservation, modifier: Modifier) {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }: ${reservation.timeSlot.date}", fontSize = 20.sp
+        }: ${reservation.timeSlot?.date}", fontSize = 20.sp
     )
 }

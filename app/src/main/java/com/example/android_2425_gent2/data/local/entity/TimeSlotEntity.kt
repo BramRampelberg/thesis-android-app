@@ -2,6 +2,7 @@ package com.example.android_2425_gent2.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.android_2425_gent2.data.model.TimeSlot
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -13,3 +14,5 @@ data class TimeSlotEntity(
     val start: LocalTime,
     val end: LocalTime,
 )
+
+fun TimeSlotEntity.asExternalModel() = TimeSlot(timeSlotId, date, start, end)

@@ -1,7 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page.partials
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +24,6 @@ import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.Reservation
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReservationDetailsBottomModalSheet(
     selectedReservation: Reservation,
