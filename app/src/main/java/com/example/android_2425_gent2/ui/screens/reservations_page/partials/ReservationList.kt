@@ -12,7 +12,10 @@ import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.repository.getMockReservations
 
 @Composable
-fun ReservationList(onSelectedReservationChange: (Reservation) -> Unit, modifier: Modifier) {
+fun ReservationList(
+    onSelectedReservationChange: (Reservation) -> Unit,
+    modifier: Modifier
+) {
     val db = AppDatabase.getDatabase(LocalContext.current)
     db.userDao()
 //    userDao.insertAll(UserEntity(1))

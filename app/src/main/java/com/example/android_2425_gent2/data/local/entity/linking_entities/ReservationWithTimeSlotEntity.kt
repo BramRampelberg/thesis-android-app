@@ -4,13 +4,22 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.example.android_2425_gent2.data.local.entity.ReservationEntity
 import com.example.android_2425_gent2.data.local.entity.TimeSlotEntity
+import com.example.android_2425_gent2.data.local.entity.asExternalModel
+import com.example.android_2425_gent2.data.model.Reservation
 
 
 data class ReservationWithTimeSlotEntity(
-    @Embedded val timeSlot: TimeSlotEntity,
+    @Embedded val reservation: ReservationEntity,
     @Relation(
         parentColumn = "reservationId",
         entityColumn = "timeSlotId",
     )
-    val reservation: ReservationEntity
+    val timeSlot: TimeSlotEntity
+)
+
+fun ReservationWithTimeSlotEntity.asExternalModel() = Reservation(
+    id = reservation.reservationId,
+    boat = null,
+    battery = null,
+    timeSlot = timeSlot.asExternalModel(),
 )

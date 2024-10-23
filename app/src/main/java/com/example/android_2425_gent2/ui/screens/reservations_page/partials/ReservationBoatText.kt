@@ -18,6 +18,6 @@ fun ReservationBoatText(reservation: Reservation, modifier: Modifier) {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }: ${reservation.boat.name}", fontSize = 20.sp
+        }: ${reservation.boat?.name}", fontSize = 20.sp
     )
 }

@@ -11,18 +11,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.Reservation
+import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationDetailsBottomModalSheet
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationList
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationTypeSelectionDropDownMenu
 
 @Preview
 @Composable
-fun ReservationsPage(modifier: Modifier = Modifier) {
+fun ReservationsPage(
+    viewModel: ReservationsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    modifier: Modifier = Modifier
+) {
+    val selectedReservationUiState = viewModel.selectedReservationUiState
     var reservationType: ReservationType by remember { mutableStateOf(ReservationType.UPCOMING) }
     var selectedReservation: Reservation? by remember { mutableStateOf(null) }
-
+    
     Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ReservationTypeSelectionDropDownMenu(
             reservationType,
@@ -31,7 +37,9 @@ fun ReservationsPage(modifier: Modifier = Modifier) {
             },
             modifier = modifier
         )
-        ReservationList({ selectedReservation = it }, modifier)
+        ReservationList({
+            selectedReservation = it
+        }, modifier)
         if (selectedReservation != null) {
             ReservationDetailsBottomModalSheet(
                 selectedReservation!!,

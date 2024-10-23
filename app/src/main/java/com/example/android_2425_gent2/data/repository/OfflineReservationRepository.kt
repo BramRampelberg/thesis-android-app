@@ -1,23 +1,28 @@
 package com.example.android_2425_gent2.data.repository
 
 import com.example.android_2425_gent2.data.local.dao.ReservationDao
-import com.example.android_2425_gent2.data.local.entity.ReservationEntity
+import com.example.android_2425_gent2.data.local.entity.asExternalModel
+import com.example.android_2425_gent2.data.local.entity.linking_entities.asExternalModel
+import com.example.android_2425_gent2.data.model.Reservation
+import com.example.android_2425_gent2.data.model.toEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class OfflineReservationRepository(private val reservationDao: ReservationDao) :
     ReservationRepository {
-    override fun getReservationsByUserStream(userId: Int): Flow<List<ReservationEntity>> =
+    override fun getReservationsByUserStream(userId: Int): Flow<List<Reservation>> =
         reservationDao.getReservationsByUser(userId)
-
-    override fun getReservationStream(id: Int): Flow<ReservationEntity?> =
-        reservationDao.getReservationById(id)
-
-    override suspend fun insertReservation(reservation: ReservationEntity) =
-        reservationDao.insert(reservation)
-
-    override suspend fun deleteReservation(reservation: ReservationEntity) =
-        reservationDao.delete(reservation)
-
-    override suspend fun updateReservation(reservation: ReservationEntity) =
-        reservationDao.update(reservation)
+            .map { it -> it.map { it.asExternalModel() } }
+    
+    override fun getReservationStream(id: Int): Flow<Reservation?> =
+        reservationDao.getReservationById(id).map { it?.asExternalModel() }
+    
+    override suspend fun insertReservation(reservation: Reservation) =
+        reservationDao.insert(reservation.toEntity())
+    
+    override suspend fun deleteReservation(reservation: Reservation) =
+        reservationDao.delete(reservation.toEntity())
+    
+    override suspend fun updateReservation(reservation: Reservation) =
+        reservationDao.update(reservation.toEntity())
 }

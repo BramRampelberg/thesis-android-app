@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class UserReservationDaoTest {
+class UserRemoteReservationDaoTest {
     private lateinit var appDatabase: AppDatabase
     private lateinit var userReservationDao: UserReservationDao
     private lateinit var reservationDao: ReservationDao
@@ -30,12 +30,12 @@ class UserReservationDaoTest {
         timeSlotId = 1
     )
     private val userReservation1 = UserReservationCrossRef(userId = 1, reservationId = 1)
-
+    
     @Before
     fun setup() {
         createDb()
     }
-
+    
     private fun createDb() {
         val context: Context = ApplicationProvider.getApplicationContext()
         appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
@@ -45,13 +45,13 @@ class UserReservationDaoTest {
         reservationDao = appDatabase.reservationDao()
         userDao = appDatabase.userDao()
     }
-
+    
     @After
     @Throws(IOException::class)
     fun closeDb() {
         appDatabase.close()
     }
-
+    
     @Test
     @Throws(Exception::class)
     fun daoInsert_insertsUserReservationIntoDB() = runBlocking {

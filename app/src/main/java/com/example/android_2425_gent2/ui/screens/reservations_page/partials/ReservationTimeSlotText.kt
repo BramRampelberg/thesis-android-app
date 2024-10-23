@@ -13,8 +13,8 @@ import com.example.android_2425_gent2.utils.TIME_FORMATTER
 @Composable
 fun ReservationTimeSlotText(reservation: Reservation, modifier: Modifier) {
     Text(
-        "${reservation.timeSlot.start.format(TIME_FORMATTER)} - ${
-            reservation.timeSlot.end.format(
+        "${reservation.timeSlot?.start?.format(TIME_FORMATTER)} - ${
+            reservation.timeSlot?.end?.format(
                 TIME_FORMATTER
             )
         }",
