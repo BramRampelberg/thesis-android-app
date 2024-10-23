@@ -37,8 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_2425_gent2.mockdata.ReservationMock
-import com.example.android_2425_gent2.mockdata.TimeSlot
+import com.example.android_2425_gent2.data.mock_data.ReservationMock
+import com.example.android_2425_gent2.data.mock_data.TimeSlot
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -53,7 +53,7 @@ val Darkblue = Color(0xFF4C5270)
 @Composable
 fun CalendarView(onDateSelected: (LocalDate) -> Unit, selectedDate: LocalDate?) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
-    
+
     Column(modifier = Modifier.padding(16.dp)) {
         MonthSelector(currentMonth) { newMonth ->
             currentMonth = newMonth
@@ -117,7 +117,7 @@ fun MonthCalendar(
     val daysInMonth = yearMonth.lengthOfMonth()
     val firstDayOfWeek = yearMonth.atDay(1).dayOfWeek.value % 7
     val today = LocalDate.now()
-    
+
     Column {
         WeekdayHeader()
         LazyVerticalGrid(
@@ -151,7 +151,7 @@ fun DayCell(
     val dayReservation = remember(date) { ReservationMock.getReservationsForDate(date) }
     val isAvailable = date >= LocalDate.now() && dayReservation?.isFullyBooked == false
     val hasYourReservation = dayReservation?.hasYourReservation == true
-    
+
     Box(
         modifier = Modifier
             .aspectRatio(1f)
@@ -198,7 +198,7 @@ fun TimeSlotView(selectedDate: LocalDate) {
     val dayReservation =
         remember(selectedDate) { ReservationMock.getReservationsForDate(selectedDate) }
     val timeSlots = dayReservation?.timeSlots ?: emptyList()
-    
+
     Column {
         Text(
             "Dag overzicht",
@@ -206,8 +206,8 @@ fun TimeSlotView(selectedDate: LocalDate) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        
-        
+
+
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -215,7 +215,7 @@ fun TimeSlotView(selectedDate: LocalDate) {
                     Column(modifier = Modifier.width(50.dp)) {
                         var currentTime = startTime
                         while (currentTime <= endTime) {
-                            
+
                             Text(
                                 text = currentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                                 color = Color.Gray,
@@ -226,8 +226,8 @@ fun TimeSlotView(selectedDate: LocalDate) {
                             currentTime = currentTime.plusHours(1)
                         }
                     }
-                    
-                    
+
+
                     Column(modifier = Modifier.weight(1f)) {
                         timeSlots.forEach { slot ->
                             TimeSlotItem(slot)
@@ -241,20 +241,20 @@ fun TimeSlotView(selectedDate: LocalDate) {
 
 @Composable
 fun TimeSlotItem(slot: TimeSlot) {
-    
+
     val backgroundColor = when {
         slot.isYourReservation -> PrimaryBlue
         !slot.isAvailable -> LightGray
         else -> Color.White
     }
-    
-    
+
+
     val textColor = if (slot.isYourReservation) Color.White else Color.Black
-    
-    
+
+
     val durationInHours = slot.endTime.hour - slot.startTime.hour
-    
-    
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -280,8 +280,8 @@ fun TimeSlotItem(slot: TimeSlot) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
-            
-            
+
+
             Text(
                 text = "${slot.startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${
                     slot.endTime.format(

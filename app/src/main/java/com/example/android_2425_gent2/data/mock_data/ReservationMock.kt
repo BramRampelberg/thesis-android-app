@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2.mockdata
+package com.example.android_2425_gent2.data.mock_data
 
 import java.time.LocalDate
 import java.time.LocalTime

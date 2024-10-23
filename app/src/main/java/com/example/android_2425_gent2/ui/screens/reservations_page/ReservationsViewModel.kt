@@ -14,26 +14,25 @@ import kotlinx.coroutines.flow.stateIn
 
 class ReservationsViewModel(private val reservationRepository: ReservationRepository) :
     ViewModel() {
-    
+
     val reservationsUiState: StateFlow<ReservationsUiState> =
-        reservationRepository.getReservationsByUserStream(1).map { ReservationsUiState(it) }
+        reservationRepository.getAllReservationsStream().map { ReservationsUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = ReservationsUiState(),
             )
-    
+
     var selectedReservationUiState by mutableStateOf(SelectedReservationUiState(null))
         private set
-    
-    suspend fun setSelectedReservation(reservation: Reservation) {
+
+    suspend fun setSelectedReservation(reservation: Reservation?) {
         selectedReservationUiState = SelectedReservationUiState(reservation)
     }
 }
 
 data class ReservationsUiState(
     val reservations: List<Reservation> = listOf(),
-    val selectedReservation: Reservation? = null
 )
 
 data class SelectedReservationUiState(

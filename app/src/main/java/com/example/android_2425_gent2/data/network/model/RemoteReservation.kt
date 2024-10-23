@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2.data.remote.model
+package com.example.android_2425_gent2.data.network.model
 
 data class RemoteReservation(
     val id: Int,

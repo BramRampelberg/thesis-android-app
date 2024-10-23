@@ -8,6 +8,7 @@ import com.example.android_2425_gent2.data.local.AppDatabase
 import com.example.android_2425_gent2.data.local.entity.ReservationEntity
 import com.example.android_2425_gent2.data.local.entity.UserEntity
 import com.example.android_2425_gent2.data.local.entity.UserReservationCrossRef
+import com.example.android_2425_gent2.data.local.entity.linking_entities.ReservationWithTimeSlotEntity
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -18,24 +19,26 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class RemoteReservationDaoTest {
+class ReservationDaoTest {
     private lateinit var reservationDao: ReservationDao
     private lateinit var userDao: UserDao
     private lateinit var userReservationDao: UserReservationDao
-    
+
     private lateinit var appDatabase: AppDatabase
     private val reservation1 = ReservationEntity(
         reservationId = 1,
         boatId = 1,
-        timeSlotId = 1
+        timeSlotId = 1,
+        batteryId = 1
     )
     private val reservation2 = ReservationEntity(
         reservationId = 2,
         boatId = 2,
-        timeSlotId = 2
+        timeSlotId = 2,
+        batteryId = 2
     )
     private val user1 = UserEntity(userId = 1)
-    
+
     @Before
     fun setup() {
         createDb()
@@ -43,7 +46,7 @@ class RemoteReservationDaoTest {
             insertUser()
         }
     }
-    
+
     private fun createDb() {
         val context: Context = ApplicationProvider.getApplicationContext()
         appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
@@ -53,26 +56,26 @@ class RemoteReservationDaoTest {
         userDao = appDatabase.userDao()
         userReservationDao = appDatabase.userReservationDao()
     }
-    
+
     private suspend fun insertUser() {
         userDao.insert(user1)
     }
-    
+
     @After
     @Throws(IOException::class)
     fun closeDb() {
         appDatabase.close()
     }
-    
+
     private suspend fun addOneReservationToDb() {
         reservationDao.insert(reservation1)
     }
-    
+
     private suspend fun addTwoReservationsToDb() {
         reservationDao.insert(reservation1)
         reservationDao.insert(reservation2)
     }
-    
+
     @Test
     @Throws(Exception::class)
     fun daoInsert_insertsReservationIntoDB() = runBlocking {
@@ -80,17 +83,20 @@ class RemoteReservationDaoTest {
         val reservation: ReservationEntity? = reservationDao.getReservationById(1).first()
         assertEquals(reservation, reservation1)
     }
-    
+
     @Test
     @Throws(Exception::class)
     fun daoUpdate_updatesReservationInDB() = runBlocking {
-        val updatedReservation = ReservationEntity(reservationId = 1, boatId = 3, timeSlotId = 3)
+        val updatedReservation = ReservationEntity(
+            reservationId = 1, boatId = 3, timeSlotId = 3,
+            batteryId = 1
+        )
         addOneReservationToDb()
         reservationDao.update(updatedReservation)
         val reservation: ReservationEntity? = reservationDao.getReservationById(1).first()
         assertEquals(reservation, updatedReservation)
     }
-    
+
     @Test
     @Throws(Exception::class)
     fun daoDelete_deletesReservationInDB() = runBlocking {
@@ -99,7 +105,7 @@ class RemoteReservationDaoTest {
         val reservation: ReservationEntity? = reservationDao.getReservationById(1).first()
         assertEquals(reservation, null)
     }
-    
+
     @Test
     @Throws(Exception::class)
     fun daoGetReservationsByUser_returnsAllReservationsOfUserInDB() = runBlocking {
@@ -110,10 +116,10 @@ class RemoteReservationDaoTest {
             UserReservationCrossRef(user1.userId, reservation2.reservationId)
         userReservationDao.insert(userReservationCrossRef1)
         userReservationDao.insert(userReservationCrossRef2)
-        
+
         val reservations = reservationDao.getReservationsByUser(user1.userId).first()
-        assertEquals(reservations[0], reservation1)
-        assertEquals(reservations[1], reservation2)
+        assertEquals(reservations[0], ReservationWithTimeSlotEntity(reservation1, null))
+        assertEquals(reservations[1], ReservationWithTimeSlotEntity(reservation2, null))
     }
-    
+
 }

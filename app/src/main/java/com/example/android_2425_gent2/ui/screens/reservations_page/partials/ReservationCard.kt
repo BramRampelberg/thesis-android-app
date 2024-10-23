@@ -15,6 +15,7 @@ fun ReservationCard(
     onSelectedReservationChange: (Reservation) -> Unit,
     modifier: Modifier
 ) {
+
     Card(
         onClick = { onSelectedReservationChange(reservation) },
         modifier = modifier

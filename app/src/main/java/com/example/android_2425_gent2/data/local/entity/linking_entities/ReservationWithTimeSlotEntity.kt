@@ -14,12 +14,12 @@ data class ReservationWithTimeSlotEntity(
         parentColumn = "reservationId",
         entityColumn = "timeSlotId",
     )
-    val timeSlot: TimeSlotEntity
+    val timeSlot: TimeSlotEntity?
 )
 
 fun ReservationWithTimeSlotEntity.asExternalModel() = Reservation(
     id = reservation.reservationId,
     boat = null,
     battery = null,
-    timeSlot = timeSlot.asExternalModel(),
+    timeSlot = timeSlot?.asExternalModel(),
 )

@@ -19,7 +19,16 @@ interface ReservationDao : EntityDao<ReservationEntity> {
         """
     )
     fun getReservationsByUser(userId: Int): Flow<List<ReservationWithTimeSlotEntity>>
-    
+
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM reservation
+    """
+    )
+    fun getAllReservations(): Flow<List<ReservationWithTimeSlotEntity>>
+
     @Query("SELECT * FROM reservation r WHERE r.reservationId = :id")
     fun getReservationById(id: Int): Flow<ReservationEntity?>
+
 }

@@ -18,14 +18,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            
             Android2425gent2Theme {
                 MainScreen(
                     navController = rememberNavController(),
                     modifier = Modifier
                 )
             }
-            
+
         }
     }
 }

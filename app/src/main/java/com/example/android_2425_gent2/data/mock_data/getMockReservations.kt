@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2.data.repository
+package com.example.android_2425_gent2.data.mock_data
 
 import com.example.android_2425_gent2.data.model.Battery
 import com.example.android_2425_gent2.data.model.Boat
@@ -26,5 +26,5 @@ fun getMockReservations(): List<Reservation> {
             )
         )
     }.toList<Reservation>()
-    
+
 }
