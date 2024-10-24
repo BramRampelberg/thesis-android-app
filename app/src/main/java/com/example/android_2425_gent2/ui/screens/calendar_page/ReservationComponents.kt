@@ -23,8 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_2425_gent2.data.remote.model.DayInfo
 import com.example.android_2425_gent2.mockdata.ReservationMock
 import com.example.android_2425_gent2.mockdata.TimeSlot
+import com.example.android_2425_gent2.network.RetrofitClient
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -40,18 +42,54 @@ val Darkblue = Color(0xFF4C5270)
 fun CalendarView(onDateSelected: (LocalDate) -> Unit, selectedDate: LocalDate?) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
 
+    // State to hold the API response data
+    val timeSlotState = remember { mutableStateOf<List<DayInfo>?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    // Fetch data from API for the current month
+    LaunchedEffect(currentMonth) {
+        val startDate = currentMonth.atDay(1).toString()  // Convert LocalDate to String for API
+        val endDate = currentMonth.atEndOfMonth().toString()
+
+        isLoading.value = true
+        try {
+            val response = RetrofitClient.apiService.getTimeSlots(startDate, endDate)
+            timeSlotState.value = response.days
+            isLoading.value = false
+        } catch (e: Exception) {
+            errorMessage.value = "Error: ${e.message}"
+            isLoading.value = false
+        }
+    }
+
     Column(modifier = Modifier.padding(16.dp)) {
         MonthSelector(currentMonth) { newMonth ->
             currentMonth = newMonth
         }
         Spacer(modifier = Modifier.height(16.dp))
-        MonthCalendar(currentMonth, onDateSelected, selectedDate)
+
+        if (isLoading.value) {
+            Text("Loading...")
+        } else if (errorMessage.value.isNotEmpty()) {
+            Text(errorMessage.value)
+        } else {
+            MonthCalendar(
+                currentMonth = currentMonth,
+                onDateSelected = onDateSelected,
+                selectedDate = selectedDate,
+                availableDays = timeSlotState.value ?: emptyList() // Pass the fetched days
+            )
+        }
+
         selectedDate?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            TimeSlotView(it)
+            TimeSlotView(it) // Pass the selected date to show available time slots
         }
     }
 }
+
+
 
 @Composable
 fun MonthSelector(currentMonth: YearMonth, onMonthChange: (YearMonth) -> Unit) {
@@ -90,9 +128,14 @@ fun WeekdayHeader() {
 }
 
 @Composable
-fun MonthCalendar(yearMonth: YearMonth, onDateSelected: (LocalDate) -> Unit, selectedDate: LocalDate?) {
-    val daysInMonth = yearMonth.lengthOfMonth()
-    val firstDayOfWeek = yearMonth.atDay(1).dayOfWeek.value % 7
+fun MonthCalendar(
+    currentMonth: YearMonth,
+    onDateSelected: (LocalDate) -> Unit,
+    selectedDate: LocalDate?,
+    availableDays: List<DayInfo> // Pass the available days from API
+) {
+    val daysInMonth = currentMonth.lengthOfMonth()
+    val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
     val today = LocalDate.now()
 
     Column {
@@ -105,11 +148,17 @@ fun MonthCalendar(yearMonth: YearMonth, onDateSelected: (LocalDate) -> Unit, sel
                 Box(modifier = Modifier.aspectRatio(1f))
             }
             items(daysInMonth) { day ->
-                val date = yearMonth.atDay(day + 1)
+                val date = currentMonth.atDay(day + 1)
+
+                // Find if this day is available from the API response
+                val dayInfo = availableDays.find { LocalDate.parse(it.date) == date }
+
                 DayCell(
                     date = date,
                     isSelected = date == selectedDate,
                     isToday = date == today,
+                    isAvailable = dayInfo?.isSlotAvailable == true, // Check availability
+                    isFullyBooked = dayInfo?.isFullyBooked == true, // Check if fully booked
                     onDateSelected = onDateSelected
                 )
             }
@@ -118,12 +167,17 @@ fun MonthCalendar(yearMonth: YearMonth, onDateSelected: (LocalDate) -> Unit, sel
 }
 
 
-@Composable
-fun DayCell(date: LocalDate, isSelected: Boolean, isToday: Boolean, onDateSelected: (LocalDate) -> Unit) {
-    val dayReservation = remember(date) { ReservationMock.getReservationsForDate(date) }
-    val isAvailable = date >= LocalDate.now() && dayReservation?.isFullyBooked == false
-    val hasYourReservation = dayReservation?.hasYourReservation == true
 
+
+@Composable
+fun DayCell(
+    date: LocalDate,
+    isSelected: Boolean,
+    isToday: Boolean,
+    isAvailable: Boolean,
+    isFullyBooked: Boolean,
+    onDateSelected: (LocalDate) -> Unit
+) {
     Box(
         modifier = Modifier
             .aspectRatio(1f)
@@ -136,31 +190,22 @@ fun DayCell(date: LocalDate, isSelected: Boolean, isToday: Boolean, onDateSelect
                 }
             )
             .border(1.dp, if (isSelected) PrimaryBlue else Color.Transparent, CircleShape)
-            .clickable(enabled = isAvailable || hasYourReservation) { onDateSelected(date) },
+            .clickable(enabled = isAvailable && !isFullyBooked) { onDateSelected(date) },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = date.dayOfMonth.toString(),
             color = when {
                 isSelected -> Color.White
-                !isAvailable -> Color.LightGray
+                !isAvailable || isFullyBooked -> Color.LightGray
                 else -> Color.Black
             },
-            fontWeight = if (isAvailable || hasYourReservation) FontWeight.SemiBold else FontWeight.Normal
+            fontWeight = if (isAvailable && !isFullyBooked) FontWeight.SemiBold else FontWeight.Normal
         )
-        if (dayReservation != null) {
-            if (hasYourReservation && !dayReservation.isFullyBooked) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(PrimaryBlue)
-                )
-            }
-        }
-        }
     }
+}
+
+
 
 
 @Composable

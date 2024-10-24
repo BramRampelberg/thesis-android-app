@@ -21,75 +21,76 @@ import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
 //import com.example.android_2425_gent2.ui.screens.MainScreen
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 import com.example.android_2425_gent2.network.RetrofitClient
+import com.example.android_2425_gent2.ui.screens.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            /*
+
             Android2425gent2Theme {
                 MainScreen(
                     navController = rememberNavController(),
                     modifier = Modifier
                 )
             }
-             */
+
             MainScreen()
         }
     }
 }
 
-@Composable
-fun MainScreen() {
-    // State to hold the API response data
-    val timeSlotState = remember { mutableStateOf<TimeSlotResponse?>(null) }
-    val isLoading = remember { mutableStateOf(true) }
-    val errorMessage = remember { mutableStateOf("") }
-
-    // Stel de start- en einddatum in (dit kan dynamisch zijn)
-    val startDate = "2024-10-01"
-    val endDate = "2024-10-31"
-
-    LaunchedEffect(Unit) {
-        isLoading.value = true
-        try {
-            // Roep de API aan met de queryparameters
-            val response = RetrofitClient.apiService.getTimeSlots(startDate, endDate)
-            timeSlotState.value = response
-            isLoading.value = false
-        } catch (e: Exception) {
-            errorMessage.value = "Error: ${e.message}"
-            isLoading.value = false
-        }
-    }
-
-    if (isLoading.value) {
-        Text("Loading...")
-    } else if (errorMessage.value.isNotEmpty()) {
-        Text(errorMessage.value)
-    } else {
-        timeSlotState.value?.let { timeSlotResponse ->
-            LazyColumn {
-                item {
-                    // Display the start, end, and totalDays
-                    Text("Start: ${timeSlotResponse.start}")
-                    Text("End: ${timeSlotResponse.end}")
-                    Text("Total Days: ${timeSlotResponse.totalDays}")
-                }
-                // Iterate over the days and display the information
-                items(timeSlotResponse.days) { day ->
-                    Text("Date: ${day.date}, Fully Booked: ${day.isFullyBooked}, Available: ${day.isSlotAvailable}")
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMainScreen() {
-    MainScreen()
-}
+//@Composable
+//fun MainScreen() {
+//    // State to hold the API response data
+//    val timeSlotState = remember { mutableStateOf<TimeSlotResponse?>(null) }
+//    val isLoading = remember { mutableStateOf(true) }
+//    val errorMessage = remember { mutableStateOf("") }
+//
+//    // Stel de start- en einddatum in (dit kan dynamisch zijn)
+//    val startDate = "2024-10-01"
+//    val endDate = "2024-10-31"
+//
+//    LaunchedEffect(Unit) {
+//        isLoading.value = true
+//        try {
+//            // Roep de API aan met de queryparameters
+//            val response = RetrofitClient.apiService.getTimeSlots(startDate, endDate)
+//            timeSlotState.value = response
+//            isLoading.value = false
+//        } catch (e: Exception) {
+//            errorMessage.value = "Error: ${e.message}"
+//            isLoading.value = false
+//        }
+//    }
+//
+//    if (isLoading.value) {
+//        Text("Loading...")
+//    } else if (errorMessage.value.isNotEmpty()) {
+//        Text(errorMessage.value)
+//    } else {
+//        timeSlotState.value?.let { timeSlotResponse ->
+//            LazyColumn {
+//                item {
+//                    // Display the start, end, and totalDays
+//                    Text("Start: ${timeSlotResponse.start}")
+//                    Text("End: ${timeSlotResponse.end}")
+//                    Text("Total Days: ${timeSlotResponse.totalDays}")
+//                }
+//                // Iterate over the days and display the information
+//                items(timeSlotResponse.days) { day ->
+//                    Text("Date: ${day.date}, Fully Booked: ${day.isFullyBooked}, Available: ${day.isSlotAvailable}")
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewMainScreen() {
+//    MainScreen()
+//}
 
 
