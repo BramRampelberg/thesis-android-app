@@ -222,7 +222,7 @@ fun TimeSlotView(selectedDate: LocalDate) {
     val month = selectedDate.monthValue
     val day = selectedDate.dayOfMonth
 
-    val startTime = LocalTime.of(9, 0)
+    val startTime = LocalTime.of(7, 0)
     val endTime = LocalTime.of(21, 0)
 
     LaunchedEffect(selectedDate) {
