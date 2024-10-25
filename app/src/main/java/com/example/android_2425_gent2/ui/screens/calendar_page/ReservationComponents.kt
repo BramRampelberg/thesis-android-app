@@ -4,13 +4,17 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -24,9 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.mockdata.ReservationMock
-import com.example.android_2425_gent2.mockdata.TimeSlot
+import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.network.RetrofitClient
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -174,8 +178,8 @@ fun DayCell(
     date: LocalDate,
     isSelected: Boolean,
     isToday: Boolean,
-    isAvailable: Boolean,
-    isFullyBooked: Boolean,
+    isAvailable: Boolean,  // From API response
+    isFullyBooked: Boolean, // From API response
     onDateSelected: (LocalDate) -> Unit
 ) {
     Box(
@@ -210,41 +214,77 @@ fun DayCell(
 
 @Composable
 fun TimeSlotView(selectedDate: LocalDate) {
+    val timeSlotState = remember { mutableStateOf<List<TimeSlot>?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    val year = selectedDate.year
+    val month = selectedDate.monthValue
+    val day = selectedDate.dayOfMonth
+
     val startTime = LocalTime.of(9, 0)
-    val endTime = LocalTime.of(20, 0)
-    val dayReservation = remember(selectedDate) { ReservationMock.getReservationsForDate(selectedDate) }
-    val timeSlots = dayReservation?.timeSlots ?: emptyList()
+    val endTime = LocalTime.of(21, 0)
 
-    Column {
-        Text(
-            "Dag overzicht",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+    LaunchedEffect(selectedDate) {
+        isLoading.value = true
+        try {
+            val response = RetrofitClient.apiService.getTimeSlotsForDay(year, month, day)
+            timeSlotState.value = response
+            isLoading.value = false
+        } catch (e: Exception) {
+            errorMessage.value = "Error: ${e.message}"
+            isLoading.value = false
+        }
+    }
 
-
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    // Tijdlijn kolom
-                    Column(modifier = Modifier.width(50.dp)) {
-                        var currentTime = startTime
-                        while (currentTime <= endTime) {
-
-                            Text(
-                                text = currentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                                color = Color.Gray,
-                                modifier = Modifier.height(60.dp).padding(top = 8.dp)
-                            )
-                            currentTime = currentTime.plusHours(1)
+    if (isLoading.value) {
+        Text("Loading time slots...")
+    } else if (errorMessage.value.isNotEmpty()) {
+        Text(errorMessage.value)
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                item {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        // Timeline column
+                        Box(modifier = Modifier.width(50.dp)) {
+                            Column {
+                                for (hour in startTime.hour..endTime.hour) {
+                                    Text(
+                                        text = String.format("%02d:00", hour),
+                                        color = Color.Gray,
+                                        modifier = Modifier
+                                            .height(60.dp)
+                                            .padding(top = 8.dp)
+                                    )
+                                }
+                            }
                         }
-                    }
 
+                        // Time slots column
+                        Box(modifier = Modifier.weight(1f)) {
+                            // Calculate absolute positions for all slots
+                            timeSlotState.value?.forEach { slot ->
+                                val slotStartTime = LocalTime.parse(slot.start)
+                                val slotEndTime = LocalTime.parse(slot.end)
 
-                    Column(modifier = Modifier.weight(1f)) {
-                        timeSlots.forEach { slot ->
-                            TimeSlotItem(slot)
+                                // Calculate offset from the start of the day
+                                val startOffsetMinutes = (slotStartTime.hour - startTime.hour) * 60 + slotStartTime.minute
+                                val durationMinutes = Duration.between(slotStartTime, slotEndTime).toMinutes()
+
+                                Box(
+                                    modifier = Modifier
+                                        .offset(y = ((startOffsetMinutes / 60f) * 60).dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    TimeSlotItem(
+                                        slot = slot,
+                                        heightDp = (durationMinutes / 60f) * 60
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -254,56 +294,53 @@ fun TimeSlotView(selectedDate: LocalDate) {
 }
 
 @Composable
-fun TimeSlotItem(slot: TimeSlot) {
+fun TimeSlotItem(
+    slot: TimeSlot,
+    heightDp: Float
+) {
+    val startTime = LocalTime.parse(slot.start, DateTimeFormatter.ISO_TIME)
+    val endTime = LocalTime.parse(slot.end, DateTimeFormatter.ISO_TIME)
 
     val backgroundColor = when {
-        slot.isYourReservation -> PrimaryBlue
-        !slot.isAvailable -> LightGray
-        else -> Color.White
+        startTime.hour in 9..12 -> Color(0xFF42C4BE)
+        startTime.hour in 14..17 -> Color(0xFFCCCCCC)
+        else -> Color(0xFF4C5270)
     }
-
-
-    val textColor = if (slot.isYourReservation) Color.White else Color.Black
-
-
-    val durationInHours = slot.endTime.hour - slot.startTime.hour
-
+    val textColor = if (backgroundColor == Color(0xFF42C4BE)) Color.White else Color.Black
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp * durationInHours)
+            .height(heightDp.dp)
             .padding(start = 8.dp, top = 2.dp, bottom = 2.dp, end = 2.dp)
             .background(backgroundColor)
             .border(width = 1.dp, color = Color.Black)
-            .clickable(enabled = slot.isAvailable || slot.isYourReservation) { /* Handle click */ }
+            .clickable { /* Handle click */ }
             .padding(8.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Toon de status van het tijdslot (Uw reservatie, Beschikbaar, Volzet)
             Text(
-                text = when {
-                    slot.isYourReservation -> "Uw reservatie"
-                    slot.isAvailable -> "Beschikbaar"
-                    else -> "Volzet"
-                },
+                text = "Start: ${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
                 color = textColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
 
-
             Text(
-                text = "${slot.startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${slot.endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                text = "End: ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
                 color = textColor,
                 fontSize = 12.sp
             )
         }
     }
 }
+
+
+
+
 
 
 
