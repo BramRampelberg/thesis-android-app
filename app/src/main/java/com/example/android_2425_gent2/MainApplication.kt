@@ -5,8 +5,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.android_2425_gent2.di.AppContainer
 import com.example.android_2425_gent2.di.AppDataContainer
-import com.example.android_2425_gent2.ui.AppViewModelProvider
-import com.example.android_2425_gent2.ui.ViewModelFactoryProvider
 import com.example.android_2425_gent2.workers.SeedDatabaseWorker
 
 class MainApplication : Application() {
@@ -15,7 +13,6 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppDataContainer(this)
-        ViewModelFactoryProvider.Factory = AppViewModelProvider.Factory
 
         if (BuildConfig.DEBUG) {
             val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()

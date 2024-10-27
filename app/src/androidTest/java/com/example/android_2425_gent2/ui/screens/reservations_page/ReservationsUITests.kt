@@ -4,14 +4,25 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.data.test_data.getTestReservations
+import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class ReservationsUITests {
+
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    @Before
+    fun setContainer() {
+        val application = ApplicationProvider.getApplicationContext() as MainApplication
+        application.container = TestContainer(ApplicationProvider.getApplicationContext())
+    }
 
     @Test
     fun selectOldReservations() {

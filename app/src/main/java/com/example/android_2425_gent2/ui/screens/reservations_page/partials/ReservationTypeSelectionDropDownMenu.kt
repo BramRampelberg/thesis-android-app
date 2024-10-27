@@ -55,7 +55,7 @@ fun ReservationTypeSelectionDropDownMenu(
                     onReservationTypeChange(ReservationType.UPCOMING)
                     expanded = !expanded
                 },
-                modifier = modifier.testTag("ReservationType.UPCOMING")
+                modifier = Modifier.testTag("ReservationType.UPCOMING")
             )
             DropdownMenuItem(
                 text = {
