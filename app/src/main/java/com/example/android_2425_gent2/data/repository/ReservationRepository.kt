@@ -8,6 +8,10 @@ interface ReservationRepository {
 
     fun getAllReservationsStream(): Flow<List<Reservation>>
 
+    fun getAllUpcomingReservationsStream(): Flow<List<Reservation>>
+
+    fun getAllPastReservationsStream(): Flow<List<Reservation>>
+
     fun getReservationStream(id: Int): Flow<Reservation?>
 
     suspend fun insertReservation(reservation: Reservation)

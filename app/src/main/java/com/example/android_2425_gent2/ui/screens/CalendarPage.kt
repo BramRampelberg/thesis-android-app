@@ -6,6 +6,7 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +19,7 @@ import java.time.LocalDate
 
 @Composable
 fun CalendarPage(modifier: Modifier = Modifier) {
-    var selectedTab: ReservationTab by remember { mutableStateOf(ReservationTab.RESERVE) }
+    var selectedTab: ReservationTab by rememberSaveable { mutableStateOf(ReservationTab.RESERVE) }
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -68,7 +69,11 @@ fun CalendarPage(modifier: Modifier = Modifier) {
         }
 
         when (selectedTab) {
-            ReservationTab.RESERVE -> CalendarView(onDateSelected = { selectedDate = it }, selectedDate = selectedDate)
+            ReservationTab.RESERVE -> CalendarView(
+                onDateSelected = { selectedDate = it },
+                selectedDate = selectedDate
+            )
+
             ReservationTab.RESERVATIONS -> ReservationsPage() // Placeholder voor de reservaties tab
         }
     }

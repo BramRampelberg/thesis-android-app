@@ -63,6 +63,15 @@ fun ReservationTypeSelectionDropDownMenu(
                     expanded = !expanded
                 }
             )
+            DropdownMenuItem(
+                text = {
+                    Text(stringResource(ReservationType.CANCELED.title))
+                },
+                onClick = {
+                    onReservationTypeChange(ReservationType.CANCELED)
+                    expanded = !expanded
+                }
+            )
         }
     }
 }

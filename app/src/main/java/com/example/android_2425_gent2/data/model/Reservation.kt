@@ -9,5 +9,5 @@ data class Reservation(
     val timeSlot: TimeSlot?,
 )
 
-fun Reservation.toEntity() = ReservationEntity(id, boat?.id, battery?.id, timeSlot?.id)
+fun Reservation.asEntity() = ReservationEntity(id, boat?.id, battery?.id, timeSlot?.id)
 

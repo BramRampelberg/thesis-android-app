@@ -6,8 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.android_2425_gent2.data.local.AppDatabase
 import com.example.android_2425_gent2.data.mock_data.getMockReservations
-import com.example.android_2425_gent2.data.mock_data.getMockTimeSlots
-import com.example.android_2425_gent2.data.model.toEntity
+import com.example.android_2425_gent2.data.model.asEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,12 +20,18 @@ class SeedDatabaseWorker(
             val database = AppDatabase.getDatabase(applicationContext)
             val reservationDao = database.reservationDao()
             val timeSlotDao = database.timeSlotDao()
+            val boatDao = database.boatDao()
 
             database.clearAllTables()
 
+            val reservations = getMockReservations()
+
             launch {
-                reservationDao.insert(getMockReservations().map { it.toEntity() })
-                timeSlotDao.insert(getMockTimeSlots().map { it.toEntity() })
+                reservationDao.insert(reservations.map { it.asEntity() })
+                timeSlotDao.insert(reservations.map { it.timeSlot }.filter { it != null }
+                    .map { it!!.asEntity() })
+                boatDao.insert(reservations.map { it.boat }.filter { it != null }
+                    .map { it!!.asEntity() })
             }
 
             Result.success()

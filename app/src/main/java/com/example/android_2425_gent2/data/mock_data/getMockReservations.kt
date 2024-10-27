@@ -20,7 +20,8 @@ fun getMockReservations(): List<Reservation> {
             ),
             timeSlot = TimeSlot(
                 id = it,
-                date = LocalDate.of(2024, 10, (it % 3) + 1),
+                date = if (it % 2 == 0) LocalDate.now()
+                    .plusDays(it.toLong()) else LocalDate.now().minusDays(it.toLong()),
                 start = LocalTime.of(9 + (it * 3) % 13, 0),
                 end = LocalTime.of(9 + (it * 3) % 13, 0).plusHours(3)
             )
