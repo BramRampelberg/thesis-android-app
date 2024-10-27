@@ -1,35 +1,25 @@
 package com.example.android_2425_gent2.ui.screens.calendar_page
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,14 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_2425_gent2.data.mock_data.ReservationMock
-import com.example.android_2425_gent2.data.mock_data.TimeSlot
+import com.example.android_2425_gent2.data.remote.model.DayInfo
+import com.example.android_2425_gent2.data.remote.model.TimeSlot
+import com.example.android_2425_gent2.network.RetrofitClient
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Locale
+import java.util.*
 
 val PrimaryBlue = Color(0xFF42C4BE)
 val LightGray = Color(0xFFCCCCCC)
@@ -54,18 +46,54 @@ val Darkblue = Color(0xFF4C5270)
 fun CalendarView(onDateSelected: (LocalDate) -> Unit, selectedDate: LocalDate?) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
 
+    // State to hold the API response data
+    val timeSlotState = remember { mutableStateOf<List<DayInfo>?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
+    val errorMessage = remember { mutableStateOf("") }
+
+    // Fetch data from API for the current month
+    LaunchedEffect(currentMonth) {
+        val startDate = currentMonth.atDay(1).toString()  // Convert LocalDate to String for API
+        val endDate = currentMonth.atEndOfMonth().toString()
+
+        isLoading.value = true
+        try {
+            val response = RetrofitClient.apiService.getTimeSlots(startDate, endDate)
+            timeSlotState.value = response.days
+            isLoading.value = false
+        } catch (e: Exception) {
+            errorMessage.value = "Error: ${e.message}"
+            isLoading.value = false
+        }
+    }
+
     Column(modifier = Modifier.padding(16.dp)) {
         MonthSelector(currentMonth) { newMonth ->
             currentMonth = newMonth
         }
         Spacer(modifier = Modifier.height(16.dp))
-        MonthCalendar(currentMonth, onDateSelected, selectedDate)
+
+        if (isLoading.value) {
+            Text("Loading...")
+        } else if (errorMessage.value.isNotEmpty()) {
+            Text(errorMessage.value)
+        } else {
+            MonthCalendar(
+                currentMonth = currentMonth,
+                onDateSelected = onDateSelected,
+                selectedDate = selectedDate,
+                availableDays = timeSlotState.value ?: emptyList() // Pass the fetched days
+            )
+        }
+
         selectedDate?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            TimeSlotView(it)
+            TimeSlotView(it) // Pass the selected date to show available time slots
         }
     }
 }
+
+
 
 @Composable
 fun MonthSelector(currentMonth: YearMonth, onMonthChange: (YearMonth) -> Unit) {
@@ -75,20 +103,15 @@ fun MonthSelector(currentMonth: YearMonth, onMonthChange: (YearMonth) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { onMonthChange(currentMonth.minusMonths(1)) }) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous month")
+            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Previous month")
         }
         Text(
-            text = "${
-                currentMonth.month.getDisplayName(
-                    TextStyle.FULL,
-                    Locale.getDefault()
-                )
-            } ${currentMonth.year}",
+            text = "${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
         IconButton(onClick = { onMonthChange(currentMonth.plusMonths(1)) }) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next month")
+            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Next month")
         }
     }
 }
@@ -110,12 +133,13 @@ fun WeekdayHeader() {
 
 @Composable
 fun MonthCalendar(
-    yearMonth: YearMonth,
+    currentMonth: YearMonth,
     onDateSelected: (LocalDate) -> Unit,
-    selectedDate: LocalDate?
+    selectedDate: LocalDate?,
+    availableDays: List<DayInfo> // Pass the available days from API
 ) {
-    val daysInMonth = yearMonth.lengthOfMonth()
-    val firstDayOfWeek = yearMonth.atDay(1).dayOfWeek.value % 7
+    val daysInMonth = currentMonth.lengthOfMonth()
+    val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
     val today = LocalDate.now()
 
     Column {
@@ -128,11 +152,17 @@ fun MonthCalendar(
                 Box(modifier = Modifier.aspectRatio(1f))
             }
             items(daysInMonth) { day ->
-                val date = yearMonth.atDay(day + 1)
+                val date = currentMonth.atDay(day + 1)
+
+                // Find if this day is available from the API response
+                val dayInfo = availableDays.find { LocalDate.parse(it.date) == date }
+
                 DayCell(
                     date = date,
                     isSelected = date == selectedDate,
                     isToday = date == today,
+                    isAvailable = dayInfo?.isSlotAvailable == true, // Check availability
+                    isFullyBooked = dayInfo?.isFullyBooked == true, // Check if fully booked
                     onDateSelected = onDateSelected
                 )
             }
@@ -141,17 +171,17 @@ fun MonthCalendar(
 }
 
 
+
+
 @Composable
 fun DayCell(
     date: LocalDate,
     isSelected: Boolean,
     isToday: Boolean,
+    isAvailable: Boolean,  // From API response
+    isFullyBooked: Boolean, // From API response
     onDateSelected: (LocalDate) -> Unit
 ) {
-    val dayReservation = remember(date) { ReservationMock.getReservationsForDate(date) }
-    val isAvailable = date >= LocalDate.now() && dayReservation?.isFullyBooked == false
-    val hasYourReservation = dayReservation?.hasYourReservation == true
-
     Box(
         modifier = Modifier
             .aspectRatio(1f)
@@ -164,73 +194,97 @@ fun DayCell(
                 }
             )
             .border(1.dp, if (isSelected) PrimaryBlue else Color.Transparent, CircleShape)
-            .clickable(enabled = isAvailable || hasYourReservation) { onDateSelected(date) },
+            .clickable(enabled = isAvailable && !isFullyBooked) { onDateSelected(date) },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = date.dayOfMonth.toString(),
             color = when {
                 isSelected -> Color.White
-                !isAvailable -> Color.LightGray
+                !isAvailable || isFullyBooked -> Color.LightGray
                 else -> Color.Black
             },
-            fontWeight = if (isAvailable || hasYourReservation) FontWeight.SemiBold else FontWeight.Normal
+            fontWeight = if (isAvailable && !isFullyBooked) FontWeight.SemiBold else FontWeight.Normal
         )
-        if (dayReservation != null) {
-            if (hasYourReservation && !dayReservation.isFullyBooked) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(PrimaryBlue)
-                )
-            }
-        }
     }
 }
 
 
+
+
 @Composable
 fun TimeSlotView(selectedDate: LocalDate) {
-    val startTime = LocalTime.of(9, 0)
-    val endTime = LocalTime.of(20, 0)
-    val dayReservation =
-        remember(selectedDate) { ReservationMock.getReservationsForDate(selectedDate) }
-    val timeSlots = dayReservation?.timeSlots ?: emptyList()
+    val timeSlotState = remember { mutableStateOf<List<TimeSlot>?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
+    val errorMessage = remember { mutableStateOf("") }
 
-    Column {
-        Text(
-            "Dag overzicht",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+    val year = selectedDate.year
+    val month = selectedDate.monthValue
+    val day = selectedDate.dayOfMonth
 
+    val startTime = LocalTime.of(7, 0)
+    val endTime = LocalTime.of(21, 0)
 
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    // Tijdlijn kolom
-                    Column(modifier = Modifier.width(50.dp)) {
-                        var currentTime = startTime
-                        while (currentTime <= endTime) {
+    LaunchedEffect(selectedDate) {
+        isLoading.value = true
+        try {
+            val response = RetrofitClient.apiService.getTimeSlotsForDay(year, month, day)
+            timeSlotState.value = response
+            isLoading.value = false
+        } catch (e: Exception) {
+            errorMessage.value = "Error: ${e.message}"
+            isLoading.value = false
+        }
+    }
 
-                            Text(
-                                text = currentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                                color = Color.Gray,
-                                modifier = Modifier
-                                    .height(60.dp)
-                                    .padding(top = 8.dp)
-                            )
-                            currentTime = currentTime.plusHours(1)
+    if (isLoading.value) {
+        Text("Loading time slots...")
+    } else if (errorMessage.value.isNotEmpty()) {
+        Text(errorMessage.value)
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                item {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        // Timeline column
+                        Box(modifier = Modifier.width(50.dp)) {
+                            Column {
+                                for (hour in startTime.hour..endTime.hour) {
+                                    Text(
+                                        text = String.format("%02d:00", hour),
+                                        color = Color.Gray,
+                                        modifier = Modifier
+                                            .height(60.dp)
+                                            .padding(top = 8.dp)
+                                    )
+                                }
+                            }
                         }
-                    }
 
+                        // Time slots column
+                        Box(modifier = Modifier.weight(1f)) {
+                            // Calculate absolute positions for all slots
+                            timeSlotState.value?.forEach { slot ->
+                                val slotStartTime = LocalTime.parse(slot.start)
+                                val slotEndTime = LocalTime.parse(slot.end)
 
-                    Column(modifier = Modifier.weight(1f)) {
-                        timeSlots.forEach { slot ->
-                            TimeSlotItem(slot)
+                                // Calculate offset from the start of the day
+                                val startOffsetMinutes = (slotStartTime.hour - startTime.hour) * 60 + slotStartTime.minute
+                                val durationMinutes = Duration.between(slotStartTime, slotEndTime).toMinutes()
+
+                                Box(
+                                    modifier = Modifier
+                                        .offset(y = ((startOffsetMinutes / 60f) * 60).dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    TimeSlotItem(
+                                        slot = slot,
+                                        heightDp = (durationMinutes / 60f) * 60
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -240,60 +294,53 @@ fun TimeSlotView(selectedDate: LocalDate) {
 }
 
 @Composable
-fun TimeSlotItem(slot: TimeSlot) {
+fun TimeSlotItem(
+    slot: TimeSlot,
+    heightDp: Float
+) {
+    val startTime = LocalTime.parse(slot.start, DateTimeFormatter.ISO_TIME)
+    val endTime = LocalTime.parse(slot.end, DateTimeFormatter.ISO_TIME)
 
     val backgroundColor = when {
-        slot.isYourReservation -> PrimaryBlue
-        !slot.isAvailable -> LightGray
-        else -> Color.White
+        startTime.hour in 9..12 -> Color(0xFF42C4BE)
+        startTime.hour in 14..17 -> Color(0xFFCCCCCC)
+        else -> Color(0xFF4C5270)
     }
-
-
-    val textColor = if (slot.isYourReservation) Color.White else Color.Black
-
-
-    val durationInHours = slot.endTime.hour - slot.startTime.hour
-
+    val textColor = if (backgroundColor == Color(0xFF42C4BE)) Color.White else Color.Black
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp * durationInHours)
+            .height(heightDp.dp)
             .padding(start = 8.dp, top = 2.dp, bottom = 2.dp, end = 2.dp)
             .background(backgroundColor)
             .border(width = 1.dp, color = Color.Black)
-            .clickable(enabled = slot.isAvailable || slot.isYourReservation) { /* Handle click */ }
+            .clickable { /* Handle click */ }
             .padding(8.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Toon de status van het tijdslot (Uw reservatie, Beschikbaar, Volzet)
             Text(
-                text = when {
-                    slot.isYourReservation -> "Uw reservatie"
-                    slot.isAvailable -> "Beschikbaar"
-                    else -> "Volzet"
-                },
+                text = "Start: ${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
                 color = textColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
 
-
             Text(
-                text = "${slot.startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${
-                    slot.endTime.format(
-                        DateTimeFormatter.ofPattern("HH:mm")
-                    )
-                }",
+                text = "End: ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
                 color = textColor,
                 fontSize = 12.sp
             )
         }
     }
 }
+
+
+
+
 
 
 
