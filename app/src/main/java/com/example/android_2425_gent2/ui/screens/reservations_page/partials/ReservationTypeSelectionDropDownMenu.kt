@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationType
 
@@ -35,7 +36,7 @@ fun ReservationTypeSelectionDropDownMenu(
             readOnly = true,
             onValueChange = {},
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
+            modifier = modifier
                 .menuAnchor()
         )
         DropdownMenu(
@@ -43,7 +44,8 @@ fun ReservationTypeSelectionDropDownMenu(
             onDismissRequest = {
                 expanded = !expanded
             },
-            modifier = Modifier.exposedDropdownSize(true),
+            modifier = modifier
+                .exposedDropdownSize(true)
         ) {
             DropdownMenuItem(
                 text = {
@@ -52,7 +54,8 @@ fun ReservationTypeSelectionDropDownMenu(
                 onClick = {
                     onReservationTypeChange(ReservationType.UPCOMING)
                     expanded = !expanded
-                }
+                },
+                modifier = modifier.testTag("ReservationType.UPCOMING")
             )
             DropdownMenuItem(
                 text = {
@@ -61,7 +64,7 @@ fun ReservationTypeSelectionDropDownMenu(
                 onClick = {
                     onReservationTypeChange(ReservationType.OLD)
                     expanded = !expanded
-                }
+                },
             )
             DropdownMenuItem(
                 text = {
