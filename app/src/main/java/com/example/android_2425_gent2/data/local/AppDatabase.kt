@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.android_2425_gent2.data.local.dao.BoatDao
 import com.example.android_2425_gent2.data.local.dao.ReservationDao
 import com.example.android_2425_gent2.data.local.dao.TimeSlotDao
 import com.example.android_2425_gent2.data.local.dao.UserDao
@@ -48,4 +49,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun reservationDao(): ReservationDao
     abstract fun userReservationDao(): UserReservationDao
     abstract fun timeSlotDao(): TimeSlotDao
+    abstract fun boatDao(): BoatDao
 }

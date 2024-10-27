@@ -14,8 +14,9 @@ class MainApplication : Application() {
         super.onCreate()
         container = AppDataContainer(this)
 
-
-        val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
-        WorkManager.getInstance(this).enqueue(request)
+        if (BuildConfig.DEBUG) {
+            val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
+            WorkManager.getInstance(this).enqueue(request)
+        }
     }
 }

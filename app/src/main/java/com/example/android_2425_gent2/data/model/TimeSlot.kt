@@ -11,4 +11,4 @@ data class TimeSlot(
     val end: LocalTime,
 )
 
-fun TimeSlot.toEntity() = TimeSlotEntity(id, date, start, end)
+fun TimeSlot.asEntity() = TimeSlotEntity(id, date, start, end)
