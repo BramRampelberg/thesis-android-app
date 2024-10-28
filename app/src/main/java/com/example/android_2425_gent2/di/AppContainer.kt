@@ -30,4 +30,6 @@ class TestContainer(private val context: Context) : AppContainer {
     override val reservationRepository: ReservationRepository by lazy {
         TestReservationRepository()
     }
+    override val timeSlotRepository: TimeSlotRepository
+        get() = TODO("Not yet implemented")
 }
