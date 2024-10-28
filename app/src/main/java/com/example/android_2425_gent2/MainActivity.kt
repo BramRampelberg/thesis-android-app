@@ -11,11 +11,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.android_2425_gent2.ui.screens.MainScreen
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 
-//import com.example.android_2425_gent2.ui.screens.MainScreen
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             Android2425gent2Theme {
@@ -34,4 +33,3 @@ class MainActivity : ComponentActivity() {
 fun PreviewMainScreen() {
     MainScreen()
 }
-

@@ -2,8 +2,8 @@
     <string name="app_name">android-2425-gent2</string>
     <string name="home">home</string>
     <string name="calendar">kalender</string>
-    <string name="reservations">reservaties</string>
-    <string name="notifications">notificaties</string>
+    <string name="reservations">Reservaties</string>
+    <string name="notifications">Notificaties</string>
     <string name="profile">profiel</string>
     <string name="upcoming_reservations">Aankomende reservaties</string>
     <string name="old_reservations">Oude reservaties</string>
@@ -16,4 +16,5 @@
     <string name="start_time">Start Time: %1$s</string>
     <string name="end_time">End Time: %1$s</string>
     <string name="reserve_time_slot">Reserveer</string>
+    <string name="canceled_reservations">Geannuleerde reservaties</string>
 </resources>
