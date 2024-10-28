@@ -4,4 +4,6 @@ data class TimeSlot(
     val id: Int,
     val start: String,
     val end: String
-)
+) {
+
+}

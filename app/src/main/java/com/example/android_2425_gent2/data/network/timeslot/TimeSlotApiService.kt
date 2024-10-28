@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2.data.network // Adjust the package name accordingly
+package com.example.android_2425_gent2.data.network.timeslot
 
 import com.example.android_2425_gent2.data.network.model.RemoteReservation
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
@@ -9,16 +9,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
 
-interface ApiService {
-    @GET("api/Reservation/user/2")
-    suspend fun getReservations(): List<RemoteReservation>
-
+interface TimeSlotApiService {
     @GET("/api/TimeSlot/range")
     suspend fun getTimeSlots(
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String
     ): TimeSlotResponse
-
 
     @GET("/api/TimeSlot/{year}/{month}/{day}")
     suspend fun getTimeSlotsForDay(
@@ -27,5 +23,3 @@ interface ApiService {
         @Path("day") day: Int
     ): List<TimeSlot>
 }
-
-

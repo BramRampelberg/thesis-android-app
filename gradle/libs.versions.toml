@@ -20,6 +20,7 @@ roomTesting = "2.6.1"
 workRuntimeKtx = "2.9.1"
 navigationRuntimeKtx = "2.8.2"
 runner = "1.6.1"
+storage = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +50,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 room-compiler = { module = "androidx.room:room-compiler" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
