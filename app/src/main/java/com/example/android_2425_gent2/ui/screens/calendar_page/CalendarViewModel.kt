@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.update
 import java.time.YearMonth
 import java.time.LocalDate
 
+
+
 data class CalendarUiState(
     val currentMonth: YearMonth = YearMonth.now(),
     val selectedDate: LocalDate? = null,
@@ -23,7 +25,8 @@ data class CalendarUiState(
     val dailyTimeSlots: List<TimeSlot> = emptyList(),
     val isLoadingDaily: Boolean = false,
     val dailyErrorMessage: String = "",
-    val selectedTimeSlot: TimeSlot? = null
+    val selectedTimeSlot: TimeSlot? = null,
+    val showReservationConfirmation: Boolean = false,
 )
 
 
@@ -116,6 +119,24 @@ class CalendarViewModel(
     fun onTimeSlotDismissed() {
         _uiState.update { currentState ->
             currentState.copy(selectedTimeSlot = null)
+        }
+    }
+
+
+    fun onReserveClicked() {
+        _uiState.update { currentState ->
+            currentState.copy(showReservationConfirmation = true)
+        }
+    }
+
+    fun onReservationConfirmed() {
+        // Here you would typically make your API call to confirm the reservation
+        // After successful confirmation:
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedTimeSlot = null,
+                showReservationConfirmation = false
+            )
         }
     }
 }

@@ -15,6 +15,7 @@ import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthCalendar
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthSelector
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotDetailsBottomSheet
+import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotReservationConfirmationSheet
 import java.time.LocalDate
 import java.time.YearMonth
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotView
@@ -55,7 +56,14 @@ fun CalendarView(
     uiState.selectedTimeSlot?.let { timeSlot ->
         TimeSlotDetailsBottomSheet(
             timeSlot = timeSlot,
-            onDismiss = { viewModel.onTimeSlotDismissed() }
+            onDismiss = { viewModel.onTimeSlotDismissed() },
+            onReserveClick = { viewModel.onReserveClicked() }
+        )
+    }
+
+    if (uiState.showReservationConfirmation) {
+        TimeSlotReservationConfirmationSheet(
+            onDismiss = { viewModel.onReservationConfirmed() }
         )
     }
 
