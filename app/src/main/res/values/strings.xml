@@ -10,7 +10,11 @@
     <string name="select_type_reservations">Selecteer type reservaties</string>
     <string name="reservation_details">Reservatie details</string>
     <string name="cancel_reservation">Annuleer reservatie</string>
-    <string name="date">datum</string>
+    <string name="date">Datum</string>
     <string name="boat">boot</string>
+    <string name="reservation_time_slot_details">Reservatie details</string>
+    <string name="start_time">Van: %1$s</string>
+    <string name="end_time">Tot: %1$s</string>
+    <string name="reserve_time_slot">Reserveer</string>
     <string name="canceled_reservations">Geannuleerde reservaties</string>
 </resources>
