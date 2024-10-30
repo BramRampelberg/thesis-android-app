@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">android-2425-gent2</string>
+    <string name="home">home</string>
+    <string name="calendar">kalender</string>
+    <string name="reservations">Reservaties</string>
+    <string name="notifications">Notificaties</string>
+    <string name="profile">profiel</string>
+    <string name="upcoming_reservations">Aankomende reservaties</string>
+    <string name="old_reservations">Oude reservaties</string>
+    <string name="select_type_reservations">Selecteer type reservaties</string>
+    <string name="reservation_details">Reservatie details</string>
+    <string name="cancel_reservation">Annuleer reservatie</string>
+    <string name="date">datum</string>
+    <string name="boat">boot</string>
+    <string name="canceled_reservations">Geannuleerde reservaties</string>
 </resources>
