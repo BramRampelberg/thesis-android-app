@@ -42,7 +42,7 @@ fun TimeSlotView(timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
                         Column {
                             for (hour in startTime.hour..endTime.hour) {
                                 Text(
-                                    text = String.format("%02d:00tuee", hour),
+                                    text = String.format("%02d:00", hour),
                                     color = Color.Gray,
                                     modifier = Modifier
                                         .height(60.dp)

@@ -91,4 +91,6 @@ dependencies {
     testImplementation (libs.mockito.core)
     testImplementation (libs.mockito.kotlin)
     testImplementation (libs.junit)
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.core)
 }
