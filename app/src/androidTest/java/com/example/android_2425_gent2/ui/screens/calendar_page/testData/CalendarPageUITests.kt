@@ -36,7 +36,7 @@ class CalendarViewInstrumentationTest {
     @Before
     fun setContainer() {
         val application = ApplicationProvider.getApplicationContext() as MainApplication
-        application.container = TestContainer(ApplicationProvider.getApplicationContext())
+        application.container = TestContainer()
         composeTestRule.setContent {
             Android2425gent2Theme {
                 CalendarView()
