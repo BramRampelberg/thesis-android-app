@@ -27,7 +27,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 }
 
-class TestContainer(private val context: Context) : AppContainer {
+class TestContainer() : AppContainer {
     override val reservationRepository: ReservationRepository by lazy {
         TestReservationRepository()
     }
