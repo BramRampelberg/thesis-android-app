@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,10 +12,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+private const val TAG = "ReservationsViewModel"
 
 class ReservationsViewModel(private val reservationRepository: ReservationRepository) :
     ViewModel() {
@@ -54,7 +59,8 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
             ReservationType.OLD -> reservationRepository.getAllPastReservationsStream()
             ReservationType.CANCELED -> reservationRepository.getAllReservationsStream()
         }
-        return reservationFlowWithLoading(flow)
+        return reservationFlowWithLoading(
+            flow.retry().catch { e -> Log.e(TAG, e.message ?: "Unexpected error") })
     }
 
     private fun reservationFlowWithLoading(flow: Flow<List<Reservation>>): StateFlow<ReservationsUiState> {
