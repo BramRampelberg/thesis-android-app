@@ -59,12 +59,13 @@ class CalendarViewModel(
                 val response = timeSlotRepository.getTimeSlotsForRange(startDate, endDate)
                 _uiState.update {
                     it.copy(
-                        monthTimeSlots = response.days,
+                        monthTimeSlots = response?.days ?: emptyList(),
                         isLoadingMonth = false,
                         monthErrorMessage = ""
                     )
                 }
             } catch (e: Exception) {
+                println("Exception caught: ${e.message}")  // Debugging line
                 _uiState.update {
                     it.copy(
                         monthTimeSlots = emptyList(),
@@ -76,15 +77,15 @@ class CalendarViewModel(
         }
     }
 
+
+
+
+
     private fun fetchTimeSlotsForDay(date: LocalDate) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingDaily = true) }
             try {
-                val response = timeSlotRepository.getTimeSlotsForDay(
-                    date.year,
-                    date.monthValue,
-                    date.dayOfMonth
-                )
+                val response = timeSlotRepository.getTimeSlotsForDay(date.year, date.monthValue, date.dayOfMonth)
                 _uiState.update {
                     it.copy(
                         dailyTimeSlots = response,
@@ -103,6 +104,7 @@ class CalendarViewModel(
             }
         }
     }
+
 
 
     //bottom model
