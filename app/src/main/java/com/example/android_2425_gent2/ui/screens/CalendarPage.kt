@@ -69,11 +69,7 @@ fun CalendarPage(modifier: Modifier = Modifier) {
         }
 
         when (selectedTab) {
-            ReservationTab.RESERVE -> CalendarView(
-                onDateSelected = { selectedDate = it },
-                selectedDate = selectedDate
-            )
-
+            ReservationTab.RESERVE -> CalendarView()
             ReservationTab.RESERVATIONS -> ReservationsPage() // Placeholder voor de reservaties tab
         }
     }
