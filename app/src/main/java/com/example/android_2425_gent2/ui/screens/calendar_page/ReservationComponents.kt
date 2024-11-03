@@ -54,18 +54,22 @@ fun CalendarView(
     }
 
     uiState.selectedTimeSlot?.let { timeSlot ->
-        TimeSlotDetailsBottomSheet(
-            timeSlot = timeSlot,
-            onDismiss = { viewModel.onTimeSlotDismissed() },
-            onReserveClick = { viewModel.onReserveClicked() }
-        )
+        if (!uiState.showReservationFlow) {
+            TimeSlotDetailsBottomSheet(
+                timeSlot = timeSlot,
+                onDismiss = { viewModel.onTimeSlotDismissed() },
+                onReserveClick = { viewModel.onReserveClicked() }
+            )
+        } else {
+            TimeSlotReservationConfirmationSheet(
+                timeSlot = timeSlot,
+                reservationState = uiState.reservationState,
+                onDismiss = { viewModel.onReservationConfirmed() }
+            )
+        }
     }
 
-    if (uiState.showReservationConfirmation) {
-        TimeSlotReservationConfirmationSheet(
-            onDismiss = { viewModel.onReservationConfirmed() }
-        )
-    }
+
 
 }
 

@@ -9,12 +9,18 @@ import com.example.android_2425_gent2.data.remote.model.DayInfo
 import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.time.YearMonth
 import java.time.LocalDate
 
 
+enum class ReservationState {
+    DETAILS,
+    PAYMENT_LOADING,
+    CONFIRMATION
+}
 
 data class CalendarUiState(
     val currentMonth: YearMonth = YearMonth.now(),
@@ -26,7 +32,8 @@ data class CalendarUiState(
     val isLoadingDaily: Boolean = false,
     val dailyErrorMessage: String = "",
     val selectedTimeSlot: TimeSlot? = null,
-    val showReservationConfirmation: Boolean = false,
+    val showReservationFlow: Boolean = false,
+    val reservationState: ReservationState = ReservationState.DETAILS,
 )
 
 
@@ -125,17 +132,26 @@ class CalendarViewModel(
 
     fun onReserveClicked() {
         _uiState.update { currentState ->
-            currentState.copy(showReservationConfirmation = true)
+            currentState.copy(
+                showReservationFlow = true,
+                reservationState = ReservationState.PAYMENT_LOADING
+            )
+        }
+        // Simulate payment processing
+        viewModelScope.launch {
+            delay(2000) // Simulate 2 second payment process
+            _uiState.update { currentState ->
+                currentState.copy(reservationState = ReservationState.CONFIRMATION)
+            }
         }
     }
 
     fun onReservationConfirmed() {
-        // Here you would typically make your API call to confirm the reservation
-        // After successful confirmation:
         _uiState.update { currentState ->
             currentState.copy(
                 selectedTimeSlot = null,
-                showReservationConfirmation = false
+                showReservationFlow = false,
+                reservationState = ReservationState.DETAILS
             )
         }
     }
