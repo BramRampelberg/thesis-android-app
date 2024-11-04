@@ -26,6 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -57,19 +58,18 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.runner)
-    testImplementation(libs.junit)
-    testImplementation(libs.androidx.runner)
-    testImplementation(libs.core)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.runner)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Test dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -85,4 +85,12 @@ dependencies {
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+
+    //Testing
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.mockito.core)
+    testImplementation (libs.mockito.kotlin)
+    testImplementation (libs.junit)
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.core)
 }

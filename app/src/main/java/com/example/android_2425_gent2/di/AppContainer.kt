@@ -8,6 +8,7 @@ import com.example.android_2425_gent2.data.repository.timeslot.NetworkTimeSlotRe
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import com.example.android_2425_gent2.di.module.NetworkModule
 import com.example.android_2425_gent2.data.repository.TestReservationRepository
+import com.example.android_2425_gent2.data.repository.timeslot.TestTimeSlotRepository
 
 interface AppContainer {
     val reservationRepository: ReservationRepository
@@ -27,10 +28,11 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 }
 
-class TestContainer(private val context: Context) : AppContainer {
+class TestContainer() : AppContainer {
     override val reservationRepository: ReservationRepository by lazy {
         TestReservationRepository()
     }
-    override val timeSlotRepository: TimeSlotRepository
-        get() = TODO("Not yet implemented")
+    override val timeSlotRepository: TimeSlotRepository by lazy{
+        TestTimeSlotRepository()
+    }
 }
