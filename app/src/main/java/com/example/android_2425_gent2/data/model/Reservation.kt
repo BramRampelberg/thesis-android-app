@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.data.model
 
 import com.example.android_2425_gent2.data.local.entity.ReservationEntity
+import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 
 data class Reservation(
     val id: Int,

@@ -2,12 +2,13 @@ package com.example.android_2425_gent2.ui.screens.calendar_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
+import com.example.android_2425_gent2.data.repository.ReservationRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +39,8 @@ data class CalendarUiState(
 
 
 class CalendarViewModel(
-    private val timeSlotRepository: TimeSlotRepository
+    private val timeSlotRepository: TimeSlotRepository,
+   private val reservationRepository: ReservationRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
@@ -131,18 +133,24 @@ class CalendarViewModel(
 
 
     fun onReserveClicked() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                showReservationFlow = true,
-                reservationState = ReservationState.PAYMENT_LOADING
-            )
-        }
-        // Simulate payment processing
+        val timeSlotId = _uiState.value.selectedTimeSlot?.id ?: return
+
+        _uiState.update { it.copy(
+            showReservationFlow = true,
+            reservationState = ReservationState.PAYMENT_LOADING
+        )}
+
         viewModelScope.launch {
-            delay(2000) // Simulate 2 second payment process
+            delay(2000) // Simulate payment
+
+            reservationRepository.insertReservation(
+                 CreateRemoteReservationRequest(timeSlotId)
+            )
+
             _uiState.update { currentState ->
                 currentState.copy(reservationState = ReservationState.CONFIRMATION)
             }
+
         }
     }
 
