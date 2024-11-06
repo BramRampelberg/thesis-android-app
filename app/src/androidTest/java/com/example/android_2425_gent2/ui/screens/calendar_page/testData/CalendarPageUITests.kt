@@ -15,6 +15,7 @@ import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarView
+import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarViewModel
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsPage
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 import kotlinx.coroutines.runBlocking
@@ -24,12 +25,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import java.time.YearMonth
 
 @RunWith(AndroidJUnit4::class)
 class CalendarViewInstrumentationTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
 
 
 
@@ -43,6 +46,7 @@ class CalendarViewInstrumentationTest {
             }
         }
     }
+
     @Test
     fun selectFullyBookedDay_doesNotShowTimeSlots() {
 
