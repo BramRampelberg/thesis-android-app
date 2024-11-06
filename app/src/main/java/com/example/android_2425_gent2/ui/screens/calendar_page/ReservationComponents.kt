@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.AppViewModelProvider
+import com.example.android_2425_gent2.ui.common.ErrorMessage
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthCalendar
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthSelector
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotDetailsBottomSheet
@@ -65,7 +66,6 @@ fun CalendarView(
 
 }
 
-
 @Composable
 private fun CalendarContent(
     uiState: CalendarUiState,
@@ -83,7 +83,6 @@ private fun CalendarContent(
     }
 }
 
-
 @Composable
 private fun TimeSlotContent(uiState: CalendarUiState, onTimeSlotClick: (TimeSlot) -> Unit) {
     when {
@@ -97,19 +96,9 @@ private fun TimeSlotContent(uiState: CalendarUiState, onTimeSlotClick: (TimeSlot
     }
 }
 
-
 @Composable
 private fun LoadingIndicator() {
     CircularProgressIndicator(
         modifier = Modifier.size(24.dp)
     )
 }
-
-@Composable
-private fun ErrorMessage(message: String) {
-    Text(
-        text = message,
-        color = MaterialTheme.colorScheme.error
-    )
-}
-

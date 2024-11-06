@@ -17,4 +17,5 @@
     <string name="end_time">Tot: %1$s</string>
     <string name="reserve_time_slot">Reserveer</string>
     <string name="canceled_reservations">Geannuleerde reservaties</string>
+    <string name="the_reservations_could_not_be_loaded">De reservaties konden niet geladen worden.</string>
 </resources>
