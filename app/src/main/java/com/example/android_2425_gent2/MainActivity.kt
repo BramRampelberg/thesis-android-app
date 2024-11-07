@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.android_2425_gent2.ui.screens.MainScreen
+import com.example.android_2425_gent2.ui.screens.login_page.LoginPage
+import com.example.android_2425_gent2.ui.screens.login_page.LoginViewModel
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 
 class MainActivity : ComponentActivity() {
@@ -18,10 +20,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Android2425gent2Theme {
-                MainScreen(
-                    navController = rememberNavController(),
-                    modifier = Modifier
-                )
+                LoginPage(
+                    viewModel = LoginViewModel(),
+                    modifier = Modifier)
+//                MainScreen(
+//                    navController = rememberNavController(),
+//                    modifier = Modifier
+//                )
             }
 
         }
