@@ -45,7 +45,7 @@ fun LoginPage(
     val uiState = viewModel.uiState
 
     LoginPageContent(
-        username = credentialsState.email,
+        email = credentialsState.email,
         password = credentialsState.password,
         isLoading = uiState.isLoading,
         error = uiState.error,
@@ -60,7 +60,7 @@ fun LoginPage(
 
 @Composable
 private fun LoginPageContent(
-    username: String,
+    email: String,
     password: String,
     isLoading: Boolean,
     error: String?,
@@ -101,9 +101,9 @@ private fun LoginPageContent(
                         color = Color.White
                     )
                     OutlinedTextField(
-                        value = username,
+                        value = email,
                         onValueChange = onUsernameChange,
-                        label = { Text("Username") },
+                        label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -177,7 +177,7 @@ private fun LoginPageContent(
 @Composable
 private fun LoginPagePreview() {
     LoginPageContent(
-        username = "",
+        email = "",
         password = "",
         isLoading = false,
         error = null,

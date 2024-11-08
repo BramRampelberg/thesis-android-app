@@ -9,6 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginViewModel: ViewModel() {
+    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     var credentialsState by mutableStateOf(CredentialsState("", ""))
         private set
@@ -51,10 +52,13 @@ class LoginViewModel: ViewModel() {
     }
 
     private fun validateCredentials(): Boolean {
-
         return when {
             credentialsState.emailTouched && credentialsState.email.isEmpty() -> {
                 setError("Email is required")
+                false
+            }
+            credentialsState.emailTouched && !credentialsState.email.matches(emailPattern.toRegex()) -> {
+                setError("Invalid email format")
                 false
             }
             credentialsState.passwordTouched && credentialsState.password.isEmpty() -> {
@@ -71,8 +75,8 @@ class LoginViewModel: ViewModel() {
             }
             else -> {
                 setError(null)
-                // Only enable login if both fields have content
-                credentialsState.email.isNotEmpty() && credentialsState.password.isNotEmpty()
+                credentialsState.email.isNotEmpty() && credentialsState.password.isNotEmpty() &&
+                        credentialsState.email.matches(emailPattern.toRegex())
             }
         }
     }
