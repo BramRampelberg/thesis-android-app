@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -26,15 +26,20 @@ fun MonthSelector(currentMonth: YearMonth, onMonthChange: (YearMonth) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { onMonthChange(currentMonth.minusMonths(1)) }) {
-            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Previous month")
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous month")
         }
         Text(
-            text = "${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
+            text = "${
+                currentMonth.month.getDisplayName(
+                    TextStyle.FULL,
+                    Locale.getDefault()
+                )
+            } ${currentMonth.year}",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
         IconButton(onClick = { onMonthChange(currentMonth.plusMonths(1)) }) {
-            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Next month")
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next month")
         }
     }
 }
