@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.ui.common.LoadingIndicator
 
 
 @Composable
@@ -41,14 +42,16 @@ fun LoginPage(
     modifier: Modifier = Modifier
 ) {
     val credentialsState = viewModel.credentialsState
+    val uiState = viewModel.uiState
 
     LoginPageContent(
-        username = credentialsState.username,
+        username = credentialsState.email,
         password = credentialsState.password,
-        onUsernameChange = { viewModel.setUsername(it) },
+        isLoading = uiState.isLoading,
+        onUsernameChange = { viewModel.setEmail(it) },
         onPasswordChange = { viewModel.setPassword(it) },
-        onLoginClick = { viewModel.logCredentials() },
-        onRegisterClick = { /* TODO */ },
+        onLoginClick = { viewModel.handleLogin() },
+        onRegisterClick = { },
         modifier = modifier
     )
 }
@@ -57,6 +60,7 @@ fun LoginPage(
 private fun LoginPageContent(
     username: String,
     password: String,
+    isLoading: Boolean,
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
@@ -80,81 +84,85 @@ private fun LoginPageContent(
                 contentDescription = "App Logo",
                 modifier = Modifier.size(100.dp)
             )
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = "Login",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-                OutlinedTextField(
-                    value = username,
-                    onValueChange = onUsernameChange,
-                    label = { Text("Username") },
+            if(!isLoading) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color.White,
-                        unfocusedBorderColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White,
-                        cursorColor = Color.White
-                    )
-                )
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = onPasswordChange,
-                    label = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color.White,
-                        unfocusedBorderColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White,
-                        cursorColor = Color.White
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                OutlinedButton(
-                    onClick = onLoginClick,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Color.White
-                    ),
-                    border = BorderStroke(1.dp, Color.White)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Login")
+                    Text(
+                        text = "Login",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                    OutlinedTextField(
+                        value = username,
+                        onValueChange = onUsernameChange,
+                        label = { Text("Username") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.White,
+                            cursorColor = Color.White
+                        )
+                    )
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = onPasswordChange,
+                        label = { Text("Password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.White,
+                            cursorColor = Color.White
+                        )
+                    )
                 }
 
-                TextButton(
-                    onClick = onRegisterClick,
+                Spacer(modifier = Modifier.height(16.dp))
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = Color.White
-                    )
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Register")
-                }
-            }
+                    OutlinedButton(
+                        onClick = onLoginClick,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White
+                        ),
+                        border = BorderStroke(1.dp, Color.White)
+                    ) {
+                        Text("Login")
+                    }
 
-            Spacer(modifier = Modifier.height(48.dp))
+                    TextButton(
+                        onClick = onRegisterClick,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Register")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
+            } else {
+                LoadingIndicator(modifier, colorResource(R.color.white))
+            }
         }
     }
 }
@@ -165,6 +173,7 @@ private fun LoginPagePreview() {
     LoginPageContent(
         username = "",
         password = "",
+        isLoading = false,
         onUsernameChange = {},
         onPasswordChange = {},
         onLoginClick = {},
