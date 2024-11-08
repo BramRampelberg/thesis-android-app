@@ -24,10 +24,6 @@ private const val TAG = "ReservationsViewModel"
 
 class ReservationsViewModel(private val reservationRepository: ReservationRepository) :
     ViewModel() {
-//    init {
-//        loadReservationsForCurrentType()
-//    }
-
     var reservationTypeUiState by mutableStateOf(ReservationTypeUiSate(ReservationType.UPCOMING))
         private set
 
@@ -71,7 +67,6 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
             ReservationType.OLD -> reservationRepository.getAllPastReservationsStream()
             ReservationType.CANCELED -> reservationRepository.getAllReservationsStream()
         }
-        Log.d("test", flow.toString())
         return reservationFlowWithLoading(
             flow
         )
@@ -87,6 +82,11 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                 initialValue = ReservationsUiState(loading = true)
             )
     }
+
+    init {
+        loadReservationsForCurrentType()
+    }
+
 }
 
 data class ReservationsUiState(
