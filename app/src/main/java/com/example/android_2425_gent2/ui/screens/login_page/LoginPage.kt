@@ -48,8 +48,10 @@ fun LoginPage(
         username = credentialsState.email,
         password = credentialsState.password,
         isLoading = uiState.isLoading,
-        onUsernameChange = { viewModel.setEmail(it) },
-        onPasswordChange = { viewModel.setPassword(it) },
+        error = uiState.error,
+        loginDisabled = uiState.disableLogin,
+        onUsernameChange = { viewModel.setEmail(it); viewModel.onAnyInputChanged() },
+        onPasswordChange = { viewModel.setPassword(it); viewModel.onAnyInputChanged() },
         onLoginClick = { viewModel.handleLogin() },
         onRegisterClick = { },
         modifier = modifier
@@ -61,6 +63,8 @@ private fun LoginPageContent(
     username: String,
     password: String,
     isLoading: Boolean,
+    error: String?,
+    loginDisabled: Boolean,
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
@@ -130,6 +134,7 @@ private fun LoginPageContent(
                             cursorColor = Color.White
                         )
                     )
+                    if(error != null) Text(error, color = Color.Red)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -143,7 +148,8 @@ private fun LoginPageContent(
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = Color.White
                         ),
-                        border = BorderStroke(1.dp, Color.White)
+                        border = BorderStroke(1.dp, Color.White),
+                        enabled = !loginDisabled
                     ) {
                         Text("Login")
                     }
@@ -174,6 +180,8 @@ private fun LoginPagePreview() {
         username = "",
         password = "",
         isLoading = false,
+        error = null,
+        loginDisabled = false,
         onUsernameChange = {},
         onPasswordChange = {},
         onLoginClick = {},
