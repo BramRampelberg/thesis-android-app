@@ -7,18 +7,18 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.ui.screens.CalendarPage
 import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarViewModel
+import com.example.android_2425_gent2.ui.screens.login_page.LoginPage
+import com.example.android_2425_gent2.ui.screens.login_page.LoginViewModel
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             ReservationsViewModel(mainApplication().container.reservationRepository)
-        }
-
-        initializer {
             CalendarViewModel(
                 mainApplication().container.timeSlotRepository
             )
+            LoginViewModel()
         }
     }
 

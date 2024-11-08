@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,13 +33,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.common.LoadingIndicator
 
 
 @Composable
 fun LoginPage(
-    viewModel: LoginViewModel,
+    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
     val credentialsState = viewModel.credentialsState
@@ -86,12 +89,12 @@ private fun LoginPageContent(
             Image(
                 painter = painterResource(id = R.drawable.buut_logo_white),
                 contentDescription = "App Logo",
-                modifier = Modifier.size(100.dp)
+                modifier = modifier.size(100.dp)
             )
             if(!isLoading) {
                 Column(
                     horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
@@ -104,7 +107,7 @@ private fun LoginPageContent(
                         value = email,
                         onValueChange = onUsernameChange,
                         label = { Text("Email") },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth().testTag("EmailField"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
@@ -123,7 +126,7 @@ private fun LoginPageContent(
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password
                         ),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth().testTag("PasswordField"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
@@ -134,17 +137,17 @@ private fun LoginPageContent(
                             cursorColor = Color.White
                         )
                     )
-                    if(error != null) Text(error, color = Color.Red)
+                    if(error != null) Text(error, modifier = modifier.testTag("ErrorText"), color = Color.Red)
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = modifier.height(16.dp))
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     OutlinedButton(
                         onClick = onLoginClick,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth().testTag("LoginButton"),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = Color.White
                         ),
@@ -156,7 +159,7 @@ private fun LoginPageContent(
 
                     TextButton(
                         onClick = onRegisterClick,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth(),
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = Color.White
                         )
@@ -165,9 +168,9 @@ private fun LoginPageContent(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = modifier.height(48.dp))
             } else {
-                LoadingIndicator(modifier, colorResource(R.color.white))
+                LoadingIndicator(modifier.testTag("LoadingIndicator"), colorResource(R.color.white))
             }
         }
     }

@@ -69,8 +69,8 @@ class LoginViewModel: ViewModel() {
                 setError("Password must be at least 8 characters")
                 false
             }
-            credentialsState.passwordTouched && credentialsState.password.length > 72 -> {
-                setError("Password must be less than 72 characters")
+            credentialsState.passwordTouched && credentialsState.password.length >= 72 -> {
+                setError("Password must be less than or equal to 72 characters")
                 false
             }
             else -> {
