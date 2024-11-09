@@ -33,7 +33,7 @@ import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.screens.calendar_page.ReservationState
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import kotlin.random.Random
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

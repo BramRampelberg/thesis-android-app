@@ -16,11 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.android_2425_gent2.data.network.RetrofitClient
-import com.example.android_2425_gent2.data.remote.model.DayInfo
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalTime
 
 

@@ -28,7 +28,6 @@ fun TimeSlotDetailsBottomSheet(
     timeSlot: TimeSlot,
     onDismiss: () -> Unit,
     onReserveClick: () -> Unit,
-    //onReserveClick
     modifier: Modifier = Modifier,
     dayInfo: LocalDate?
 ) {
@@ -80,7 +79,6 @@ fun TimeSlotDetailsBottomSheet(
                 Text(stringResource(R.string.reserve_time_slot))
             }
 
-            // Add some padding at the bottom
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

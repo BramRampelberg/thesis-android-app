@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
-import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
