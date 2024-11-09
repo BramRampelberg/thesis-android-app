@@ -23,6 +23,6 @@ fun <T> Flow<T>.asAPIResource(): Flow<APIResource<T>> {
             emit(APIResource.Loading())
         }
         .catch { e ->
-            emit(APIResource.Error(e.message ?: "Unknown error occurred"))
+            emit(APIResource.Error(e.message ?: "Er is iets misgelopen"))
         }
 }

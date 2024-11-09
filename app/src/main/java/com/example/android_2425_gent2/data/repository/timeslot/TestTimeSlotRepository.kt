@@ -21,7 +21,7 @@ class TestTimeSlotRepository : TimeSlotRepository {
     }
     override suspend fun getTimeSlotsForDay(year: Int, month: Int, day: Int): List<TimeSlot>{
         return listOf(
-            TimeSlot(id = 1, start = "09:00", end = "11:30"),
+            TimeSlot(id = 1, start = "09:00", end = "11:30", isBookedByUser = false),
         )
     }
 }

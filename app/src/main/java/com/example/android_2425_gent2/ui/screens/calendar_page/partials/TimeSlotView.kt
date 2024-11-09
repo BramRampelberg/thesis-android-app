@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.data.network.RetrofitClient
+import com.example.android_2425_gent2.data.remote.model.DayInfo
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import java.time.Duration
 import java.time.LocalDate
@@ -73,7 +74,11 @@ fun TimeSlotView(timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
                                 TimeSlotItem(
                                     slot = slot,
                                     heightDp = (durationMinutes / 60f) * 60,
-                                    onClick = { onTimeSlotClick(slot) }
+                                    onClick = {
+                                        if (!slot.isBookedByUser) {
+                                            onTimeSlotClick(slot)
+                                        }
+                                    }
                                 )
                             }
                         }

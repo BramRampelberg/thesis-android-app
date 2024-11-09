@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +39,8 @@ fun TimeSlotReservationConfirmationSheet(
     timeSlot: TimeSlot,
     reservationState: ReservationState,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    reservationErrorMessage: String = ""
 ) {
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
@@ -77,6 +79,57 @@ fun TimeSlotReservationConfirmationSheet(
                         textAlign = TextAlign.Center,
                         color = Color.Gray
                     )
+                }
+            }
+
+            ReservationState.ERROR -> {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Error",
+                        tint = Color.Red,
+                        modifier = Modifier.size(64.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Reservation Failed",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color.Red
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = reservationErrorMessage.ifEmpty { "An error occurred while processing your reservation" },
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        color = Color.Gray
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    ElevatedButton(
+                        onClick = { onDismiss() },
+                        colors = ButtonColors(
+                            Color.Red,
+                            contentColor = Color.White,
+                            disabledContainerColor = Color.Gray,
+                            disabledContentColor = Color.Black
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Close")
+                    }
                 }
             }
 

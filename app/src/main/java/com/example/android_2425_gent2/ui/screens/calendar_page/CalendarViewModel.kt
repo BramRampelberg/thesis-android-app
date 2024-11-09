@@ -22,6 +22,7 @@ import java.time.LocalDate
 enum class ReservationState {
     DETAILS,
     PAYMENT_LOADING,
+    ERROR,
     CONFIRMATION
 }
 
@@ -37,8 +38,7 @@ data class CalendarUiState(
     val selectedTimeSlot: TimeSlot? = null,
     val showReservationFlow: Boolean = false,
     val reservationState: ReservationState = ReservationState.DETAILS,
-    val reservationErrorMessage: String? = null,
-
+    val reservationErrorMessage: String = ""
     )
 
 
@@ -133,6 +133,7 @@ class CalendarViewModel(
 
     fun onTimeSlotDismissed() {
         _uiState.update { currentState ->
+
             currentState.copy(selectedTimeSlot = null)
         }
     }
@@ -145,55 +146,60 @@ class CalendarViewModel(
             it.copy(
                 showReservationFlow = true,
                 reservationState = ReservationState.PAYMENT_LOADING,
-                reservationErrorMessage = null  // Clear any previous errors
+                reservationErrorMessage = "" // Clear any previous error
             )
         }
 
         viewModelScope.launch {
             delay(2000) // Simulate payment
 
-
             reservationRepository.insertReservation(CreateRemoteReservationRequest(timeSlotId))
                 .collect { result ->
-
                     when (result) {
                         is APIResource.Loading -> {
                             println("making a reservation")
                         }
-
                         is APIResource.Success -> {
+                            println("has been made")
                             _uiState.update { currentState ->
-                                currentState.copy(reservationState = ReservationState.CONFIRMATION)
+                                currentState.copy(
+                                    reservationState = ReservationState.CONFIRMATION,
+                                    reservationErrorMessage = "",
+
+                                )
                             }
-                        }
+                            refreshTimeSlots()
 
+                        }
                         is APIResource.Error -> {
-                            val errorMessage = result.message?.let { message ->
-                                if (message.contains("409")) {
-                                    "This time slot has already been reserved"
-                                } else {
-                                    "Error while making reservation: $message"
-                                }
-                            } ?: "Unknown error occurred"
+                            val errorMessage = result.message ?: "Unknown error occurred"
+                            println(errorMessage)
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    reservationState = ReservationState.ERROR,
+                                    reservationErrorMessage = errorMessage
+                                )
 
-                            /* _uiState.update { currentState ->
-                                    currentState.copy(
-                                        reservationState = ReservationState.ERROR,
-                                        errorMessage = errorMessage
-                                    )
-                                }*/
+                            }
+
                         }
-
                     }
                 }
         }
-
     }
-        fun clearReservationError() {
-            //_ui.update { it.copy(reservationErrorMessage = null) }
-            _uiState.update { it.copy(reservationErrorMessage = null) }
-        }
 
+    private fun refreshTimeSlots() {
+
+        fetchTimeSlotsForMonth(_uiState.value.currentMonth)
+
+        _uiState.value.selectedDate?.let { date ->
+            fetchTimeSlotsForDay(date)
+        }
+    }
+
+    fun clearReservationError() {
+        _uiState.update { it.copy(reservationErrorMessage = "") }
+    }
         fun onReservationConfirmed() {
             _uiState.update { currentState ->
                 currentState.copy(

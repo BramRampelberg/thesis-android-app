@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -33,9 +34,8 @@ fun TimeSlotItem(
     val endTime = LocalTime.parse(slot.end, DateTimeFormatter.ISO_TIME)
 
     val backgroundColor = when {
-        startTime.hour in 9..12 -> Color(0xFF42C4BE)
-        startTime.hour in 14..17 -> Color(0xFFCCCCCC)
-        else -> Color(0xFF4C5270)
+        slot.isBookedByUser -> Color(0xFF42C4BE)
+        else -> Color(0xFFCCCCCC)
     }
     val textColor = if (backgroundColor == Color(0xFF42C4BE)) Color.White else Color.Black
 

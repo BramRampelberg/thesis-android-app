@@ -8,8 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthCalendar
@@ -17,7 +15,6 @@ import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthSel
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotDetailsBottomSheet
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotReservationConfirmationSheet
 import java.time.LocalDate
-import java.time.YearMonth
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotView
 
 val PrimaryBlue = Color(0xFF42C4BE)
@@ -56,6 +53,7 @@ fun CalendarView(
     uiState.selectedTimeSlot?.let { timeSlot ->
         if (!uiState.showReservationFlow) {
             TimeSlotDetailsBottomSheet(
+                dayInfo = uiState.selectedDate,
                 timeSlot = timeSlot,
                 onDismiss = { viewModel.onTimeSlotDismissed() },
                 onReserveClick = { viewModel.onReserveClicked() }
@@ -63,6 +61,7 @@ fun CalendarView(
         } else {
             TimeSlotReservationConfirmationSheet(
                 timeSlot = timeSlot,
+                reservationErrorMessage = uiState.reservationErrorMessage,
                 reservationState = uiState.reservationState,
                 onDismiss = { viewModel.onReservationConfirmed() }
             )
