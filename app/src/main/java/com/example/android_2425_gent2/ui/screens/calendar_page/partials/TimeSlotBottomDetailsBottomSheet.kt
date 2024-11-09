@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.ui.screens.calendar_page.partials
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,8 @@ import com.example.android_2425_gent2.data.remote.model.TimeSlot
 fun TimeSlotDetailsBottomSheet(
     timeSlot: TimeSlot,
     onDismiss: () -> Unit,
+    onReserveClick: () -> Unit,
+    //onReserveClick
     modifier: Modifier = Modifier
 ) {
     ModalBottomSheet(
@@ -42,26 +45,37 @@ fun TimeSlotDetailsBottomSheet(
         ) {
             Text(
                 text = stringResource(R.string.reservation_time_slot_details),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontSize = 32.sp,
             )
+            Box(modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.reserve_time_slot) + ": "+ "2024-01-01",
+                fontSize = 20.sp,
 
+            )
             // Simple time slot details
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(stringResource(R.string.start_time, timeSlot.start))
-                Text(stringResource(R.string.end_time, timeSlot.end))
+                Text(timeSlot.start
+                        + " - " +
+                         timeSlot.end,
+                        fontSize = 32.sp)
 
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            Text("Naam: Phillipe van Achter")
+            Text("Tel.: +32 478 85 74 75")
+            Text("E-mail: phillipe.van.achter@gmail.com")
+
+            Spacer(modifier = Modifier.height(32.dp))
+
             Button(
-                onClick = onDismiss,
+                onClick = onReserveClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.reserve_time_slot))

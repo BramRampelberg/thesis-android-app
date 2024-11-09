@@ -2,17 +2,17 @@ package com.example.android_2425_gent2.ui.screens.calendar_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.time.YearMonth
+import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.YearMonth
+
 
 data class CalendarUiState(
     val currentMonth: YearMonth = YearMonth.now(),
@@ -23,7 +23,8 @@ data class CalendarUiState(
     val dailyTimeSlots: List<TimeSlot> = emptyList(),
     val isLoadingDaily: Boolean = false,
     val dailyErrorMessage: String = "",
-    val selectedTimeSlot: TimeSlot? = null
+    val selectedTimeSlot: TimeSlot? = null,
+    val showReservationConfirmation: Boolean = false,
 )
 
 
@@ -118,6 +119,24 @@ class CalendarViewModel(
     fun onTimeSlotDismissed() {
         _uiState.update { currentState ->
             currentState.copy(selectedTimeSlot = null)
+        }
+    }
+
+
+    fun onReserveClicked() {
+        _uiState.update { currentState ->
+            currentState.copy(showReservationConfirmation = true)
+        }
+    }
+
+    fun onReservationConfirmed() {
+        // Here you would typically make your API call to confirm the reservation
+        // After successful confirmation:
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedTimeSlot = null,
+                showReservationConfirmation = false
+            )
         }
     }
 }

@@ -8,16 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.AppViewModelProvider
+import com.example.android_2425_gent2.ui.common.ErrorMessage
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthCalendar
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthSelector
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotDetailsBottomSheet
-import java.time.LocalDate
-import java.time.YearMonth
+import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotReservationConfirmationSheet
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotView
+import java.time.LocalDate
 
 val PrimaryBlue = Color(0xFF42C4BE)
 val LightGray = Color(0xFFCCCCCC)
@@ -26,8 +25,7 @@ val Darkblue = Color(0xFF4C5270)
 @Composable
 fun CalendarView(
     viewModel: CalendarViewModel = viewModel(factory = AppViewModelProvider.Factory)
-)
-{
+) {
     val uiState by viewModel.uiState.collectAsState()
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -55,13 +53,18 @@ fun CalendarView(
     uiState.selectedTimeSlot?.let { timeSlot ->
         TimeSlotDetailsBottomSheet(
             timeSlot = timeSlot,
-            onDismiss = { viewModel.onTimeSlotDismissed() }
+            onDismiss = { viewModel.onTimeSlotDismissed() },
+            onReserveClick = { viewModel.onReserveClicked() }
+        )
+    }
+
+    if (uiState.showReservationConfirmation) {
+        TimeSlotReservationConfirmationSheet(
+            onDismiss = { viewModel.onReservationConfirmed() }
         )
     }
 
 }
-
-
 
 @Composable
 private fun CalendarContent(
@@ -80,13 +83,12 @@ private fun CalendarContent(
     }
 }
 
-
 @Composable
-private fun TimeSlotContent(uiState: CalendarUiState,  onTimeSlotClick: (TimeSlot) -> Unit) {
+private fun TimeSlotContent(uiState: CalendarUiState, onTimeSlotClick: (TimeSlot) -> Unit) {
     when {
         uiState.isLoadingDaily -> LoadingIndicator()
         uiState.dailyErrorMessage.isNotEmpty() -> ErrorMessage(uiState.dailyErrorMessage)
-        else ->  TimeSlotView(
+        else -> TimeSlotView(
             timeSlots = uiState.dailyTimeSlots,
             onTimeSlotClick = onTimeSlotClick
 
@@ -94,19 +96,9 @@ private fun TimeSlotContent(uiState: CalendarUiState,  onTimeSlotClick: (TimeSlo
     }
 }
 
-
 @Composable
 private fun LoadingIndicator() {
     CircularProgressIndicator(
         modifier = Modifier.size(24.dp)
     )
 }
-
-@Composable
-private fun ErrorMessage(message: String) {
-    Text(
-        text = message,
-        color = MaterialTheme.colorScheme.error
-    )
-}
-
