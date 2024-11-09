@@ -15,7 +15,7 @@ interface ReservationRepository {
 
     fun getReservationStream(id: Int): Flow<Reservation?>
 
-    suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): APIResource<Int>
+    suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>>
 
     suspend fun deleteReservation(reservation: Reservation)
 

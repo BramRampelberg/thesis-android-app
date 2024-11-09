@@ -22,7 +22,7 @@ class TestReservationRepository : ReservationRepository {
     override fun getReservationStream(id: Int): Flow<Reservation?> =
         listOf(getTestReservations().filter { it.id == id }.first()).asFlow()
 
-    override suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): APIResource<Int> {
+    override suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>> {
         TODO("Not yet implemented")
     }
 

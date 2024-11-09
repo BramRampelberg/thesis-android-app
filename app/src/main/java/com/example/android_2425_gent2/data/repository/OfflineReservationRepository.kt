@@ -8,10 +8,16 @@ import com.example.android_2425_gent2.data.model.asEntity
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.collections.map
+
 
 class OfflineReservationRepository(
     private val reservationDao: ReservationDao,
@@ -36,12 +42,14 @@ class OfflineReservationRepository(
     override fun getReservationStream(id: Int): Flow<Reservation?> =
         reservationDao.getReservationById(id).map { it?.asExternalModel() }
 
-    override suspend fun insertReservation(requestCreateReservation: CreateRemoteReservationRequest): APIResource<Int> {
-       return try {
-            APIResource.Success(remoteApiService.createReservation(requestCreateReservation))
-        } catch (e: Exception) {
-            APIResource.Error("Network error: ${e.message}",null)
-        }
+    override suspend fun insertReservation(
+        createRemoteReservationRequest: CreateRemoteReservationRequest
+    ): Flow<APIResource<Int>>
+    {
+        return flow {
+            emit(remoteApiService.createReservation(createRemoteReservationRequest))
+        }.asAPIResource()
+
     }
 
     override suspend fun deleteReservation(reservation: Reservation) =

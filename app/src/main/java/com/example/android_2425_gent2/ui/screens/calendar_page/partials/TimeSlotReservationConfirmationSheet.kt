@@ -41,7 +41,7 @@ fun TimeSlotReservationConfirmationSheet(
     modifier: Modifier = Modifier
 ) {
     ModalBottomSheet(
-        onDismissRequest = { /* Prevent dismiss by touch */ },
+        onDismissRequest = { onDismiss() },
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true
         )
