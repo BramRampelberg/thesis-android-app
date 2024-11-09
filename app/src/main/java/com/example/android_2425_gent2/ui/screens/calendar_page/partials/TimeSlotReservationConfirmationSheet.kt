@@ -23,10 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.screens.calendar_page.ReservationState
 import java.time.LocalTime
@@ -43,8 +45,13 @@ fun TimeSlotReservationConfirmationSheet(
     reservationErrorMessage: String = ""
 ) {
     ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
+        onDismissRequest = {
+            if (reservationState != ReservationState.PAYMENT_LOADING) {
+                onDismiss()
+            }
+        },
         sheetState = rememberModalBottomSheetState(
+
             skipPartiallyExpanded = true
         )
     ) {
@@ -65,7 +72,7 @@ fun TimeSlotReservationConfirmationSheet(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Processing Payment...",
+                        text = stringResource(R.string.processing_payment),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
@@ -74,7 +81,7 @@ fun TimeSlotReservationConfirmationSheet(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Please wait while we process your payment",
+                        text = stringResource(R.string.wait_for_process_your_payment),
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
                         color = Color.Gray
@@ -100,7 +107,7 @@ fun TimeSlotReservationConfirmationSheet(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Reservation Failed",
+                        text = stringResource(R.string.reservation_failed),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -110,7 +117,7 @@ fun TimeSlotReservationConfirmationSheet(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = reservationErrorMessage.ifEmpty { "An error occurred while processing your reservation" },
+                        text = reservationErrorMessage.ifEmpty { stringResource(R.string.error_while_processing_reservation) },
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
                         color = Color.Gray
@@ -143,7 +150,7 @@ fun TimeSlotReservationConfirmationSheet(
                 ) {
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Success",
+                        contentDescription = stringResource(R.string.success),
                         tint = Color(0xFF42C4BE),
                         modifier = Modifier.size(64.dp)
                     )
@@ -151,7 +158,7 @@ fun TimeSlotReservationConfirmationSheet(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Reservation Confirmed!",
+                        text = stringResource(R.string.reservation_confirmed),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
@@ -170,15 +177,20 @@ fun TimeSlotReservationConfirmationSheet(
                         val endTime = LocalTime.parse(timeSlot.end, DateTimeFormatter.ISO_TIME)
 
                         Text(
-                            text = "Reservation Details",
+                            text = stringResource(R.string.reservation_details),
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Time: ${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - " +
-                                "${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}")
-                        Text("Name: Phillipe van Achter")
-                        Text("Booking Reference: #${Random.nextInt(10000, 99999)}")
+                        val time = stringResource(R.string.time) +
+                                ":${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - " +
+                                ":${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+
+                        val name = stringResource(R.string.name) + "Phillipe van Achter"
+
+                        Text(time)
+                        Text(name)
+
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -193,11 +205,11 @@ fun TimeSlotReservationConfirmationSheet(
                         ),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Done")
+                        Text(stringResource(R.string.close_reservation_details))
                     }
                 }
             }
-            else -> { /* Should not reach here */ }
+            else -> { }
         }
     }
 }

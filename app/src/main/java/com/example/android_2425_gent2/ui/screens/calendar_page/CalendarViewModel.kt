@@ -2,6 +2,7 @@ package com.example.android_2425_gent2.ui.screens.calendar_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,6 @@ import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepositor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import retrofit2.HttpException
 import java.time.YearMonth
 import java.time.LocalDate
 
@@ -39,12 +39,12 @@ data class CalendarUiState(
     val showReservationFlow: Boolean = false,
     val reservationState: ReservationState = ReservationState.DETAILS,
     val reservationErrorMessage: String = ""
-    )
+)
 
 
 class CalendarViewModel(
     private val timeSlotRepository: TimeSlotRepository,
-   private val reservationRepository: ReservationRepository
+    private val reservationRepository: ReservationRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
@@ -72,13 +72,12 @@ class CalendarViewModel(
                 val response = timeSlotRepository.getTimeSlotsForRange(startDate, endDate)
                 _uiState.update {
                     it.copy(
-                        monthTimeSlots = response?.days ?: emptyList(),
+                        monthTimeSlots = response.days ?: emptyList(),
                         isLoadingMonth = false,
                         monthErrorMessage = ""
                     )
                 }
             } catch (e: Exception) {
-                println("Exception caught: ${e.message}")  // Debugging line
                 _uiState.update {
                     it.copy(
                         monthTimeSlots = emptyList(),
@@ -146,7 +145,7 @@ class CalendarViewModel(
             it.copy(
                 showReservationFlow = true,
                 reservationState = ReservationState.PAYMENT_LOADING,
-                reservationErrorMessage = "" // Clear any previous error
+                reservationErrorMessage = ""
             )
         }
 
@@ -157,27 +156,35 @@ class CalendarViewModel(
                 .collect { result ->
                     when (result) {
                         is APIResource.Loading -> {
-                            println("making a reservation")
+                            _uiState.update {
+                                it.copy(
+                                    showReservationFlow = true,
+                                    reservationState = ReservationState.PAYMENT_LOADING,
+                                    reservationErrorMessage = ""
+                                )
+                            }
+                            delay(2000) // Simulate payment
                         }
+
                         is APIResource.Success -> {
-                            println("has been made")
                             _uiState.update { currentState ->
                                 currentState.copy(
                                     reservationState = ReservationState.CONFIRMATION,
                                     reservationErrorMessage = "",
 
-                                )
+                                    )
                             }
                             refreshTimeSlots()
 
                         }
+
                         is APIResource.Error -> {
-                            val errorMessage = result.message ?: "Unknown error occurred"
-                            println(errorMessage)
+                            val errorMessage = result.message ?: R.string.unknown_error_occurred
+
                             _uiState.update { currentState ->
                                 currentState.copy(
                                     reservationState = ReservationState.ERROR,
-                                    reservationErrorMessage = errorMessage
+                                    reservationErrorMessage = errorMessage.toString()
                                 )
 
                             }
@@ -200,15 +207,16 @@ class CalendarViewModel(
     fun clearReservationError() {
         _uiState.update { it.copy(reservationErrorMessage = "") }
     }
-        fun onReservationConfirmed() {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    selectedTimeSlot = null,
-                    showReservationFlow = false,
-                    reservationState = ReservationState.DETAILS
-                )
-            }
+
+    fun onReservationConfirmed() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedTimeSlot = null,
+                showReservationFlow = false,
+                reservationState = ReservationState.DETAILS
+            )
         }
+    }
 }
 
 
