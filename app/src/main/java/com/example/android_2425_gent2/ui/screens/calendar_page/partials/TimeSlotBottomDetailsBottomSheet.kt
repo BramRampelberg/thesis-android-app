@@ -15,12 +15,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
-
+import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,8 +28,8 @@ fun TimeSlotDetailsBottomSheet(
     timeSlot: TimeSlot,
     onDismiss: () -> Unit,
     onReserveClick: () -> Unit,
-    //onReserveClick
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dayInfo: LocalDate?
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -50,11 +49,10 @@ fun TimeSlotDetailsBottomSheet(
             Box(modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.reserve_time_slot) + ": "+ "2024-01-01",
+                text = stringResource(R.string.reserve_time_slot) + ": "+ dayInfo.toString(),
                 fontSize = 20.sp,
-
             )
-            // Simple time slot details
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -68,20 +66,15 @@ fun TimeSlotDetailsBottomSheet(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            /*no api call to get user info yet*/
             Text("Naam: Phillipe van Achter")
             Text("Tel.: +32 478 85 74 75")
             Text("E-mail: phillipe.van.achter@gmail.com")
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Button(
-                onClick = onReserveClick,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.reserve_time_slot))
-            }
+            PrimaryButtonWithText( onClick = { onReserveClick() }, text=stringResource(R.string.reserve_time_slot) )
 
-            // Add some padding at the bottom
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

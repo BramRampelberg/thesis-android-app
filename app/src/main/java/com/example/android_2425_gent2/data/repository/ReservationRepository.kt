@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.data.repository
 
 import com.example.android_2425_gent2.data.model.Reservation
+import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import kotlinx.coroutines.flow.Flow
 
 interface ReservationRepository {
@@ -14,7 +15,7 @@ interface ReservationRepository {
 
     fun getReservationStream(id: Int): Flow<Reservation?>
 
-    suspend fun insertReservation(reservation: Reservation)
+    suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>>
 
     suspend fun deleteReservation(reservation: Reservation)
 

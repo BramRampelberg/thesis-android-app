@@ -2,17 +2,29 @@ package com.example.android_2425_gent2.ui.screens.calendar_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.data.remote.model.TimeSlot
-import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
+import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import com.example.android_2425_gent2.data.remote.model.DayInfo
+import com.example.android_2425_gent2.data.remote.model.TimeSlot
+import com.example.android_2425_gent2.data.repository.APIResource
+import com.example.android_2425_gent2.data.repository.ReservationRepository
+import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
+enum class ReservationState {
+    DETAILS,
+    PAYMENT_LOADING,
+    ERROR,
+    CONFIRMATION
+}
 
 data class CalendarUiState(
     val currentMonth: YearMonth = YearMonth.now(),
@@ -24,12 +36,15 @@ data class CalendarUiState(
     val isLoadingDaily: Boolean = false,
     val dailyErrorMessage: String = "",
     val selectedTimeSlot: TimeSlot? = null,
-    val showReservationConfirmation: Boolean = false,
+    val showReservationFlow: Boolean = false,
+    val reservationState: ReservationState = ReservationState.DETAILS,
+    val reservationErrorMessage: String = ""
 )
 
 
 class CalendarViewModel(
-    private val timeSlotRepository: TimeSlotRepository
+    private val timeSlotRepository: TimeSlotRepository,
+    private val reservationRepository: ReservationRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
@@ -57,13 +72,12 @@ class CalendarViewModel(
                 val response = timeSlotRepository.getTimeSlotsForRange(startDate, endDate)
                 _uiState.update {
                     it.copy(
-                        monthTimeSlots = response?.days ?: emptyList(),
+                        monthTimeSlots = response.days ?: emptyList(),
                         isLoadingMonth = false,
                         monthErrorMessage = ""
                     )
                 }
             } catch (e: Exception) {
-                println("Exception caught: ${e.message}")  // Debugging line
                 _uiState.update {
                     it.copy(
                         monthTimeSlots = emptyList(),
@@ -76,14 +90,15 @@ class CalendarViewModel(
     }
 
 
-
-
-
     private fun fetchTimeSlotsForDay(date: LocalDate) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingDaily = true) }
             try {
-                val response = timeSlotRepository.getTimeSlotsForDay(date.year, date.monthValue, date.dayOfMonth)
+                val response = timeSlotRepository.getTimeSlotsForDay(
+                    date.year,
+                    date.monthValue,
+                    date.dayOfMonth
+                )
                 _uiState.update {
                     it.copy(
                         dailyTimeSlots = response,
@@ -118,24 +133,88 @@ class CalendarViewModel(
 
     fun onTimeSlotDismissed() {
         _uiState.update { currentState ->
+
             currentState.copy(selectedTimeSlot = null)
         }
     }
 
 
     fun onReserveClicked() {
-        _uiState.update { currentState ->
-            currentState.copy(showReservationConfirmation = true)
+        val timeSlotId = _uiState.value.selectedTimeSlot?.id ?: return
+
+        _uiState.update {
+            it.copy(
+                showReservationFlow = true,
+                reservationState = ReservationState.PAYMENT_LOADING,
+                reservationErrorMessage = ""
+            )
+        }
+
+        viewModelScope.launch {
+            delay(2000) // Simulate payment
+
+            reservationRepository.insertReservation(CreateRemoteReservationRequest(timeSlotId))
+                .collect { result ->
+                    when (result) {
+                        is APIResource.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    showReservationFlow = true,
+                                    reservationState = ReservationState.PAYMENT_LOADING,
+                                    reservationErrorMessage = ""
+                                )
+                            }
+                            delay(2000) // Simulate payment
+                        }
+
+                        is APIResource.Success -> {
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    reservationState = ReservationState.CONFIRMATION,
+                                    reservationErrorMessage = "",
+
+                                    )
+                            }
+                            refreshTimeSlots()
+
+                        }
+
+                        is APIResource.Error -> {
+                            val errorMessage = result.message ?: R.string.unknown_error_occurred
+
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    reservationState = ReservationState.ERROR,
+                                    reservationErrorMessage = errorMessage.toString()
+                                )
+
+                            }
+
+                        }
+                    }
+                }
         }
     }
 
+    private fun refreshTimeSlots() {
+
+        fetchTimeSlotsForMonth(_uiState.value.currentMonth)
+
+        _uiState.value.selectedDate?.let { date ->
+            fetchTimeSlotsForDay(date)
+        }
+    }
+
+    fun clearReservationError() {
+        _uiState.update { it.copy(reservationErrorMessage = "") }
+    }
+
     fun onReservationConfirmed() {
-        // Here you would typically make your API call to confirm the reservation
-        // After successful confirmation:
         _uiState.update { currentState ->
             currentState.copy(
                 selectedTimeSlot = null,
-                showReservationConfirmation = false
+                showReservationFlow = false,
+                reservationState = ReservationState.DETAILS
             )
         }
     }

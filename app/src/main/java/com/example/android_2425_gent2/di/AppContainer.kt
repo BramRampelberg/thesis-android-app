@@ -19,7 +19,8 @@ interface AppContainer {
 class AppDataContainer(private val context: Context) : AppContainer {
 
     override val reservationRepository: ReservationRepository by lazy {
-        OfflineReservationRepository(AppDatabase.getDatabase(context).reservationDao())
+        OfflineReservationRepository(AppDatabase.getDatabase(context).reservationDao()
+        , NetworkModule.reservationApiService)
     }
 
     override val timeSlotRepository: TimeSlotRepository by lazy {

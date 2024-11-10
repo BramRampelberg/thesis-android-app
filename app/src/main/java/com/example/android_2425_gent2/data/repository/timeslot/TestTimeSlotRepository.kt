@@ -39,7 +39,7 @@ class TestTimeSlotRepository : TimeSlotRepository {
         val date = LocalDate.of(year, month, day)
         return if (date.dayOfMonth % 2 == 1) {
             listOf(
-                TimeSlot(id = 1, start = "09:00", end = "11:30"),
+                TimeSlot(id = 1, start = "09:00", end = "11:30", isBookedByUser = false),
             )
         } else {
             emptyList()

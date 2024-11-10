@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
@@ -15,12 +14,10 @@ import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthCal
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthSelector
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotDetailsBottomSheet
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotReservationConfirmationSheet
-import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotView
 import java.time.LocalDate
+import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotView
 
-val PrimaryBlue = Color(0xFF42C4BE)
-val LightGray = Color(0xFFCCCCCC)
-val Darkblue = Color(0xFF4C5270)
+
 
 @Composable
 fun CalendarView(
@@ -51,20 +48,27 @@ fun CalendarView(
     }
 
     uiState.selectedTimeSlot?.let { timeSlot ->
-        TimeSlotDetailsBottomSheet(
-            timeSlot = timeSlot,
-            onDismiss = { viewModel.onTimeSlotDismissed() },
-            onReserveClick = { viewModel.onReserveClicked() }
-        )
-    }
-
-    if (uiState.showReservationConfirmation) {
-        TimeSlotReservationConfirmationSheet(
-            onDismiss = { viewModel.onReservationConfirmed() }
-        )
+        if (!uiState.showReservationFlow) {
+            TimeSlotDetailsBottomSheet(
+                dayInfo = uiState.selectedDate,
+                timeSlot = timeSlot,
+                onDismiss = { viewModel.onTimeSlotDismissed() },
+                onReserveClick = { viewModel.onReserveClicked() }
+            )
+        } else {
+            TimeSlotReservationConfirmationSheet(
+                dayInfo = uiState.selectedDate,
+                timeSlot = timeSlot,
+                reservationErrorMessage = uiState.reservationErrorMessage,
+                reservationState = uiState.reservationState,
+                onDismiss = { viewModel.onReservationConfirmed() }
+            )
+        }
     }
 
 }
+
+
 
 @Composable
 private fun CalendarContent(
@@ -83,6 +87,7 @@ private fun CalendarContent(
     }
 }
 
+
 @Composable
 private fun TimeSlotContent(uiState: CalendarUiState, onTimeSlotClick: (TimeSlot) -> Unit) {
     when {
@@ -96,9 +101,19 @@ private fun TimeSlotContent(uiState: CalendarUiState, onTimeSlotClick: (TimeSlot
     }
 }
 
+
 @Composable
 private fun LoadingIndicator() {
     CircularProgressIndicator(
         modifier = Modifier.size(24.dp)
     )
 }
+
+@Composable
+private fun ErrorMessage(message: String) {
+    Text(
+        text = message,
+        color = MaterialTheme.colorScheme.error
+    )
+}
+

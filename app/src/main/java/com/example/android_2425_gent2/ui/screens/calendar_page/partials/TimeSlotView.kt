@@ -71,7 +71,11 @@ fun TimeSlotView(
                                 TimeSlotItem(
                                     slot = slot,
                                     heightDp = (durationMinutes / 60f) * 60,
-                                    onClick = { onTimeSlotClick(slot) }
+                                    onClick = {
+                                        if (!slot.isBookedByUser) {
+                                            onTimeSlotClick(slot)
+                                        }
+                                    }
                                 )
                             }
                         }

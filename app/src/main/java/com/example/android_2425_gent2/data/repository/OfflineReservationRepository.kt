@@ -5,13 +5,24 @@ import com.example.android_2425_gent2.data.local.entity.asExternalModel
 import com.example.android_2425_gent2.data.local.entity.linking_entities.asExternalModel
 import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.model.asEntity
+import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
+import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.collections.map
 
-class OfflineReservationRepository(private val reservationDao: ReservationDao) :
+
+class OfflineReservationRepository(
+    private val reservationDao: ReservationDao,
+    private val remoteApiService: ReservationApiService
+) :
     ReservationRepository {
     override fun getReservationsByUserStream(userId: Int): Flow<List<Reservation>> =
         reservationDao.getReservationsByUser(userId)
@@ -31,8 +42,15 @@ class OfflineReservationRepository(private val reservationDao: ReservationDao) :
     override fun getReservationStream(id: Int): Flow<Reservation?> =
         reservationDao.getReservationById(id).map { it?.asExternalModel() }
 
-    override suspend fun insertReservation(reservation: Reservation) =
-        reservationDao.insert(reservation.asEntity())
+    override suspend fun insertReservation(
+        createRemoteReservationRequest: CreateRemoteReservationRequest
+    ): Flow<APIResource<Int>>
+    {
+        return flow {
+            emit(remoteApiService.createReservation(createRemoteReservationRequest))
+        }.asAPIResource()
+
+    }
 
     override suspend fun deleteReservation(reservation: Reservation) =
         reservationDao.delete(reservation.asEntity())
