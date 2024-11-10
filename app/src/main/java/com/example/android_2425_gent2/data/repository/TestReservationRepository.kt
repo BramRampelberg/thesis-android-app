@@ -3,6 +3,7 @@ package com.example.android_2425_gent2.data.repository
 import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.test_data.getTestReservations
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
@@ -23,7 +24,8 @@ class TestReservationRepository : ReservationRepository {
         listOf(getTestReservations().filter { it.id == id }.first()).asFlow()
 
     override suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>> {
-        TODO("Not yet implemented")
+        delay(2000)
+        return listOf(APIResource.Success(1)).asFlow()
     }
 
      suspend fun insertReservation(reservation: Reservation) {

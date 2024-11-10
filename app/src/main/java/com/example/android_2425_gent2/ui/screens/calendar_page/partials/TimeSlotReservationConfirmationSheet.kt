@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,8 +67,9 @@ fun TimeSlotReservationConfirmationSheet(
                 ) {
                     CircularProgressIndicator(
                         color = colorResource(R.color.primary),
-                        modifier = Modifier.size(64.dp)
-                    )
+                        modifier = Modifier
+                            .size(64.dp),
+                        )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
