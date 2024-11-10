@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,16 +42,17 @@ fun TimeSlotReservationConfirmationSheet(
     reservationErrorMessage: String = "",
     dayInfo: LocalDate?
 ) {
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = {
+            reservationState != ReservationState.PAYMENT_LOADING
+        }
+    )
     ModalBottomSheet(
         onDismissRequest = {
-            if (reservationState != ReservationState.PAYMENT_LOADING) {
-                onDismiss()
-            }
+            onDismiss()
         },
-        sheetState = rememberModalBottomSheetState(
-
-            skipPartiallyExpanded = true
-        )
+        sheetState = sheetState
     ) {
         when (reservationState) {
             ReservationState.PAYMENT_LOADING -> {
@@ -64,6 +64,7 @@ fun TimeSlotReservationConfirmationSheet(
                         .padding(32.dp)
                 ) {
                     CircularProgressIndicator(
+                        color = colorResource(R.color.primary),
                         modifier = Modifier.size(64.dp)
                     )
 
