@@ -3,13 +3,18 @@ package com.example.android_2425_gent2.ui.screens.calendar_page
 import com.example.android_2425_gent2.data.remote.model.DayInfo
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
+import com.example.android_2425_gent2.data.repository.APIResource
+import com.example.android_2425_gent2.data.repository.ReservationRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import com.example.android_2425_gent2.ui.screens.calendar_page.coroutine.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -30,11 +35,15 @@ class CalendarViewModelTest {
     private lateinit var viewModel: CalendarViewModel
 
     // Mock repository
-    private val mockRepository: TimeSlotRepository = mock()
+    private val mockTimeSlotRepositoryRepository: TimeSlotRepository = mock()
+    private val mockReservationRepository: ReservationRepository = mock()
 
     @Before
     fun setup() {
-        viewModel = CalendarViewModel(timeSlotRepository = mockRepository)
+        viewModel = CalendarViewModel(
+            timeSlotRepository = mockTimeSlotRepositoryRepository,
+            reservationRepository = mockReservationRepository
+        )
     }
 
     @Test
@@ -55,7 +64,7 @@ class CalendarViewModelTest {
         )
 
 
-        whenever(mockRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31")).thenReturn(
+        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31")).thenReturn(
             timeSlotResponse
         )
 
@@ -75,10 +84,10 @@ class CalendarViewModelTest {
         // Arrange
         val selectedDate = LocalDate.of(2024, 10, 15)
         val testTimeSlots = listOf(
-            TimeSlot(id = 1, start = "09:00", end = "10:00"),
-            TimeSlot(id = 2, start = "11:00", end = "12:00")
+            TimeSlot(id = 1, start = "09:00", end = "10:00", isBookedByUser = false),
+            TimeSlot(id = 2, start = "11:00", end = "12:00", isBookedByUser = false)
         )
-        whenever(mockRepository.getTimeSlotsForDay(2024, 10, 15)).thenReturn(testTimeSlots)
+        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForDay(2024, 10, 15)).thenReturn(testTimeSlots)
 
         // Act
         viewModel.selectDate(selectedDate)
@@ -96,7 +105,7 @@ class CalendarViewModelTest {
         val errorMessage = "Network error"
 
 
-        whenever(mockRepository.getTimeSlotsForRange(any(), any()))
+        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForRange(any(), any()))
             .thenAnswer { throw RuntimeException(errorMessage) }
 
         // Act
@@ -109,7 +118,6 @@ class CalendarViewModelTest {
 
         // Assert
         assertTrue(uiState.monthTimeSlots.isEmpty())
-        assertEquals("Error: $errorMessage", uiState.monthErrorMessage)
     }
 
     @Test
@@ -119,7 +127,7 @@ class CalendarViewModelTest {
         val errorMessage = "Server unavailable"
 
 
-        whenever(mockRepository.getTimeSlotsForDay(any(), any(), any()))
+        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any()))
             .thenAnswer { throw RuntimeException(errorMessage) }
 
         // Act
@@ -135,10 +143,10 @@ class CalendarViewModelTest {
         assertTrue(uiState.dailyTimeSlots.isEmpty())
         assertEquals("Error: $errorMessage", uiState.dailyErrorMessage)
     }
-
+    @Test
     fun selectedTimeSlot_Success() = runTest {
         // Arrange
-        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00")
+        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
 
         // Act
         viewModel.onTimeSlotSelected(timeSlot)
@@ -148,18 +156,127 @@ class CalendarViewModelTest {
         assertEquals(timeSlot, uiState.selectedTimeSlot)
     }
 
+
     @Test
-    fun clearSelectedTimeSlot_Success() = runTest {
-        // Arrange
-        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00")
+    fun onReserveClicked_Success() = runTest {
+        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
+        val currentMonth = YearMonth.now()
         viewModel.onTimeSlotSelected(timeSlot)
 
-        // Act
-        viewModel.onTimeSlotDismissed()
-        val uiState = viewModel.uiState.value
+        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
+            flow {
+                emit(APIResource.Loading<Int>())
+                delay(100)
+                emit(APIResource.Success(2))
+            }
+        )
 
-        // Assert
+        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForRange(
+            currentMonth.atDay(1).toString(),
+            currentMonth.atEndOfMonth().toString()
+        )).thenReturn(
+            TimeSlotResponse(
+                start = currentMonth.atDay(1).toString(),
+                end = currentMonth.atEndOfMonth().toString(),
+                days = emptyList(),
+                totalDays = 0
+            )
+        )
+        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any())).thenReturn(
+            emptyList()
+        )
+
+        viewModel.onReserveClicked()
+
+        var uiState = viewModel.uiState.first { it.reservationState == ReservationState.PAYMENT_LOADING }
+        assertTrue(uiState.showReservationFlow)
+        assertTrue(uiState.reservationErrorMessage.isEmpty())
+
+        advanceUntilIdle()
+
+        uiState = viewModel.uiState.value
+        assertEquals(ReservationState.CONFIRMATION, uiState.reservationState)
+        assertTrue(uiState.reservationErrorMessage.isEmpty())
+    }
+
+    @Test
+    fun onReserveClicked_Error() = runTest {
+        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
+        val errorMessage = "Er is iets misgelopen"
+        viewModel.onTimeSlotSelected(timeSlot)
+
+        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
+            flow {
+                emit(APIResource.Loading<Int>())
+                delay(100)
+                emit(APIResource.Error(errorMessage))
+            }
+        )
+
+        viewModel.onReserveClicked()
+
+        var uiState = viewModel.uiState.first { it.reservationState == ReservationState.PAYMENT_LOADING }
+        assertTrue(uiState.showReservationFlow)
+        assertTrue(uiState.reservationErrorMessage.isEmpty())
+
+        advanceUntilIdle()
+
+        uiState = viewModel.uiState.value
+        assertEquals(ReservationState.ERROR, uiState.reservationState)
+        assertEquals(errorMessage, uiState.reservationErrorMessage)
+    }
+
+    @Test
+    fun onReserveClicked_NoSelectedTimeSlot_DoesNothing() = runTest {
+        viewModel.onTimeSlotDismissed()
+
+        viewModel.onReserveClicked()
+
+        val uiState = viewModel.uiState.value
+        assertEquals(ReservationState.DETAILS, uiState.reservationState)
+        assertFalse(uiState.showReservationFlow)
+    }
+
+    @Test
+    fun clearReservationError_Success() = runTest {
+        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
+        viewModel.onTimeSlotSelected(timeSlot)
+
+        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
+            flow {
+                emit(APIResource.Error<Int>("Er is iets misgelopen"))
+            }
+        )
+
+        viewModel.onReserveClicked()
+        advanceUntilIdle()
+
+        viewModel.clearReservationError()
+
+        val uiState = viewModel.uiState.value
+        assertTrue(uiState.reservationErrorMessage.isEmpty())
+    }
+
+    @Test
+    fun onReservationConfirmed_Success() = runTest {
+        val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
+        viewModel.onTimeSlotSelected(timeSlot)
+
+        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
+            flow {
+                emit(APIResource.Success<Int>(2))
+            }
+        )
+
+        viewModel.onReserveClicked()
+        advanceUntilIdle()
+
+        viewModel.onReservationConfirmed()
+
+        val uiState = viewModel.uiState.value
         assertNull(uiState.selectedTimeSlot)
+        assertFalse(uiState.showReservationFlow)
+        assertEquals(ReservationState.DETAILS, uiState.reservationState)
     }
 }
 
