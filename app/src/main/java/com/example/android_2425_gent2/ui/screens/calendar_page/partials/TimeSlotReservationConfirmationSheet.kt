@@ -1,7 +1,7 @@
 package com.example.android_2425_gent2.ui.screens.calendar_page.partials
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -23,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,8 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.screens.calendar_page.ReservationState
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +40,8 @@ fun TimeSlotReservationConfirmationSheet(
     reservationState: ReservationState,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    reservationErrorMessage: String = ""
+    reservationErrorMessage: String = "",
+    dayInfo: LocalDate?
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -65,7 +64,6 @@ fun TimeSlotReservationConfirmationSheet(
                         .padding(32.dp)
                 ) {
                     CircularProgressIndicator(
-                        color = Color(0xFF42C4BE),
                         modifier = Modifier.size(64.dp)
                     )
 
@@ -120,96 +118,67 @@ fun TimeSlotReservationConfirmationSheet(
                         text = reservationErrorMessage.ifEmpty { stringResource(R.string.error_while_processing_reservation) },
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
-                        color = Color.Gray
+                        color = colorResource(R.color.secondary_contrast_text)
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    ElevatedButton(
+                    PrimaryButtonWithText(
                         onClick = { onDismiss() },
-                        colors = ButtonColors(
-                            Color.Red,
-                            contentColor = Color.White,
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.Black
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Close")
-                    }
+                        text = stringResource(R.string.close_reservation_details)
+                    )
                 }
             }
 
             ReservationState.CONFIRMATION -> {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
                     modifier = modifier
+                        .padding(16.dp)
                         .fillMaxWidth()
-                        .padding(32.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = stringResource(R.string.success),
-                        tint = Color(0xFF42C4BE),
-                        modifier = Modifier.size(64.dp)
-                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.placed_reservation),
+                        fontSize = 32.sp,
+                    )
+                    Box(modifier.height(16.dp))
 
                     Text(
-                        text = stringResource(R.string.reservation_confirmed),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                        text = dayInfo.toString(),
+                        fontSize = 20.sp,
+                    )
+
+
+                    Text(
+                        timeSlot.start
+                                + " - " +
+                                timeSlot.end,
+                        fontSize = 32.sp
+                    )
+
+
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    /* TODO: api call to get user info */
+                    Text("Naam: Phillipe van Achter")
+                    Text("Tel.: +32 478 85 74 75")
+                    Text("E-mail: phillipe.van.achter@gmail.com")
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    PrimaryButtonWithText(
+                        onClick = { onDismiss() },
+                        text = stringResource(R.string.close_reservation_details)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    // Reservation details
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(0xFFF5F5F5))
-                            .padding(16.dp)
-                    ) {
-                        val startTime = LocalTime.parse(timeSlot.start, DateTimeFormatter.ISO_TIME)
-                        val endTime = LocalTime.parse(timeSlot.end, DateTimeFormatter.ISO_TIME)
-
-                        Text(
-                            text = stringResource(R.string.reservation_details),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        val time = stringResource(R.string.time) +
-                                ":${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - " +
-                                ":${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
-
-                        val name = stringResource(R.string.name) + "Phillipe van Achter"
-
-                        Text(time)
-                        Text(name)
-
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    ElevatedButton(
-                        onClick = { onDismiss() },
-                        colors = ButtonColors(
-                            Color(0xFF42C4BE),
-                            contentColor = Color.White,
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.Black
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.close_reservation_details))
-                    }
                 }
             }
-            else -> { }
+
+
+            else -> {}
         }
     }
 }

@@ -14,9 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -32,11 +34,13 @@ fun TimeSlotItem(
     val startTime = LocalTime.parse(slot.start, DateTimeFormatter.ISO_TIME)
     val endTime = LocalTime.parse(slot.end, DateTimeFormatter.ISO_TIME)
 
-    val backgroundColor = when {
-        slot.isBookedByUser -> Color(0xFF42C4BE)
-        else -> Color(0xFFCCCCCC)
-    }
-    val textColor = if (backgroundColor == Color(0xFF42C4BE)) Color.White else Color.Black
+    val backgroundColor = colorResource(
+        id = if (slot.isBookedByUser) R.color.primary else R.color.secondary
+    )
+
+    val textColor = colorResource(
+        if (slot.isBookedByUser)  R.color.secondary else R.color.secondary_contrast_text
+    )
 
     Box(
         modifier = Modifier
