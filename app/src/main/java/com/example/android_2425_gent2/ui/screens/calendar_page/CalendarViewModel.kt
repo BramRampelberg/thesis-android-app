@@ -15,9 +15,9 @@ import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepositor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.time.YearMonth
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-
+import java.time.YearMonth
 
 enum class ReservationState {
     DETAILS,
@@ -119,6 +119,7 @@ class CalendarViewModel(
     }
 
 
+
     //bottom model
     private val _selectedTimeSlot = MutableStateFlow<TimeSlot?>(null)
     val selectedTimeSlot: StateFlow<TimeSlot?> = _selectedTimeSlot.asStateFlow()
@@ -218,9 +219,6 @@ class CalendarViewModel(
         }
     }
 }
-
-
-
 
 
 

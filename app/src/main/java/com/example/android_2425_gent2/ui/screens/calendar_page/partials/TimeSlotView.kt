@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.calendar_page.partials
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +21,8 @@ import java.time.LocalTime
 
 
 @Composable
-fun TimeSlotView(timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
+fun TimeSlotView(
+    timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
 ) {
 
     val startTime = LocalTime.of(7, 0)

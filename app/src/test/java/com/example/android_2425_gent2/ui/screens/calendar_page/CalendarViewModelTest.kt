@@ -1,11 +1,10 @@
-package com.example.android_2425_gent2.calendar_page
+package com.example.android_2425_gent2.ui.screens.calendar_page
 
-import com.example.android_2425_gent2.calendar_page.coroutine.MainDispatcherRule
 import com.example.android_2425_gent2.data.remote.model.DayInfo
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
-import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarViewModel
+import com.example.android_2425_gent2.ui.screens.calendar_page.coroutine.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -26,10 +25,10 @@ import java.time.YearMonth
 class CalendarViewModelTest {
 
     @get:Rule
-
     val coroutineRule = MainDispatcherRule()
 
     private lateinit var viewModel: CalendarViewModel
+
     // Mock repository
     private val mockRepository: TimeSlotRepository = mock()
 
@@ -56,7 +55,9 @@ class CalendarViewModelTest {
         )
 
 
-        whenever(mockRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31")).thenReturn(timeSlotResponse)
+        whenever(mockRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31")).thenReturn(
+            timeSlotResponse
+        )
 
         // Act
         viewModel.changeMonth(newMonth)
@@ -70,7 +71,7 @@ class CalendarViewModelTest {
     }
 
     @Test
-    fun fetchTimeSlotsForDay_Succes() = runTest {
+    fun fetchTimeSlotsForDay_Success() = runTest {
         // Arrange
         val selectedDate = LocalDate.of(2024, 10, 15)
         val testTimeSlots = listOf(
@@ -159,8 +160,8 @@ class CalendarViewModelTest {
 
         // Assert
         assertNull(uiState.selectedTimeSlot)
-}
     }
+}
 
 
 
