@@ -63,4 +63,5 @@ interface ReservationDao : EntityDao<ReservationEntity> {
     @Query("SELECT * FROM reservation r WHERE r.reservationId = :id")
     fun getReservationById(id: Int): Flow<ReservationEntity?>
 
+
 }

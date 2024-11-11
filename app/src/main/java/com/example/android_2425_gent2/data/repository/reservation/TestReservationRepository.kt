@@ -1,14 +1,15 @@
-package com.example.android_2425_gent2.data.repository
+package com.example.android_2425_gent2.data.repository.reservation
 
 import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
-import com.example.android_2425_gent2.data.test_data.getTestReservations
+import com.example.android_2425_gent2.data.network.model.ReservationResponse
+import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
 class TestReservationRepository : ReservationRepository {
-    override fun getReservationsByUserStream(userId: Int): Flow<List<Reservation>> =
+    /*override fun getReservationsByUserStream(userId: Int): Flow<List<Reservation>> =
         listOf(listOf<Reservation>()).asFlow()
 
     override fun getAllReservationsStream(): Flow<List<Reservation>> =
@@ -22,6 +23,15 @@ class TestReservationRepository : ReservationRepository {
 
     override fun getReservationStream(id: Int): Flow<Reservation?> =
         listOf(getTestReservations().filter { it.id == id }.first()).asFlow()
+*/
+    override fun getReservations(
+        cursor: Int?,
+        isNextPage: Boolean?,
+        getPast: Boolean,
+        pageSize: Int
+    ): Flow<APIResource<ReservationResponse>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>> {
         delay(2000)
@@ -31,7 +41,7 @@ class TestReservationRepository : ReservationRepository {
      suspend fun insertReservation(reservation: Reservation) {
 
     }
-
+/*
     override suspend fun deleteReservation(reservation: Reservation) {
 
     }
@@ -39,4 +49,6 @@ class TestReservationRepository : ReservationRepository {
     override suspend fun updateReservation(reservation: Reservation) {
 
     }
+
+ */
 }

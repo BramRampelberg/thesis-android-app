@@ -51,7 +51,7 @@ fun ReservationsPage(
             ) {
                 ErrorMessage(stringResource(R.string.the_reservations_could_not_be_loaded))
             }
-        } else if (reservationsUiState.loading) {
+        } else if (reservationsUiState.loading && reservationsUiState.reservations.isEmpty()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,14 +61,20 @@ fun ReservationsPage(
             }
         } else {
             ReservationList(
-                reservationsUiState.reservations,
-                {
+                reservations = reservationsUiState.reservations,
+                onSelectedReservationChange = {
                     coroutineScope.launch {
                         viewModel.setSelectedReservation(it)
                     }
-                }, modifier
+                },
+                onLoadMore = { lastIndex ->
+                    viewModel.loadMoreIfNeeded(lastIndex)
+                },
+                modifier = modifier,
+                isLoadingMore = reservationsUiState.isLoadingMore
             )
         }
+
         if (selectedReservationUiState.selectedReservation != null) {
             ReservationDetailsBottomModalSheet(
                 selectedReservationUiState.selectedReservation,
