@@ -3,10 +3,9 @@ package com.example.android_2425_gent2.ui.screens.login_page
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android_2425_gent2.BuildConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -14,7 +13,7 @@ class LoginViewModel: ViewModel() {
     private val _openUrlEvent = mutableStateOf<String?>(null)
     val openUrlEvent = _openUrlEvent
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-    private val registerUrl = "https://localhost:5003/login/registration"
+    private val registerUrl = BuildConfig.REGISTRATION_URL
 
     var credentialsState by mutableStateOf(CredentialsState("", ""))
         private set
@@ -46,7 +45,7 @@ class LoginViewModel: ViewModel() {
         )
     }
 
-    fun setError(error: String?) {  // Made public so LoginPage can call it
+    fun setError(error: String?) {
         uiState = uiState.copy(
             error = error
         )

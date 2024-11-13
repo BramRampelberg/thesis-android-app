@@ -27,12 +27,20 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String", "REGISTRATION_URL", "\"https://buut.k8s.be/login/registration\"")
         }
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            buildConfigField("String", "REGISTRATION_URL", "\"https://localhost:5003/login/registration\"")
+        }
+        create("staging") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".staging"
+            buildConfigField("String", "REGISTRATION_URL", "\"https://staging.groep2.k8s.be/login/registration\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
