@@ -57,16 +57,6 @@ jobs:
           disable-animations: true
           disable-linux-hw-accel: true
           script: |
-            echo "Waiting for emulator to fully boot..."
-            boot_completed=""
-            while [ "$boot_completed" != "1" ]; do
-              boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
-              if [ "$boot_completed" != "1" ]; then
-                echo "Emulator is still booting. Waiting 10 seconds..."
-                sleep 10
-              fi
-            done
-            echo "Emulator is fully booted."
             ./gradlew connectedCheck # Run the connected tests
 
             
