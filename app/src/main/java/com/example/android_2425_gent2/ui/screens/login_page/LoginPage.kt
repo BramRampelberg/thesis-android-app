@@ -1,5 +1,8 @@
 package com.example.android_2425_gent2.ui.screens.login_page
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,18 +15,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -38,7 +41,6 @@ import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.common.LoadingIndicator
 
-
 @Composable
 fun LoginPage(
     viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -46,6 +48,22 @@ fun LoginPage(
 ) {
     val credentialsState = viewModel.credentialsState
     val uiState = viewModel.uiState
+    val context = LocalContext.current
+
+    // Observe URL opening events
+    LaunchedEffect(viewModel.openUrlEvent.value) {
+        val url = viewModel.openUrlEvent.value
+        if (url != null) {
+            try {
+                val webpage = Uri.parse(url)
+                val intent = Intent(Intent.ACTION_VIEW, webpage)
+                context.startActivity(intent)
+                viewModel.onUrlOpened()
+            } catch (e: ActivityNotFoundException) {
+                viewModel.setError("Something went wrong while opening the link. Make sure you have a browser installed.")
+            }
+        }
+    }
 
     LoginPageContent(
         email = credentialsState.email,
@@ -56,7 +74,7 @@ fun LoginPage(
         onUsernameChange = { viewModel.setEmail(it); viewModel.onAnyInputChanged() },
         onPasswordChange = { viewModel.setPassword(it); viewModel.onAnyInputChanged() },
         onLoginClick = { viewModel.handleLogin() },
-        onRegisterClick = { },
+        onRegisterClick = { viewModel.handleRegister() },
         modifier = modifier
     )
 }
