@@ -6,10 +6,18 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_2425_gent2.BuildConfig
-import kotlinx.coroutines.delay
+import com.auth0.android.result.Credentials
+import com.example.android_2425_gent2.data.repository.APIResource
+import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel(
+    val login : (Credentials)->Unit,
+    val authRepo: IAuthRepo
+) : ViewModel() {
+
     private val _openUrlEvent = mutableStateOf<String?>(null)
     val openUrlEvent = _openUrlEvent
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
@@ -18,8 +26,12 @@ class LoginViewModel: ViewModel() {
     var credentialsState by mutableStateOf(CredentialsState("", ""))
         private set
 
+    private val _uiState = MutableStateFlow(UiState())
     var uiState by mutableStateOf(UiState())
         private set
+
+    private val _authResponse = MutableStateFlow(
+        flow<APIResource<Credentials>>{  APIResource.Success(null) })
 
     fun setEmail(email: String) {
         credentialsState = credentialsState.copy(
@@ -86,15 +98,24 @@ class LoginViewModel: ViewModel() {
     }
 
     fun handleLogin() {
-        setLoading(true)
-        if(uiState.error == null) {
-            setError("Incorrect password")
-        } else {
-            setError(null)
-        }
         viewModelScope.launch {
-            delay(3000)
-            setLoading(false)
+            setLoading(true)
+            authRepo.login(userName = credentialsState.email, password = credentialsState.password)
+                .collect { response ->
+                when (response) {
+                    is APIResource.Loading -> {
+                        setLoading(true)
+                    }
+                    is APIResource.Success -> {
+                        setLoading(false)
+                        response.data?.let { login(it) } ?: setError("Invalid credentials")
+                    }
+                    is APIResource.Error -> {
+                        setLoading(false)
+                        setError(response.message ?: "An error occurred")
+                    }
+                }
+            }
         }
     }
 

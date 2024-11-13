@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.ui.screens.login_page
 
+import android.app.Application
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -36,19 +37,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.common.LoadingIndicator
 
 @Composable
 fun LoginPage(
-    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    modifier: Modifier = Modifier
+    login: (Credentials) -> Unit, modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
+    val extras = MutableCreationExtras().apply {
+        set(AppViewModelProvider.LOGIN_KEY, login)
+        set(ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY, LocalContext.current.applicationContext as Application)
+    }
+    val viewModel: LoginViewModel = viewModel(
+        factory = AppViewModelProvider.Factory,
+        extras = extras,
+    )
+
     val credentialsState = viewModel.credentialsState
     val uiState = viewModel.uiState
-    val context = LocalContext.current
 
     // Observe URL opening events
     LaunchedEffect(viewModel.openUrlEvent.value) {
