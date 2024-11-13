@@ -22,3 +22,9 @@ In project root run the following commands:
 - Run android tests:
     - Automatically launch emulator and run tests: `./gradlew connectedAndroidTest`
     - Run tests on already connected emulator (e.g. for github actions): `./gradlew connectedCheck`
+
+## Build
+
+In project root:
+
+- Build debug apk: `./gradlew assembleDebug`
