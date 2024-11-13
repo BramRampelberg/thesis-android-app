@@ -27,13 +27,15 @@ jobs:
           distribution: 'adopt'
           cache: 'gradle'
 
-      - name: Set up Android SDK
-        run: |
-          sudo mkdir -p $ANDROID_SDK_ROOT
-          sudo chmod 777 $ANDROID_SDK_ROOT
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          components: |
+            platform-tools
+            platforms;android 29
+            build-tools;29.0.3
+        
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
