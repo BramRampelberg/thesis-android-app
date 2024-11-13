@@ -51,6 +51,8 @@ jobs:
           api-level: 30
           target: google_apis
           arch: x86_64
+          emulator-options: "-no-audio -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -delay-adb"
+          disableAnimations: true
           script: ./gradlew connectedCheck
 
       - name: Generate release name
