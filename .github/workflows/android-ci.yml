@@ -57,6 +57,7 @@ jobs:
           disable-animations: true
           disable-linux-hw-accel: true
           script: |
+            sleep 15 
             ./gradlew connectedCheck # Run the connected tests
 
             
