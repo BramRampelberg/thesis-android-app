@@ -75,8 +75,9 @@ class Auth0Repo(
 
         } catch (e: AuthenticationException) {
             // Handle authentication error
-            Log.e("Auth0Error", "Authentication failed: ${e.localizedMessage}")
-            emit(APIResource.Error("Authentication failed: ${e.localizedMessage}"))
+            e.getDescription()
+            Log.e("Auth0Error", "Authentication failed: ${e.getDescription()}")
+            emit(APIResource.Error("Authentication failed: ${e.getDescription()}"))
         } catch (e: Exception) {
             // Catch other potential errors
             Log.e("LoginError", "Login failed: ${e.localizedMessage}", e)
