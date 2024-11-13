@@ -45,8 +45,8 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
 
-      - name: Start emulator
-        uses: ReactiveCircus/android-emulator-runner@v2 
+      - name: Run connected tests
+        uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 29
           target: google_apis
@@ -54,24 +54,22 @@ jobs:
           profile: Nexus 5
           emulator-options: "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
           force-avd-creation: true
-          disable-animations: true 
-          
-          
-      - name: Wait for Emulator to Fully Boot
-        run: |
-          echo "Checking if the emulator is fully booted..."
-          boot_completed=""
-          while [ "$boot_completed" != "1" ]; do
-            boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
-            if [ "$boot_completed" != "1" ]; then
-              echo "Emulator is still booting. Waiting 10 seconds..."
-              sleep 10
-            fi
-          done
-          echo "Emulator is fully booted."
+          disable-animations: true
+          disable-linux-hw-accel: true
+          script: |
+            echo "Waiting for emulator to fully boot..."
+            boot_completed=""
+            while [ "$boot_completed" != "1" ]; do
+              boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
+              if [ "$boot_completed" != "1" ]; then
+                echo "Emulator is still booting. Waiting 10 seconds..."
+                sleep 10
+              fi
+            done
+            echo "Emulator is fully booted."
+            ./gradlew connectedCheck # Run the connected tests
+
             
-      - name: Run connected tests
-        run: ./gradlew connectedCheck
 
       - name: Generate release name
         id: release_name
