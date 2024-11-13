@@ -20,19 +20,22 @@ jobs:
           sudo apt-get install -y libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa
 
       - name: Set JAVA_HOME
-        run: echo "JAVA_HOME=/usr/lib/jvm/adoptopenjdk-17" | sudo tee -a /etc/environment
+        run: |
+          JAVA_PATH=$(dirname $(dirname $(readlink -f $(which java))))
+          echo "JAVA_HOME=$JAVA_PATH" | sudo tee -a /etc/environment
       - name: Load Environment Variables
         run: source /etc/environment
 
       - name: Set up Android SDK
         run: |
-         sudo mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-         curl -Lo sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-         sudo unzip sdk-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
-         sudo mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
-         rm sdk-tools.zip
-         yes | sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
-         sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;29.0.3" "platforms;android-29" "system-images;android-29;google_apis;x86_64"
+          sudo mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          curl -Lo sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          sudo unzip sdk-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
+          sudo mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+          rm sdk-tools.zip
+          yes | sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+          sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;29.0.3" "platforms;android-29" "system-images;android-29;google_apis;x86_64"
+
 
       
       - name: Set up JDK 17
