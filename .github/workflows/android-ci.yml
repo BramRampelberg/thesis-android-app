@@ -19,6 +19,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa
 
+      - name: Set JAVA_HOME
+        run: echo "JAVA_HOME=/usr/lib/jvm/adoptopenjdk-17" | sudo tee -a /etc/environment
+      - name: Load Environment Variables
+        run: source /etc/environment
+
       - name: Set up Android SDK
         run: |
          sudo mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
