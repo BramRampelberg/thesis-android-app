@@ -17,4 +17,7 @@
     <string name="end_time">End Time: %1$s</string>
     <string name="reserve_time_slot">Reserveer</string>
     <string name="canceled_reservations">Geannuleerde reservaties</string>
+    <string name="com_auth0_domain">rise-gent2.eu.auth0.com</string>
+    <string name="com_auth0_client_id">8vJtbXg2FptHGmKrpFl1tZwhiXOJZ57l</string>
+    <string name="com_auth0_scheme">password</string>
 </resources>

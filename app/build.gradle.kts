@@ -16,6 +16,14 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        addManifestPlaceholders(
+            mapOf(
+                "auth0Domain" to "@string/com_auth0_domain",
+                "auth0ClientId" to "@string/com_auth0_client_id",
+                "auth0Scheme" to "@string/com_auth0_scheme"
+            )
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
