@@ -46,14 +46,12 @@ jobs:
         run: ./gradlew test
 
       - name: Run connected tests
-        uses: ReactiveCircus/android-emulator-runner@v2
+        uses: ReactiveCircus/android-emulator-runner@v2 # Use the Android Emulator Runner action
         with:
-          api-level: 30
+          api-level: 26 # The API level of the emulator (we support a minimum of 26)
           target: google_apis
           arch: x86_64
-          emulator-options: "-no-audio -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -accel off -delay-adb"
-          disableAnimations: true
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck # Run the connected tests
 
       - name: Generate release name
         id: release_name
