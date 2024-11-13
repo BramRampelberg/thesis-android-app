@@ -5,5 +5,4 @@ data class ReservationResponse(
     val nextId: Int? = null,
     val previousId: Int? = null,
     val isFirstPage: Boolean = true,
-    val isOffline: Boolean = false
 )

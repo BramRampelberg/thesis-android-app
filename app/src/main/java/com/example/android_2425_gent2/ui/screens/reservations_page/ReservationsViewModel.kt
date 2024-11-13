@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 private const val TAG = "ReservationsViewModel"
+//the amount of reservations we want to load at a time
+//when
 private const val PAGE_SIZE = 10
 
 class ReservationsViewModel(private val reservationRepository: ReservationRepository) :
@@ -21,9 +23,7 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
     var reservationTypeUiState by mutableStateOf(ReservationTypeUiSate(ReservationType.UPCOMING))
         private set
 
-    private val _reservationsUiState: MutableStateFlow<ReservationsUiState> =
-        MutableStateFlow(ReservationsUiState(loading = true))
-
+    private val _reservationsUiState = MutableStateFlow(ReservationsUiState(loading = true))
     val reservationsUiState: StateFlow<ReservationsUiState> = _reservationsUiState
 
     var selectedReservationUiState by mutableStateOf(SelectedReservationUiState(null))
@@ -37,7 +37,11 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         loadReservationsForCurrentType(cursor = null, isNextPage = true)
     }
 
-    suspend fun setSelectedReservation(reservation: ReservationDto?) {
+    init {
+        loadReservationsForCurrentType()
+    }
+
+    fun setSelectedReservation(reservation: ReservationDto?) {
         selectedReservationUiState = SelectedReservationUiState(reservation)
     }
 
@@ -53,40 +57,41 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                 ReservationType.CANCELED -> false
             }
 
-            println("Loading reservations: cursor=$cursor, isNextPage=$isNextPage, getPast=$getPast")
-
             reservationRepository.getReservations(
                 cursor = cursor,
                 isNextPage = isNextPage,
                 getPast = getPast,
                 pageSize = PAGE_SIZE
             ).collect { apiResource ->
-                println("Received API response: $apiResource")
                 when (apiResource) {
                     is APIResource.Loading -> {
-                        if (cursor == null) {
-                            _reservationsUiState.value = ReservationsUiState(loading = true)
+                        _reservationsUiState.value = if (cursor == null) {
+                            ReservationsUiState(loading = true)
                         } else {
-                            _reservationsUiState.value = _reservationsUiState.value.copy(isLoadingMore = true)
+                            _reservationsUiState.value.copy(isLoadingMore = true)
                         }
                     }
                     is APIResource.Success -> {
                         val response = apiResource.data
                         if (response != null) {
-                            if (cursor == null) {
-                                currentReservations.clear()
+                            val currentList = _reservationsUiState.value.reservations
+                            val newItems = response.data
+
+
+                            val combinedList = if (cursor == null) {
+                                newItems
+                            } else {
+                                (currentList + newItems).distinctBy { it.id }
                             }
-                            currentReservations.addAll(response.data)
 
                             _reservationsUiState.value = ReservationsUiState(
-                                reservations = currentReservations.toList(),
+                                reservations = combinedList,
                                 loading = false,
                                 isLoadingMore = false,
                                 nextCursor = response.nextId,
                                 previousCursor = response.previousId,
                                 isFirstPage = response.isFirstPage
                             )
-
                         } else {
                             _reservationsUiState.value = ReservationsUiState(
                                 hasError = true,
@@ -96,18 +101,18 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                     }
                     is APIResource.Error -> {
                         _reservationsUiState.value = ReservationsUiState(
-                            reservations = currentReservations,
+                            reservations = _reservationsUiState.value.reservations,
                             hasError = true,
                             errorMessage = apiResource.message,
                             loading = false,
                             isLoadingMore = false
                         )
-                        println("Error loading reservations: ${apiResource.message}")
                     }
                 }
             }
         }
     }
+
 
     fun loadMoreIfNeeded(lastVisibleIndex: Int) {
         println("loadMoreIfNeeded called with index: $lastVisibleIndex")
@@ -130,14 +135,7 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         }
     }
 
-    fun refresh() {
-        currentReservations.clear()
-        loadReservationsForCurrentType(cursor = null, isNextPage = true)
-    }
 
-    init {
-        loadReservationsForCurrentType()
-    }
 }
 
 data class ReservationsUiState(

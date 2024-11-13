@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ReservationRepository {
 
-    fun getReservations(
+    suspend fun getReservations(
         cursor: Int? = null,
         isNextPage: Boolean? = true,
         getPast: Boolean = false,

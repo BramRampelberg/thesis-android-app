@@ -24,7 +24,7 @@ class TestReservationRepository : ReservationRepository {
     override fun getReservationStream(id: Int): Flow<Reservation?> =
         listOf(getTestReservations().filter { it.id == id }.first()).asFlow()
 */
-    override fun getReservations(
+    override suspend fun getReservations(
         cursor: Int?,
         isNextPage: Boolean?,
         getPast: Boolean,
