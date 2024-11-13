@@ -10,7 +10,10 @@ import com.example.android_2425_gent2.data.network.model.ReservationDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val TAG = "ReservationsViewModel"
@@ -36,6 +39,20 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         currentReservations.clear()
         loadReservationsForCurrentType(cursor = null, isNextPage = true)
     }
+
+    val reservationListState: StateFlow<ReservationListState> = _reservationsUiState.map { state ->
+        ReservationListState(
+            reservations = state.reservations,
+            isLoadingMore = state.isLoadingMore
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ReservationListState(
+            reservations = emptyList(),
+            isLoadingMore = false
+        )
+    )
 
     init {
         loadReservationsForCurrentType()
@@ -155,4 +172,9 @@ data class SelectedReservationUiState(
 
 data class ReservationTypeUiSate(
     val reservationType: ReservationType
+)
+
+data class ReservationListState(
+    val reservations: List<ReservationDto>,
+    val isLoadingMore: Boolean
 )

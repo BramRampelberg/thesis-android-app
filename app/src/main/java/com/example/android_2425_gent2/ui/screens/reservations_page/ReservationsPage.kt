@@ -34,6 +34,8 @@ fun ReservationsPage(
     val reservationsUiState by viewModel.reservationsUiState.collectAsState()
     val selectedReservationUiState = viewModel.selectedReservationUiState
     var reservationTypeUiSate = viewModel.reservationTypeUiState
+    val listState by viewModel.reservationListState.collectAsState()
+
 
     Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ReservationTypeSelectionDropDownMenu(
@@ -61,17 +63,14 @@ fun ReservationsPage(
             }
         } else {
             ReservationList(
-                reservations = reservationsUiState.reservations,
-                onSelectedReservationChange = {
+                state = listState,
+                onSelectedReservationChange = { reservation ->
                     coroutineScope.launch {
-                        viewModel.setSelectedReservation(it)
+                        viewModel.setSelectedReservation(reservation)
                     }
                 },
-                onLoadMore = { lastIndex ->
-                    viewModel.loadMoreIfNeeded(lastIndex)
-                },
-                modifier = modifier,
-                isLoadingMore = reservationsUiState.isLoadingMore
+                onLoadMore = viewModel::loadMoreIfNeeded,
+                modifier = modifier
             )
         }
 
