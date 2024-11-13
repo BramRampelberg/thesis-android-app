@@ -13,18 +13,18 @@ import com.example.android_2425_gent2.ui.navigation.NavigationHost
 @Preview
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    modifier: Modifier = Modifier
 ) {
     Scaffold(bottomBar = {
         BottomNavigationBar(
-            navController = navController,
-            modifier = modifier
+            modifier = modifier,
+            navController = navController
         )
     }) { innerPadding ->
         NavigationHost(
+            modifier = modifier.padding(innerPadding),
             navController = navController,
-            modifier = modifier.padding(innerPadding)
         )
     }
 }
