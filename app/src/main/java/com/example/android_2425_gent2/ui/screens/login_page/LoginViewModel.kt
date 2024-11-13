@@ -9,8 +9,6 @@ import com.example.android_2425_gent2.BuildConfig
 import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -26,12 +24,8 @@ class LoginViewModel(
     var credentialsState by mutableStateOf(CredentialsState("", ""))
         private set
 
-    private val _uiState = MutableStateFlow(UiState())
     var uiState by mutableStateOf(UiState())
         private set
-
-    private val _authResponse = MutableStateFlow(
-        flow<APIResource<Credentials>>{  APIResource.Success(null) })
 
     fun setEmail(email: String) {
         credentialsState = credentialsState.copy(
