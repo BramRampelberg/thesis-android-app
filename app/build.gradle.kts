@@ -101,4 +101,7 @@ dependencies {
     testImplementation (libs.junit)
     androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.mockito.core)
+
+    //Auth
+    implementation(libs.android.auth0)
 }
