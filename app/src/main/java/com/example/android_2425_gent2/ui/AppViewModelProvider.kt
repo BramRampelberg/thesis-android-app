@@ -24,8 +24,6 @@ object AppViewModelProvider {
             )
         }
     }
-
-
 }
 
 fun CreationExtras.mainApplication(): MainApplication =
