@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: install udev voor KVM
+      - name: install libraries for emulator
         run: |
           sudo apt-get update
           sudo apt-get install -y libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa
@@ -28,10 +28,11 @@ jobs:
           cache: 'gradle'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-        with:
-          api-level: 31
-          build-tools: 31.0.0
+        run: |
+          sudo mkdir -p $ANDROID_SDK_ROOT
+          sudo chmod 777 $ANDROID_SDK_ROOT
+          yes | sdkmanager --licenses > /dev/null
+          sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -45,7 +46,7 @@ jobs:
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 26
+          api-level: 29
           target: google_apis
           arch: x86_64
           script: ./gradlew connectedCheck
