@@ -15,9 +15,13 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             ReservationsViewModel(mainApplication().container.reservationRepository)
+        }
+        initializer {
             CalendarViewModel(
                 mainApplication().container.timeSlotRepository
             )
+        }
+        initializer {
             LoginViewModel(
                 login = login(),
                 authRepo = mainApplication().container.authRepo
