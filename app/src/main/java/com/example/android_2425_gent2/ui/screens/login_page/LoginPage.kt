@@ -201,7 +201,7 @@ private fun LoginPageContent(
 
                 Spacer(modifier = modifier.height(48.dp))
             } else {
-                LoadingIndicator(modifier.testTag("LoadingIndicator"), colorResource(R.color.white))
+                LoadingIndicator(modifier.testTag("LoadingIndicator"), colorResource(R.color.secondary))
             }
         }
     }

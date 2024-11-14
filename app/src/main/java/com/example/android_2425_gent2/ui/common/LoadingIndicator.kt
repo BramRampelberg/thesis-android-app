@@ -13,7 +13,7 @@ import com.example.android_2425_gent2.R
 fun LoadingIndicator(
     modifier: Modifier = Modifier,
     color: Color = colorResource(R.color.primary),
-    trackColor: Color = colorResource(R.color.teal_700)
+    trackColor: Color = colorResource(R.color.primary_darken)
 ) {
     CircularProgressIndicator(
         modifier = modifier.width(64.dp),
