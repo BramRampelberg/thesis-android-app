@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.data.model
 
 import com.example.android_2425_gent2.data.local.entity.TimeSlotEntity
+import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -12,3 +13,4 @@ data class TimeSlot(
 )
 
 fun TimeSlot.asEntity() = TimeSlotEntity(id, date, start, end)
+

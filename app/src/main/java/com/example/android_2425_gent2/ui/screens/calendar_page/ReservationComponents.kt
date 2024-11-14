@@ -5,29 +5,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.android_2425_gent2.data.remote.model.DayInfo
-import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.ui.AppViewModelProvider
+import com.example.android_2425_gent2.ui.common.ErrorMessage
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthCalendar
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.MonthSelector
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotDetailsBottomSheet
+import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotReservationConfirmationSheet
 import java.time.LocalDate
-import java.time.YearMonth
 import com.example.android_2425_gent2.ui.screens.calendar_page.partials.TimeSlotView
 
-val PrimaryBlue = Color(0xFF42C4BE)
-val LightGray = Color(0xFFCCCCCC)
-val Darkblue = Color(0xFF4C5270)
+
 
 @Composable
 fun CalendarView(
     viewModel: CalendarViewModel = viewModel(factory = AppViewModelProvider.Factory)
-)
-{
+) {
     val uiState by viewModel.uiState.collectAsState()
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -53,10 +48,22 @@ fun CalendarView(
     }
 
     uiState.selectedTimeSlot?.let { timeSlot ->
-        TimeSlotDetailsBottomSheet(
-            timeSlot = timeSlot,
-            onDismiss = { viewModel.onTimeSlotDismissed() }
-        )
+        if (!uiState.showReservationFlow) {
+            TimeSlotDetailsBottomSheet(
+                dayInfo = uiState.selectedDate,
+                timeSlot = timeSlot,
+                onDismiss = { viewModel.onTimeSlotDismissed() },
+                onReserveClick = { viewModel.onReserveClicked() }
+            )
+        } else {
+            TimeSlotReservationConfirmationSheet(
+                dayInfo = uiState.selectedDate,
+                timeSlot = timeSlot,
+                reservationErrorMessage = uiState.reservationErrorMessage,
+                reservationState = uiState.reservationState,
+                onDismiss = { viewModel.onReservationConfirmed() }
+            )
+        }
     }
 
 }
@@ -82,11 +89,11 @@ private fun CalendarContent(
 
 
 @Composable
-private fun TimeSlotContent(uiState: CalendarUiState,  onTimeSlotClick: (TimeSlot) -> Unit) {
+private fun TimeSlotContent(uiState: CalendarUiState, onTimeSlotClick: (TimeSlot) -> Unit) {
     when {
         uiState.isLoadingDaily -> LoadingIndicator()
         uiState.dailyErrorMessage.isNotEmpty() -> ErrorMessage(uiState.dailyErrorMessage)
-        else ->  TimeSlotView(
+        else -> TimeSlotView(
             timeSlots = uiState.dailyTimeSlots,
             onTimeSlotClick = onTimeSlotClick
 

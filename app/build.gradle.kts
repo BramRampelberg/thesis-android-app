@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.places)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
@@ -86,6 +87,12 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.core)
+    testImplementation(libs.turbine)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -95,20 +102,13 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
-
-    //Testing
-    testImplementation (libs.kotlinx.coroutines.test)
-    testImplementation (libs.mockito.core)
-    testImplementation (libs.mockito.kotlin)
-    testImplementation (libs.junit)
-    androidTestImplementation(libs.mockito.kotlin)
-    androidTestImplementation(libs.mockito.core)
 
     //Auth
     implementation(libs.android.auth0)

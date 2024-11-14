@@ -13,9 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.android_2425_gent2.ui.screens.calendar_page.PrimaryBlue
+import com.example.android_2425_gent2.R
 import java.time.LocalDate
 
 
@@ -35,11 +36,11 @@ fun DayCell(
             .clip(CircleShape)
             .background(
                 when {
-                    isSelected -> PrimaryBlue
+                    isSelected -> colorResource(R.color.primary)
                     else -> Color.Transparent
                 }
             )
-            .border(1.dp, if (isSelected) PrimaryBlue else Color.Transparent, CircleShape)
+            .border(1.dp, if (isSelected) colorResource(R.color.primary) else Color.Transparent, CircleShape)
             .clickable(enabled = isAvailable && !isFullyBooked) { onDateSelected(date) },
         contentAlignment = Alignment.Center
     ) {

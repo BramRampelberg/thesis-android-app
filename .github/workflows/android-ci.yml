@@ -1,0 +1,94 @@
+name: Android-Action-Runner
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Android-Tester-Builder-Apk
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install libraries for emulator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa
+
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: malinskiy/action-android/install-sdk@release/0.1.2
+
+      - name: Install Android Tools
+        run: |
+          sdkmanager --licenses
+          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" tools platform-tools
+
+        
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Run connected tests
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 27
+          target: google_apis
+          arch: x86_64
+          profile: Nexus 5
+          emulator-options: "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
+          force-avd-creation: true
+          disable-animations: true
+          disable-linux-hw-accel: true
+          script: |
+            sleep 15 
+            ./gradlew connectedCheck # Run the connected tests
+
+            
+
+      - name: Generate release name
+        id: release_name
+        run: |
+          # Get the branch name and the current timestamp (e.g., "main-20241113")
+          branch_name=${GITHUB_REF#refs/heads/}
+          timestamp=$(date +'%Y%m%d')
+          echo "Release Name: ${branch_name}-${timestamp}"
+          echo "release_name=${branch_name}-${timestamp}" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: ${{ env.release_name }}
+          body: "This is the release for commit ${{ github.sha }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/build/outputs/apk/debug/app-debug.apk
+          asset_name: app-debug.apk
+          asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

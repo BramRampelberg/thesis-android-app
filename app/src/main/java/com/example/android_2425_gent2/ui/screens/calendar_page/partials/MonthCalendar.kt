@@ -18,7 +18,7 @@ fun MonthCalendar(
     currentMonth: YearMonth,
     onDateSelected: (LocalDate) -> Unit,
     selectedDate: LocalDate?,
-    availableDays: List<DayInfo> // Pass the available days from API
+    availableDays: List<DayInfo>
 ) {
     val daysInMonth = currentMonth.lengthOfMonth()
     val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7

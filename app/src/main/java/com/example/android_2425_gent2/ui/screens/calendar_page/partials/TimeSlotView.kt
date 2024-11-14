@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.calendar_page.partials
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,15 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.android_2425_gent2.data.network.RetrofitClient
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalTime
 
 
 @Composable
-fun TimeSlotView(timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
+fun TimeSlotView(
+    timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
 ) {
 
     val startTime = LocalTime.of(7, 0)
@@ -73,7 +71,11 @@ fun TimeSlotView(timeSlots: List<TimeSlot>, onTimeSlotClick: (TimeSlot) -> Unit
                                 TimeSlotItem(
                                     slot = slot,
                                     heightDp = (durationMinutes / 60f) * 60,
-                                    onClick = { onTimeSlotClick(slot) }
+                                    onClick = {
+                                        if (!slot.isBookedByUser) {
+                                            onTimeSlotClick(slot)
+                                        }
+                                    }
                                 )
                             }
                         }

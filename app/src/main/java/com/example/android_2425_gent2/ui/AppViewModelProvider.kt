@@ -18,7 +18,8 @@ object AppViewModelProvider {
         }
         initializer {
             CalendarViewModel(
-                mainApplication().container.timeSlotRepository
+                mainApplication().container.timeSlotRepository,
+                mainApplication().container.reservationRepository
             )
         }
         initializer {
