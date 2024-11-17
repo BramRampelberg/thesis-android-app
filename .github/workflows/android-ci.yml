@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Android-Tester-Builder-Apk
+    name: Android-Tester-Apk
     runs-on: self-hosted
     steps:
       - name: Checkout repository
@@ -29,10 +29,10 @@ jobs:
       - name: Setup Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.2
 
-      - name: Install Android Tools and System Images
+      - name: Install Android Tools and System Images for API Level 26
         run: |
           sdkmanager --licenses
-          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" "platform-tools" "system-images;android-29;google_apis;x86_64" || exit 1
+          sdkmanager --verbose "platforms;android-26" "build-tools;26.0.3" "platform-tools" "system-images;android-26;google_apis;x86_64" || exit 1
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -46,7 +46,7 @@ jobs:
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 26  # Changed to Android 29
+          api-level: 26  # Sticking with API Level 26
           target: google_apis
           arch: x86_64
           profile: Nexus 5
@@ -57,7 +57,6 @@ jobs:
           script: |
 
             ./gradlew connectedCheck # Run the connected tests
-
 
       # - name: Generate release name
       #   id: release_name
