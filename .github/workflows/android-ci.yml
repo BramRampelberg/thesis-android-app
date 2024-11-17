@@ -1,4 +1,4 @@
-name: Android-Action-Runner
+name: Android-Apk-Tester
 
 on:
   push:
@@ -16,8 +16,8 @@ jobs:
 
       - name: Install libraries for emulator
         run: |
-            sudo apt-get update > /dev/null 2>&1
-            sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa libpng16-16 libpulse-dev libqt5widgets5 libqt5gui5 libqt5core5a qemu-kvm libvirt-daemon-system bridge-utils virt-manager udev > /dev/null 2>&1
+            sudo apt-get update > /dev/null
+            sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa libpng16-16 libpulse-dev libqt5widgets5 libqt5gui5 libqt5core5a qemu-kvm libvirt-daemon-system bridge-utils virt-manager udev > /dev/null
     
       - name: Enable KVM group perms
         run: |
@@ -45,18 +45,18 @@ jobs:
           # It will always be installed.
           build-tools-version: 34.0.0
 
-      - name: Install Latest Android Command-Line Tools
-        run: |
-          mkdir -p $HOME/.android/cmdline-tools
-          curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip > /dev/null 2>&1
-          unzip cmdline-tools.zip -d $HOME/.android/cmdline-tools > /dev/null 2>&1
-          mv $HOME/.android/cmdline-tools/cmdline-tools $HOME/.android/cmdline-tools/latest
-          rm cmdline-tools.zip > /dev/null 2>&1
-          echo "export ANDROID_SDK_ROOT=$HOME/.android" >> $GITHUB_ENV
-          echo "export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH" >> $GITHUB_ENV
+      # - name: Install Latest Android Command-Line Tools
+      #   run: |
+      #     mkdir -p $HOME/.android/cmdline-tools
+      #     curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip  > /dev/null
+      #     unzip cmdline-tools.zip -d $HOME/.android/cmdline-tools > /dev/null
+      #     mv $HOME/.android/cmdline-tools/cmdline-tools $HOME/.android/cmdline-tools/latest
+      #     rm cmdline-tools.zip  > /dev/null
+      #     echo "export ANDROID_SDK_ROOT=$HOME/.android" >> $GITHUB_ENV
+      #     echo "export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH" >> $GITHUB_ENV
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+      # - name: Grant execute permission for gradlew
+      #   run: chmod +x ./gradlew
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
@@ -67,8 +67,8 @@ jobs:
       # Update SDK Tools to resolve XML version issue
       - name: Update SDK tools
         run: |
-          sdkmanager --update > /dev/null 2>&1
-          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null 2>&1
+          sdkmanager --update  > /dev/null
+          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
