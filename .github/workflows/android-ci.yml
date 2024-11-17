@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: creating apk
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,11 +67,8 @@ jobs:
       # Update SDK Tools to resolve XML version issue
       - name: Update SDK tools
         run: |
-          sdkmanager --list
-          sdkmanager --update  > /dev/null 2>&1
+          sdkmanager --update > /dev/null 2>&1
           sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null 2>&1
-          sdkmanager --list
-
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
