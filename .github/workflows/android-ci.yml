@@ -16,14 +16,15 @@ jobs:
 
       - name: Enable KVM group perms
         run: |
+          sudo mkdir -p /etc/udev/rules.d  # Zorg ervoor dat de directory bestaat
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           
       - name: Install libraries for emulator
         run: |
-             sdkmanager --update > /dev/null 2>&1
-             sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null 2>&1
+            sudo apt-get update > /dev/null 2>&1
+            sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa libpng16-16 libpulse-dev libqt5widgets5 libqt5gui5 libqt5core5a > /dev/null 2>&1
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -66,8 +67,8 @@ jobs:
       # Update SDK Tools to resolve XML version issue
       - name: Update SDK tools
         run: |
-          sdkmanager -q --update
-          sdkmanager -q -install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86'
+          sdkmanager --update > /dev/null 2>&1
+          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null 2>&1
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
