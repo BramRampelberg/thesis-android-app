@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -78,6 +78,9 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedCheck      
                 
+      - name: Check test result
+        if: ${{ failure() }}
+        run: echo "Tests failed, please check the logs."         
       # - name: Generate release name
       #   id: release_name
       #   run: |
