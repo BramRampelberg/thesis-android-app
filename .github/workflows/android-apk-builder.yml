@@ -1,0 +1,46 @@
+name: Android apk builder
+
+on:
+  workflow_run:
+    workflows: ["Android-Action-Runner"]
+    types:
+      - completed
+
+jobs:
+  release-apk:
+    name: Release-APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate release name
+        id: release_name
+        run: |
+          branch_name=${GITHUB_REF#refs/heads/}
+          timestamp=$(date +'%Y%m%d%H%M%S')
+          release_name="${branch_name}-${timestamp}"
+          echo "Release Name: ${release_name}"
+          echo "release_name=${release_name}" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.release_name }}
+          release_name: ${{ env.release_name }}
+          body: "Release created from branch: ${{ github.ref_name }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/build/outputs/apk/debug/app-debug.apk
+          asset_name: app-debug.apk
+          asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
