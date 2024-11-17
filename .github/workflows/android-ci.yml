@@ -29,10 +29,10 @@ jobs:
       - name: Setup Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.2
 
-      - name: Install Android Tools and System Images
+      - name: Install Android Tools
         run: |
           sdkmanager --licenses
-          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" "platform-tools" "system-images;android-27;google_apis;x86_64" "system-images;android-29;google_apis;x86_64" || exit 1
+          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" tools platform-tools
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -55,7 +55,7 @@ jobs:
           disable-animations: true
           disable-linux-hw-accel: true
           script: |
-            sleep 120  # Increased sleep time for emulator to boot properly
+            sleep 60  # Increase sleep time
             ./gradlew connectedCheck # Run the connected tests
 
       # - name: Generate release name
