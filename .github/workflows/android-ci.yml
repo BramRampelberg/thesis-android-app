@@ -57,6 +57,9 @@ jobs:
           # disable-animations: true
           # disable-linux-hw-accel: true
           # timeout: 1800  # 30 minuten timeout
+          emulator-options: "-gpu host -no-snapshot -noaudio -no-boot-anim -memory 4048"
+          force-avd-creation: true
+          disable-animations: true
           script: |
             ./gradlew connectedCheck --info # Voeg info vlag toe voor gedetailleerde logs
 
