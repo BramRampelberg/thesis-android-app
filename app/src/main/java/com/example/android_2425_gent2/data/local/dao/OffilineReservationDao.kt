@@ -29,11 +29,6 @@ interface OfflineReservationDao : EntityDao<OfflineReservationEntity> {
     ): Flow<List<OfflineReservationEntity>>
 
 
-//    @Transaction
-//    @Query("SELECT * FROM offline_reservation")
-//    fun getOfflineReservations(): Flow<List<OfflineReservationEntity>>
-
-
     @Transaction
     @Query(
         """
