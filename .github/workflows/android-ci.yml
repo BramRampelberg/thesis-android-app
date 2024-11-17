@@ -17,7 +17,7 @@ jobs:
       - name: Install libraries for emulator
         run: |
           sudo apt-get update
-          sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa
+          sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa libpng16-16
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -32,7 +32,7 @@ jobs:
       - name: Install Android Tools
         run: |
           sdkmanager --licenses
-          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" "tools" "platform-tools"
+          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" tools platform-tools
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -46,17 +46,17 @@ jobs:
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 29  # API-niveau gewijzigd naar 29
+          api-level: 27
           target: google_apis
-          arch: x86    # Gebruik x86 in plaats van x86_64
+          arch: x86_64
           profile: Nexus 5
-          emulator-options: "-gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
+          emulator-options: "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
           force-avd-creation: true
           disable-animations: true
-          disable-linux-hw-accel: false  # Zet hardwareversnelling aan
+          disable-linux-hw-accel: true
           script: |
-            sleep 30  # Verhoog wachttijd naar 30 seconden
-            ./gradlew --verbose connectedCheck  # Meer gedetailleerde output voor debugging
+            sleep 60  # Increase sleep time
+            ./gradlew connectedCheck # Run the connected tests
 
       - name: Generate release name
         id: release_name
