@@ -58,6 +58,8 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
+      - name: Start ADB server
+        run: adb start-server
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -67,6 +69,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedCheck
+                
       # - name: Generate release name
       #   id: release_name
       #   run: |
