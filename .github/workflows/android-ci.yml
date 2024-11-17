@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -23,11 +24,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa libpng16-16 libpulse-dev libqt5widgets5 libqt5gui5 libqt5core5a
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'temurin'
+
       - name: Setup Android SDK
         uses: amyu/setup-android@v4
         with:
@@ -40,13 +43,14 @@ jobs:
           # see https://developer.android.com/studio/releases/build-tools
           # It will always be installed.
           build-tools-version: 34.0.0
+
       - name: Install Latest Android Command-Line Tools
         run: |
           mkdir -p $HOME/.android/cmdline-tools
-          curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip
-          unzip cmdline-tools.zip -d $HOME/.android/cmdline-tools
+          curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip > /dev/null 2>&1
+          unzip cmdline-tools.zip -d $HOME/.android/cmdline-tools > /dev/null 2>&1
           mv $HOME/.android/cmdline-tools/cmdline-tools $HOME/.android/cmdline-tools/latest
-          rm cmdline-tools.zip
+          rm cmdline-tools.zip > /dev/null 2>&1
           echo "export ANDROID_SDK_ROOT=$HOME/.android" >> $GITHUB_ENV
           echo "export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH" >> $GITHUB_ENV
 
@@ -62,17 +66,17 @@ jobs:
       # Update SDK Tools to resolve XML version issue
       - name: Update SDK tools
         run: |
-          sdkmanager --update
-          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86'
+          sdkmanager -q --update
+          sdkmanager -q -install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86'
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 26
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          force-avd-creation: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
           disable-animations: true
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck      
                 
       # - name: Generate release name
       #   id: release_name
