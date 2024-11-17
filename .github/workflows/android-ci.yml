@@ -32,7 +32,9 @@ jobs:
       - name: Install Android Tools and System Images
         run: |
           sdkmanager --licenses
-          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" "platform-tools" "system-images;android-27;google_apis;x86_64" "system-images;android-29;google_apis;x86_64" || exit 1
+          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" "platform-tools" \
+            "system-images;android-27;google_apis;x86_64" "system-images;android-29;google_apis;x86_64" \
+            --channel=0 || exit 1
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
