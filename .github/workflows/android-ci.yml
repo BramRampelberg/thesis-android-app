@@ -67,8 +67,11 @@ jobs:
       # Update SDK Tools to resolve XML version issue
       - name: Update SDK tools
         run: |
-          sdkmanager --update  > /dev/null
-          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null
+          sdkmanager --list
+          sdkmanager --update  > /dev/null 2>&1
+          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86' > /dev/null 2>&1
+          sdkmanager --list
+
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -82,9 +85,3 @@ jobs:
       - name: Check test result
         if: ${{ failure() }}
         run: echo "Tests failed, please check the logs."         
-
-      - name: Upload APK as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-debug-apk
-          path: ./app/build/outputs/apk/debug/app-debug.apk
