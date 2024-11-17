@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-    name: Android-Tester-Apk
-    runs-on: self-hosted
+    name: creating apk
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
