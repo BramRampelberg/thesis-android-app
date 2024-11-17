@@ -58,8 +58,12 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
-      - name: Start ADB server
-        run: adb start-server
+        
+      # Update SDK Tools to resolve XML version issue
+      - name: Update SDK tools
+        run: |
+          sdkmanager --update
+          sdkmanager --install 'platform-tools' 'build-tools;34.0.0' 'emulator' 'system-images;android-26;default;x86'
 
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
