@@ -29,10 +29,10 @@ jobs:
       - name: Setup Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.2
 
-      - name: Install Android Tools
+      - name: Install Android Tools and System Images
         run: |
           sdkmanager --licenses
-          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" tools platform-tools
+          sdkmanager --verbose "platforms;android-29" "build-tools;30.0.3" "platform-tools" "system-images;android-29;google_apis;x86_64" || exit 1
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -46,7 +46,7 @@ jobs:
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 27
+          api-level: 29  # Changed to Android 29
           target: google_apis
           arch: x86_64
           profile: Nexus 5
@@ -57,6 +57,7 @@ jobs:
           script: |
             sleep 60  # Increase sleep time
             ./gradlew connectedCheck # Run the connected tests
+
 
       # - name: Generate release name
       #   id: release_name
