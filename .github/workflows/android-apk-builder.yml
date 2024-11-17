@@ -2,7 +2,7 @@ name: Android apk builder
 
 on:
   workflow_run:
-    workflows: ["Android-Action-Runner"]
+    workflows: ["Android-Apk-Tester"]
     types:
       - completed
 
