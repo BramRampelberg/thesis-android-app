@@ -37,8 +37,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build debug APK
-        run: ./gradlew assembleDebug
+      - name: Build debug APK (No Splits)
+        run: ./gradlew assembleDebug -PnoSplits
 
       - name: Run unit tests
         run: ./gradlew test
@@ -46,17 +46,17 @@ jobs:
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 26  # Sticking with API Level 26
+          api-level: 26
           target: google_apis
           arch: x86_64
           profile: Nexus 5
-          emulator-options: "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
+          emulator-options: "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 2048"
           force-avd-creation: true
           disable-animations: true
           disable-linux-hw-accel: true
+          timeout: 1800 # 30 minutes timeout
           script: |
-
-            ./gradlew connectedCheck # Run the connected tests
+            ./gradlew connectedCheck --info # Add info flag for detailed logs
 
       # - name: Generate release name
       #   id: release_name
