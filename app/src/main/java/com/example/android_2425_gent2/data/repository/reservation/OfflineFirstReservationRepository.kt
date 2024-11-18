@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import com.example.android_2425_gent2.data.local.dao.OfflineReservationDao
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
@@ -13,70 +12,83 @@ import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.network.model.asEntity
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.repository.APIResource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+
 class OfflineFirstReservationRepository(
     private val reservationDao: OfflineReservationDao,
     private val remoteApiService: ReservationApiService
 ) : ReservationRepository {
 
     /**
-     * Get reservation from local db
-     * then get from online and update local db
+     * get reservations from local db
+     * fetch from network and update local db
      */
-
     override suspend fun getReservations(
         cursor: Int?,
         isNextPage: Boolean?,
         getPast: Boolean,
         pageSize: Int
     ): Flow<APIResource<ReservationResponse>> = flow {
+        //emit loading
         emit(APIResource.Loading())
 
-        // Get filtered data from local db first
-        val localReservations = withContext(Dispatchers.IO) {
-            reservationDao.getOfflineReservations(getPast = getPast).first()
-        }
-        println("local reservations ${localReservations}")
-        println("local data empty: ${localReservations.isEmpty()}")
 
-        if (localReservations.isNotEmpty()) {
-            emit(APIResource.Success(ReservationResponse(
-                data = localReservations.map { it.asExternalModel() },
-                isFirstPage = true,
-                previousId = null,
-                nextId = null
-            )))
-        }
+        val reservationsFlow = reservationDao.getOfflineReservations(getPast = getPast)
+            .distinctUntilChanged()
+            .map { localReservations ->
+                APIResource.Success(
+                    ReservationResponse(
+                        data = localReservations.map { it.asExternalModel() },
+                        isFirstPage = cursor == null,
+                        previousId = cursor,
+                        nextId = null
+                    )
+                )
+            }
 
-        // Try to get online data
+        //launch network request load in data in local db
         try {
-            println("try to get online data")
-            val queryParams = buildMap<String, Any> {
-                cursor?.let { put("cursor", it) }
-                isNextPage?.let { put("isNextPage", it) }
-                put("getPast", getPast)
-                put("pageSize", pageSize)
-            }
+            var currentCursor = cursor
+            var hasMorePages = true
 
-            val remoteResponse = withContext(Dispatchers.IO) {
-                remoteApiService.getReservationPage(queryParams)
-            }
-            println("got online data")
-            // Update local db with filtered data
-            withContext(Dispatchers.IO) {
-                reservationDao.insert(remoteResponse.data.map { it.asEntity() })
-            }
-            println("written to local db")
+            while (hasMorePages) {
+                val queryParams = buildMap<String, Any> {
+                    currentCursor?.let { put("cursor", it) }
+                    isNextPage?.let { put("isNextPage", it) }
+                    put("getPast", getPast)
+                    put("pageSize", pageSize)
+                }
 
-            emit(APIResource.Success(remoteResponse))
+                val response = remoteApiService.getReservationPage(queryParams)
 
+                // udpdate local database
+                withContext(Dispatchers.IO) {
+                    reservationDao.insert(response.data.map { it.asEntity() })
+                }
+
+                currentCursor = response.nextId
+                hasMorePages = response.nextId != null && response.data.isNotEmpty()
+
+                delay(100)
+            }
         } catch (e: Exception) {
-            println("failed to fetch online reservations")
-            if (localReservations.isEmpty()) {
-                emit(APIResource.Error("Unable to fetch reservations: ${e.message}"))
+            // On  error, we emit error only if local database is empty
+            val localData = reservationDao.getOfflineReservations(getPast = getPast).first()
+            if (localData.isEmpty()) {
+                emit(APIResource.Error("No reservations found"))
+                return@flow
             }
+
+        }
+
+        //collect and emit
+        reservationsFlow.collect { emission ->
+            emit(emission)
         }
     }.flowOn(Dispatchers.IO)
-
 
     override suspend fun insertReservation(
         createRemoteReservationRequest: CreateRemoteReservationRequest
