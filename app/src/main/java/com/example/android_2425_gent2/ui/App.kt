@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2;
+package com.example.android_2425_gent2.ui;
 
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -11,21 +11,23 @@ import com.example.android_2425_gent2.ui.screens.login_page.LoginPage
 
 
 @Composable
-fun App(modifier: Modifier = Modifier) {
+fun App(modifier: Modifier = Modifier,
+        isLoggedIn: Boolean = false
+) {
     val appState = rememberSaveable (stateSaver = AppStateSaver) {
-        mutableStateOf(AppState())
+        mutableStateOf(AppState(isLoggedIn = isLoggedIn))
     }
 
     if(!appState.value.isLoggedIn){
         LoginPage(login = { credentials ->
                 appState.value = appState.value.copy(isLoggedIn = true)
                 Log.i("LOGIN", "App state login with token: " + credentials.accessToken)
-        }, modifier)
+        }, modifier = modifier)
     }
     else{
         MainScreen(
             navController = rememberNavController(),
-            modifier = Modifier
+            modifier = modifier
         )
     }
 }
