@@ -109,7 +109,8 @@ private fun LoginPageContent(
         modifier = modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.primary))
-            .padding(horizontal = 64.dp),
+            .padding(horizontal = 64.dp)
+            .testTag("LoginPage"),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
