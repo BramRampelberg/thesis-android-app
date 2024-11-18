@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.login_page
 
-import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -27,7 +26,7 @@ class LoginUITests {
 
         composeTestRule.setContent {
             Android2425gent2Theme {
-                LoginPage()
+                LoginPage(login = {})
             }
         }
     }

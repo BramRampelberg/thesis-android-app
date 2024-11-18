@@ -26,7 +26,6 @@ class Auth0Repo(
         emit(APIResource.Loading())
 
         try {
-            // Retrieve or refresh credentials via SecureCredentialsManager
             val credentials = withContext(Dispatchers.IO) {
                 suspendCoroutine { continuation ->
                     credentialsManager.getCredentials(object : Callback<Credentials, CredentialsManagerException> {
@@ -47,45 +46,36 @@ class Auth0Repo(
         }
     }.flowOn(Dispatchers.IO)
 
-    // Optionally provide a login method if login is not handled elsewhere in the app
     override suspend fun login(userName: String, password: String): Flow<APIResource<Credentials>> = flow {
         try {
-            // Convert the Auth0 login callback to a suspending function using suspendCoroutine
             val credentials = withContext(Dispatchers.IO) {
-                suspendCoroutine<Credentials> { continuation ->
+                suspendCoroutine { continuation ->
                     authentication.login(userName, password)
                         .setScope("openid profile email")
                         .validateClaims()
                         .start(object : Callback<Credentials, AuthenticationException> {
                             override fun onSuccess(result: Credentials) {
-                                // Resume the coroutine with the result on success
                                 continuation.resume(result)
                             }
 
                             override fun onFailure(error: AuthenticationException) {
-                                // Resume the coroutine with an exception on failure
                                 continuation.resumeWithException(error)
                             }
                         })
                 }
             }
-            // Emit success once credentials are retrieved
             credentialsManager.saveCredentials(credentials)
             emit(APIResource.Success(credentials))
 
         } catch (e: AuthenticationException) {
-            // Handle authentication error
-            e.getDescription()
             Log.e("Auth0Error", "Authentication failed: ${e.getDescription()}")
             emit(APIResource.Error("Authentication failed: ${e.getDescription()}"))
         } catch (e: Exception) {
-            // Catch other potential errors
             Log.e("LoginError", "Login failed: ${e.localizedMessage}", e)
             emit(APIResource.Error("An error occurred: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
 
-    // Clear credentials on logout
     fun logout() {
         credentialsManager.clearCredentials()
     }
