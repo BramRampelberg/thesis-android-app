@@ -7,17 +7,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import com.example.android_2425_gent2.data.local.dao.OfflineReservationDao
-import com.example.android_2425_gent2.data.local.entity.OfflineReservationEntity
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.network.model.asEntity
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.repository.APIResource
-import com.example.android_2425_gent2.data.repository.asAPIResource
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-
 class OfflineFirstReservationRepository(
     private val reservationDao: OfflineReservationDao,
     private val remoteApiService: ReservationApiService
@@ -27,6 +22,7 @@ class OfflineFirstReservationRepository(
      * Get reservation from local db
      * then get from online and update local db
      */
+
     override suspend fun getReservations(
         cursor: Int?,
         isNextPage: Boolean?,
@@ -39,6 +35,8 @@ class OfflineFirstReservationRepository(
         val localReservations = withContext(Dispatchers.IO) {
             reservationDao.getOfflineReservations(getPast = getPast).first()
         }
+        println("local reservations ${localReservations}")
+        println("local data empty: ${localReservations.isEmpty()}")
 
         if (localReservations.isNotEmpty()) {
             emit(APIResource.Success(ReservationResponse(
@@ -51,6 +49,7 @@ class OfflineFirstReservationRepository(
 
         // Try to get online data
         try {
+            println("try to get online data")
             val queryParams = buildMap<String, Any> {
                 cursor?.let { put("cursor", it) }
                 isNextPage?.let { put("isNextPage", it) }
@@ -61,15 +60,17 @@ class OfflineFirstReservationRepository(
             val remoteResponse = withContext(Dispatchers.IO) {
                 remoteApiService.getReservationPage(queryParams)
             }
-
+            println("got online data")
             // Update local db with filtered data
             withContext(Dispatchers.IO) {
                 reservationDao.insert(remoteResponse.data.map { it.asEntity() })
             }
+            println("written to local db")
 
             emit(APIResource.Success(remoteResponse))
 
         } catch (e: Exception) {
+            println("failed to fetch online reservations")
             if (localReservations.isEmpty()) {
                 emit(APIResource.Error("Unable to fetch reservations: ${e.message}"))
             }
