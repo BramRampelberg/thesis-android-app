@@ -51,7 +51,10 @@ class ReservationsUITests {
     @Test
     fun selectUpcomingReservations_showsUpcomingReservations() {
         composeTestRule.onNodeWithTag("ReservationTypeSelectionDropDownMenu").performClick()
+        composeTestRule.waitForIdle()
+
         composeTestRule.onNodeWithTag("ReservationType.UPCOMING").performClick()
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("11:30 - 01:30").assertExists()
         composeTestRule.onNodeWithText("02:00 - 04:00").assertExists()
@@ -60,13 +63,16 @@ class ReservationsUITests {
     @Test
     fun selectReservation_showsReservationDetails() {
         composeTestRule.onNodeWithTag("ReservationTypeSelectionDropDownMenu").performClick()
+        composeTestRule.waitForIdle()
+
         composeTestRule.onNodeWithTag("ReservationType.UPCOMING")
             .assertExists()
             .performClick()
-
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("02:00 - 04:00")
             .assertExists().performClick()
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("Gegevens ophalen batterij:").assertExists()
         composeTestRule.onNodeWithText("Naam", substring = true).assertExists()

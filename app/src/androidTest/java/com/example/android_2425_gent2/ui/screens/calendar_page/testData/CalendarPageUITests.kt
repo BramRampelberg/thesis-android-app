@@ -107,12 +107,15 @@ class CalendarViewInstrumentationTest {
     fun reservationConfirmation_showsTimeAndUserInfo() {
         // Select an available date
         composeTestRule.onNodeWithText("1").performClick()
+        composeTestRule.waitForIdle()
 
         // Select a time slot
         composeTestRule.onNodeWithText("Start: 09:00").performClick()
+        composeTestRule.waitForIdle()
 
         // Click reserve button
         composeTestRule.onNodeWithText("Reserveer").performClick()
+        composeTestRule.waitForIdle()
 
         // Wait for confirmation
         composeTestRule.waitUntil(timeoutMillis = 5000) {
@@ -120,9 +123,12 @@ class CalendarViewInstrumentationTest {
                 .onAllNodesWithText("Reservering geplaats")
                 .fetchSemanticsNodes().isNotEmpty()
         }
+        composeTestRule.waitForIdle()
+
 
         // Verify time slot info
         composeTestRule.onNodeWithText("09:00 - 11:30").assertExists()
+
 
         // Verify user info is displayed
         composeTestRule.onNodeWithText("Naam: Phillipe van Achter").assertExists()
