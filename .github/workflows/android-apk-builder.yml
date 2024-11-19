@@ -33,11 +33,11 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
 
-    - name: Build Release APK
+    - name: Build Debug APK
       run: ./gradlew assembleRelease
 
     - name: Releasing using Hub
       uses: sangatdesai/release-apk@main
       env:
-       GITHUB_TOKEN: ${{ secrets.TOKEN }}
-       APP_FOLDER: debug-build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        APP_FOLDER: debug-build
