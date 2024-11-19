@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Building-Apk  
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -18,11 +18,10 @@ jobs:
       with:
         java-version: 17
         distribution: 'temurin'
-        
+
     - name: Setup Android SDK
       uses: amyu/setup-android@v4
       with:
-        cache-disabled: true        
         sdk-version: 26
         build-tools-version: 34.0.0        
 
@@ -46,24 +45,26 @@ jobs:
       with:
         name: apk  
 
-    - name: List files after downloading the APK
-      run: ls -R  # Check where the APK file is after download
+    - name: Generate Timestamp
+      id: timestamp
+      run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV  # Creates a timestamp variable
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       with:
-        tag_name: ${{ github.ref_name }}-${{ steps.timestamp.outputs.timestamp }}  # Add branch name and timestamp
-        release_name: Release ${{ github.ref_name }}-${{ steps.timestamp.outputs.timestamp }}
+        # Combine branch name and sanitized timestamp (using only valid characters)
+        tag_name: ${{ github.ref_name }}-${{ env.timestamp }}  # Remove invalid characters
+        release_name: Release ${{ github.ref_name }}-${{ env.timestamp }}
       env:
         GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
-        
+
     - name: Upload Release APK
       id: upload_release_asset
       uses: actions/upload-release-asset@v1.0.1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: app/build/outputs/apk/debug/app-debug.apk  # Ensure correct path after download
+        asset_path: app/build/outputs/apk/debug/app-debug.apk
         asset_name: MensaApp.apk
         asset_content_type: application/zip
       env:
