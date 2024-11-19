@@ -1,4 +1,4 @@
-name: Android-Apk-Tester
+name: Android-Testers
 
 on: 
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: creating apk
+    name: Testing-apk
     runs-on: self-hosted
     steps:
       - name: Checkout repository
@@ -43,16 +43,6 @@ jobs:
           # see https://developer.android.com/studio/releases/build-tools
           # It will always be installed.
           build-tools-version: 34.0.0
-
-      # - name: Install Latest Android Command-Line Tools
-      #   run: |
-      #     mkdir -p $HOME/.android/cmdline-tools
-      #     curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip  > /dev/null
-      #     unzip cmdline-tools.zip -d $HOME/.android/cmdline-tools > /dev/null
-      #     mv $HOME/.android/cmdline-tools/cmdline-tools $HOME/.android/cmdline-tools/latest
-      #     rm cmdline-tools.zip  > /dev/null
-      #     echo "export ANDROID_SDK_ROOT=$HOME/.android" >> $GITHUB_ENV
-      #     echo "export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH" >> $GITHUB_ENV
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
