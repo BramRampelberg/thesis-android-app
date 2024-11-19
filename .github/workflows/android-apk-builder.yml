@@ -18,17 +18,12 @@ jobs:
       with:
         java-version: 17
         distribution: 'temurin'
+        
     - name: Setup Android SDK
       uses: amyu/setup-android@v4
       with:
-        # default: false
-        # Whether to use the cache
         cache-disabled: true        
-        # sdk version
-        # see https://developer.android.com/studio/releases/platforms
         sdk-version: 26
-        # see https://developer.android.com/studio/releases/build-tools
-        # It will always be installed.
         build-tools-version: 34.0.0        
 
     - name: Grant execute permission for gradlew
@@ -47,21 +42,23 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: apk  
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.APKBUILDER }} 
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }} 
+        tag_name: ${{ github.ref_name }}  # Use ref_name to get just the branch name
+        release_name: Release ${{ github.ref_name }}  # Same here, using just the branch name
+      env:
+        GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
+
     - name: Upload Release APK
       id: upload_release_asset
       uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: apk/app-debug.apk
         asset_name: MensaApp.apk
         asset_content_type: application/zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
