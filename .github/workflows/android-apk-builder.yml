@@ -10,8 +10,8 @@ jobs:
     name: Building-Apk  
     runs-on: self-hosted
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -39,5 +39,5 @@ jobs:
     - name: Releasing using Hub
       uses: sangatdesai/release-apk@main
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        APP_FOLDER: debug-build
+        GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
+        APP_FOLDER: app
