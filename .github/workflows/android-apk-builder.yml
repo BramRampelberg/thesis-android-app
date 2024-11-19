@@ -1,40 +1,32 @@
-name: Android apk builder
+name: Android Builder
 
 on:
-  workflow_run:
-    workflows: ["Android-Apk-Tester"]
-    types:
-      - completed
-
-permissions :
-  contents: write
+  push:
+    branches:
+      - test
 
 jobs:
-  release-apk:
-    name: Release-APK
+  Gradle:
+    name: Building-Apk  
     runs-on: self-hosted
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-          
-      - name: Generate release name
-        id: release_name
-        run: |
-          branch_name=${GITHUB_REF#refs/heads/}
-          timestamp=$(date +'%Y%m%d%H%M%S')
-          release_name="${branch_name}-${timestamp}"
-          echo "Release Name: ${release_name}"
-          echo "release_name=${release_name}" >> $GITHUB_ENV
+    - name: checkout code
+      uses: actions/checkout@v2
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ env.release_name }}
-          release_name: ${{ env.release_name }}
-          body: "Release created from branch: ${{ github.ref_name }}"
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APP_FOLDER: app
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: 'temurin'
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+
+    - name: Build Release APK
+      run: ./gradlew assembleRelease
+
+    - name: Releasing using Hub
+      uses: sangatdesai/release-apk@main
+      env:
+       GITHUB_TOKEN: ${{ secrets.TOKEN }}
+       APP_FOLDER: debug-build
