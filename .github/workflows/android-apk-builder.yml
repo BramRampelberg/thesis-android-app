@@ -31,9 +31,6 @@ jobs:
     - name: Build Debug APK
       run: ./gradlew assembleDebug
 
-    - name: List files in the build output directory
-      run: ls -R app/build/outputs/apk/debug/  # Confirm APK exists at this path
-
     - name: Generate Timestamp
       id: timestamp
       run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV  # Creates a timestamp variable
@@ -43,8 +40,9 @@ jobs:
       uses: actions/create-release@v1
       with:
         # Combine branch name and sanitized timestamp (using only valid characters)
-        tag_name: ${{ github.ref_name }}-${{ env.timestamp }}  # Remove invalid characters
-        release_name: Release ${{ github.ref_name }}-${{ env.timestamp }}
+        tag_name: Debug-APK-${{ github.ref_name }}-${{ env.timestamp }}  # Remove invalid characters
+        prerelease: true
+        release_name: Debug-APK ${{ github.ref_name }}-${{ env.timestamp }}
       env:
         GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
 
