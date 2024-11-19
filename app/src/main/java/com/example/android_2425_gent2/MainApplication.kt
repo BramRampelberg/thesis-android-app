@@ -10,11 +10,6 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppDataContainer(this)
-
-        if (BuildConfig.DEBUG) {
-            val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
-            WorkManager.getInstance(this).enqueue(request)
-        }
     }
 
 }
