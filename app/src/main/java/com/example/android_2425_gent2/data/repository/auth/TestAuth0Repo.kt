@@ -20,17 +20,27 @@ class TestAuth0Repo: IAuthRepo {
         expiresAt = Date.from(LocalDateTime.now().plus(Duration.ofSeconds(86400)).atZone(ZoneId.systemDefault()).toInstant()),
         refreshToken = null,
         )
+    private var loggedIn: Boolean = false
 
-    override suspend fun getStoredCredentials(): Flow<APIResource<Credentials>> =
-        flow {
-            emit(APIResource.Loading())
-            emit(APIResource.Success(credentials))
-        }
+    fun getCredentials(withDelay:Boolean = false):  Flow<APIResource<Credentials>> =
+    flow {
+        emit(APIResource.Loading())
+        if (withDelay)
+            delay(2000L)
+        emit(APIResource.Success(credentials))
+        loggedIn = true
+    }
+
+    override suspend fun getStoredCredentials(): Flow<APIResource<Credentials>> = getCredentials()
 
     override suspend fun login(userName: String, password: String): Flow<APIResource<Credentials>> =
-        flow {
-            emit(APIResource.Loading())
-            delay(2000L)
-            emit(APIResource.Success(credentials))
-        }
+        getCredentials(true)
+
+    override fun logout() {
+        loggedIn = false
+    }
+
+    override fun isLoggedIn(): Boolean {
+        return loggedIn
+    }
 }

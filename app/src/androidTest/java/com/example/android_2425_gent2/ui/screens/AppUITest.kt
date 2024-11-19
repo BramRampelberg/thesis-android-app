@@ -26,34 +26,21 @@ class AppUITest {
         val application = ApplicationProvider.getApplicationContext() as MainApplication
         application.container = TestContainer()
 
-
-    }
-
-    fun setContent(isLoggedIn: Boolean = false){
         composeTestRule.setContent {
             Android2425gent2Theme {
-                App(isLoggedIn = isLoggedIn)
+                App()
             }
         }
     }
 
     @Test
     fun showsLoginPageWhenNotLoggedIn() {
-        setContent()
         composeTestRule.onNodeWithTag("LoginPage").assertExists()
         composeTestRule.onNodeWithTag("MainScreen").assertDoesNotExist()
     }
 
     @Test
-    fun showsMainScreenWhenLoggedIn() {
-        setContent(isLoggedIn = true)
-        composeTestRule.onNodeWithTag("LoginPage").assertDoesNotExist()
-        composeTestRule.onNodeWithTag("MainScreen").assertExists()
-    }
-
-    @Test
     fun showsMainScreenWhenAfterLoggingIn() {
-        setContent()
         composeTestRule.onNodeWithTag("EmailField")
             .performClick()
             .performTextInput("example@email.com")

@@ -9,4 +9,8 @@ interface IAuthRepo {
     suspend fun getStoredCredentials(): Flow<APIResource<Credentials>>
 
     suspend fun login(userName: String, password: String): Flow<APIResource<Credentials>>
+
+    fun logout()
+
+    fun isLoggedIn(): Boolean
 }

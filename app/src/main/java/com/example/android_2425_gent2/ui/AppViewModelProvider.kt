@@ -28,6 +28,9 @@ object AppViewModelProvider {
                 authRepo = mainApplication().container.authRepo
             )
         }
+        initializer {
+            AppViewModel(mainApplication().container.authRepo)
+        }
     }
 }
 

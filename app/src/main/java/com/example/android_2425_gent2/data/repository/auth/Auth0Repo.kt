@@ -76,8 +76,12 @@ class Auth0Repo(
         }
     }.flowOn(Dispatchers.IO)
 
-    fun logout() {
+    override fun logout() {
         credentialsManager.clearCredentials()
+    }
+
+    override fun isLoggedIn(): Boolean {
+        return credentialsManager.hasValidCredentials()
     }
 }
 
