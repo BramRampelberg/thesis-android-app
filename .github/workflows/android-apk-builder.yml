@@ -12,15 +12,10 @@ permissions :
 jobs:
   release-apk:
     name: Release-APK
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Download APK artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: app-debug-apk
           
       - name: Generate release name
         id: release_name
@@ -42,5 +37,4 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#
+          APP_FOLDER: app

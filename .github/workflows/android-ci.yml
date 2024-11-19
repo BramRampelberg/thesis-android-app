@@ -59,10 +59,7 @@ jobs:
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
-
-      - name: List APK files
-        run: ls -R ./app/build/outputs/
-        
+  
       - name: Run unit tests
         run: ./gradlew test
         
