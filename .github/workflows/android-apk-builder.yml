@@ -34,6 +34,17 @@ jobs:
     - name: List files in the build output directory
       run: ls -R app/build/outputs/apk/debug/  # Confirm APK exists at this path
 
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk
+        path: app/build/outputs/apk/debug/app-debug.apk 
+
+    - name: Download APK from build
+      uses: actions/download-artifact@v4
+      with:
+        name: apk  
+
     - name: Generate Timestamp
       id: timestamp
       run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV  # Creates a timestamp variable
@@ -43,9 +54,8 @@ jobs:
       uses: actions/create-release@v1
       with:
         # Combine branch name and sanitized timestamp (using only valid characters)
-        tag_name: ${{github.ref_name }}-${{ env.timestamp }}  # Remove invalid characters
-        release_name: BuutApk:DebugRelease ${{ github.ref_name }}-${{ env.timestamp }}
-        prerelease: true
+        tag_name: ${{ github.ref_name }}-${{ env.timestamp }}  # Remove invalid characters
+        release_name: Release ${{ github.ref_name }}-${{ env.timestamp }}
       env:
         GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
 
@@ -55,7 +65,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: app/build/outputs/apk/debug/app-debug.apk
-        asset_name: buut-debug.apk
+        asset_name: MensaApp.apk
         asset_content_type: application/zip
       env:
         GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
