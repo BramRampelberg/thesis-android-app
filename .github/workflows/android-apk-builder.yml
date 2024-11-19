@@ -6,7 +6,7 @@ on:
       - test
 
 jobs:
-  Gradle:
+  build:
     name: Building-Apk  
     runs-on: self-hosted
     steps:
@@ -18,7 +18,18 @@ jobs:
       with:
         java-version: 17
         distribution: 'temurin'
-        
+    - name: Setup Android SDK
+      uses: amyu/setup-android@v4
+      with:
+        # default: false
+        # Whether to use the cache
+        cache-disabled: true        
+        # sdk version
+        # see https://developer.android.com/studio/releases/platforms
+        sdk-version: 26
+        # see https://developer.android.com/studio/releases/build-tools
+        # It will always be installed.
+        build-tools-version: 34.0.0        
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
 
