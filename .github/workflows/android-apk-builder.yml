@@ -40,4 +40,4 @@ jobs:
       uses: sangatdesai/release-apk@main
       env:
         GITHUB_TOKEN: ${{ secrets.APKBUILDER }}
-        APP_FOLDER: app/build/outputs/apk/release/
+        APP_FOLDER: app/build/outputs/apk/debug/
