@@ -2,13 +2,13 @@ package com.example.android_2425_gent2.di
 
 import android.content.Context
 import com.example.android_2425_gent2.data.local.AppDatabase
-import com.example.android_2425_gent2.data.repository.OfflineReservationRepository
-import com.example.android_2425_gent2.data.repository.ReservationRepository
+import com.example.android_2425_gent2.data.repository.reservation.OfflineFirstReservationRepository
+import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
+import com.example.android_2425_gent2.data.repository.reservation.TestReservationRepository
 import com.example.android_2425_gent2.data.repository.timeslot.NetworkTimeSlotRepository
+import com.example.android_2425_gent2.data.repository.timeslot.TestTimeSlotRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import com.example.android_2425_gent2.di.module.NetworkModule
-import com.example.android_2425_gent2.data.repository.TestReservationRepository
-import com.example.android_2425_gent2.data.repository.timeslot.TestTimeSlotRepository
 
 interface AppContainer {
     val reservationRepository: ReservationRepository
@@ -19,7 +19,7 @@ interface AppContainer {
 class AppDataContainer(private val context: Context) : AppContainer {
 
     override val reservationRepository: ReservationRepository by lazy {
-        OfflineReservationRepository(AppDatabase.getDatabase(context).reservationDao()
+        OfflineFirstReservationRepository(AppDatabase.getDatabase(context).offlineReservationDao()
         , NetworkModule.reservationApiService)
     }
 

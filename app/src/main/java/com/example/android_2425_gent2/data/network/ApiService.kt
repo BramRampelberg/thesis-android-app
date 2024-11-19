@@ -3,11 +3,9 @@ package com.example.android_2425_gent2.data.network // Adjust the package name a
 import com.example.android_2425_gent2.data.network.model.RemoteReservation
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
-
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 interface ApiService {
     @GET("api/Reservation/user/2")

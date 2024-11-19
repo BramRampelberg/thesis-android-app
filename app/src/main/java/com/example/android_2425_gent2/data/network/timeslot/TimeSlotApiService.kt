@@ -1,13 +1,10 @@
 package com.example.android_2425_gent2.data.network.timeslot
 
-import com.example.android_2425_gent2.data.network.model.RemoteReservation
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
 import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
-
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 interface TimeSlotApiService {
     @GET("/api/TimeSlot/range")

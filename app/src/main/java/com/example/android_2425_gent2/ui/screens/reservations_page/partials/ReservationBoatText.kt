@@ -6,11 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.data.model.Reservation
+import com.example.android_2425_gent2.data.network.model.ReservationDto
 import java.util.Locale
 
 @Composable
-fun ReservationBoatText(reservation: Reservation, modifier: Modifier) {
+fun ReservationBoatText(reservation: ReservationDto, modifier: Modifier) {
     Text(
         "${
             stringResource(R.string.boat).replaceFirstChar {
@@ -18,6 +18,6 @@ fun ReservationBoatText(reservation: Reservation, modifier: Modifier) {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }: ${reservation.boat?.name}", fontSize = 20.sp
+        }: ${reservation.boatPersonalName}", fontSize = 20.sp
     )
 }
