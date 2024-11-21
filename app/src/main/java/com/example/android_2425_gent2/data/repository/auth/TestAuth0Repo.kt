@@ -2,11 +2,9 @@ package com.example.android_2425_gent2.data.repository.auth
 
 import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.data.repository.APIResource
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
