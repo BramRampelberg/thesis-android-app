@@ -55,7 +55,7 @@ class TestContainer() : AppContainer {
     override val reservationRepository: ReservationRepository by lazy {
         TestReservationRepository()
     }
-    override val timeSlotRepository: TimeSlotRepository by lazy{
+    override val timeSlotRepository: TimeSlotRepository by lazy {
         TestTimeSlotRepository()
     }
 }

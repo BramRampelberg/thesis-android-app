@@ -4,12 +4,13 @@ import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
-
 
 class TestAuth0Repo: IAuthRepo {
     private val credentials: Credentials = Credentials(
@@ -20,21 +21,20 @@ class TestAuth0Repo: IAuthRepo {
         expiresAt = Date.from(LocalDateTime.now().plus(Duration.ofSeconds(86400)).atZone(ZoneId.systemDefault()).toInstant()),
         refreshToken = null,
         )
+
+
     private var loggedIn: Boolean = false
 
-    fun getCredentials(withDelay:Boolean = false):  Flow<APIResource<Credentials>> =
-    flow {
-        emit(APIResource.Loading())
-        if (withDelay)
-            delay(2000L)
-        emit(APIResource.Success(credentials))
-        loggedIn = true
-    }
+    private var _stateFlow = MutableStateFlow<APIResource<Credentials>>(APIResource.Loading())
+    val stateFlow: StateFlow<APIResource<Credentials>> get() = _stateFlow
+
+    private fun getCredentials():  Flow<APIResource<Credentials>> =
+    stateFlow
 
     override suspend fun getStoredCredentials(): Flow<APIResource<Credentials>> = getCredentials()
 
     override suspend fun login(userName: String, password: String): Flow<APIResource<Credentials>> =
-        getCredentials(true)
+        getCredentials()
 
     override fun logout() {
         loggedIn = false
@@ -42,5 +42,17 @@ class TestAuth0Repo: IAuthRepo {
 
     override fun isLoggedIn(): Boolean {
         return loggedIn
+    }
+
+    fun triggerLoading(){
+        _stateFlow.value = APIResource.Loading()
+    }
+
+    fun triggerLoginFailure(errorMessage: String) {
+        _stateFlow.value = APIResource.Error(errorMessage ?: "Unknown error")
+    }
+
+    fun triggerLoginSuccess() {
+        _stateFlow.value = APIResource.Success(credentials)
     }
 }
