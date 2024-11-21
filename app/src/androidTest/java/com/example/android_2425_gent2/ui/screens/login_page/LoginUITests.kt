@@ -30,7 +30,7 @@ class LoginUITests {
         return application.container
     }
 
-    private fun testAuth0Repo(): TestAuth0Repo {
+    private fun getTestAuth0Repo(): TestAuth0Repo {
         return getContainer().authRepo as TestAuth0Repo
     }
 
@@ -90,7 +90,7 @@ class LoginUITests {
 
     @Test
     fun clickLoginButton_Login() {
-        val authRepo:TestAuth0Repo = testAuth0Repo()
+        val authRepo:TestAuth0Repo = getTestAuth0Repo()
         inputLogin()
 
         authRepo.triggerLoading()
@@ -124,7 +124,7 @@ class LoginUITests {
 
     @Test
     fun clickLoginButtonWithWrongLogin_showsErrorMessage() = runTest {
-        val authRepo:TestAuth0Repo = testAuth0Repo()
+        val authRepo:TestAuth0Repo = getTestAuth0Repo()
         val errorMessage = "Authentication failed: Invalid email or password"
         inputLogin()
 
