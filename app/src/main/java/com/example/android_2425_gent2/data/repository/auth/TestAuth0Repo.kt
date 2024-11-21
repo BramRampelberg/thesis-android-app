@@ -36,6 +36,10 @@ class TestAuth0Repo: IAuthRepo {
     override suspend fun login(userName: String, password: String): Flow<APIResource<Credentials>> =
         getCredentials()
 
+    fun login(){
+        loggedIn = true
+    }
+
     override fun logout() {
         loggedIn = false
     }

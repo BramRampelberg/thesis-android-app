@@ -6,10 +6,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.core.app.ApplicationProvider
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.data.repository.auth.TestAuth0Repo
-import com.example.android_2425_gent2.di.AppContainer
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -17,20 +15,15 @@ class AppUITest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    // TODO: refactor so that getting container and test repos is centralized
-    private fun getContainer(): AppContainer {
+    private fun setContainer(loggedIn: Boolean = false) {
         val application = ApplicationProvider.getApplicationContext() as MainApplication
-        return application.container
-    }
+        val testContainer = TestContainer()
+        application.container = testContainer
 
-    private fun getTestAuth0Repo(): TestAuth0Repo {
-        return getContainer().authRepo as TestAuth0Repo
-    }
-
-    @Before
-    fun setContainer() {
-        val application = ApplicationProvider.getApplicationContext() as MainApplication
-        application.container = TestContainer()
+        if (loggedIn) {
+            val testAuth0Repo: TestAuth0Repo = testContainer.authRepo as TestAuth0Repo
+            testAuth0Repo.login()
+        }
 
         composeTestRule.setContent {
             Android2425gent2Theme {
@@ -41,6 +34,7 @@ class AppUITest {
 
     @Test
     fun showsLoginPageWhenNotLoggedIn() {
+        setContainer()
         composeTestRule.onNodeWithTag("LoginPage").assertExists()
         composeTestRule.onNodeWithTag("LoginPage").isDisplayed()
         composeTestRule.onNodeWithTag("MainScreen").assertDoesNotExist()
@@ -48,8 +42,7 @@ class AppUITest {
 
     @Test
     fun showsMainScreenWhenLoggedIn() {
-        val testAuth0Repo: TestAuth0Repo = getTestAuth0Repo()
-        testAuth0Repo.login()
+        setContainer(loggedIn = true)
         composeTestRule.onNodeWithTag("MainScreen").assertExists()
         composeTestRule.onNodeWithTag("MainScreen").isDisplayed()
         composeTestRule.onNodeWithTag("LoginPage").assertDoesNotExist()
