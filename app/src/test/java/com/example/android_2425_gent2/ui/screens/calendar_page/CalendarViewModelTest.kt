@@ -6,7 +6,7 @@ import com.example.android_2425_gent2.data.remote.model.TimeSlotResponse
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.ReservationRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
-import com.example.android_2425_gent2.ui.screens.calendar_page.coroutine.MainDispatcherRule
+import com.example.android_2425_gent2.ui.screens.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
