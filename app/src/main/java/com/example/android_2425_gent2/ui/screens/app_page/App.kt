@@ -1,10 +1,11 @@
-package com.example.android_2425_gent2.ui;
+package com.example.android_2425_gent2.ui.screens.app_page;
 
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.MainScreen
 import com.example.android_2425_gent2.ui.screens.login_page.LoginPage
 

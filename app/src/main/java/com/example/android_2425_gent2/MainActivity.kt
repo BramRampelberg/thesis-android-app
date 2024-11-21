@@ -10,7 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.android_2425_gent2.ui.App
+import com.example.android_2425_gent2.ui.screens.app_page.App
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 
 
