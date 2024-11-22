@@ -63,8 +63,9 @@ class Auth0RepoTest {
     @Test
     fun getStoredCredentials_success_credentialsRetrievedSuccessfully() = runTest {
         coEvery { mockCredentialsManager.getCredentials(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<Credentials, CredentialsManagerException>
-            callback.onSuccess(testCredentials)
+            @Suppress("UNCHECKED_CAST")
+            val callback = it.invocation.args[0] as? Callback<Credentials, CredentialsManagerException>
+            callback?.onSuccess(testCredentials)
         }
 
         val result = auth0Repo.getStoredCredentials().toList().last()
@@ -78,16 +79,19 @@ class Auth0RepoTest {
 
     @Test
     fun getStoredCredentials_failure_errorReturnedWhenFailureOccurs() = runTest {
-        coEvery { mockCredentialsManager.getCredentials(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<Credentials, CredentialsManagerException>
-            callback.onFailure(mockk())
+        coEvery { mockCredentialsManager.getCredentials(any<Callback<Credentials, CredentialsManagerException>>()) } answers {
+            @Suppress("UNCHECKED_CAST")
+            val callback = it.invocation.args[0] as? Callback<Credentials, CredentialsManagerException>
+            callback?.onFailure(CredentialsManagerException.INVALID_CREDENTIALS)
         }
         
         val result = auth0Repo.getStoredCredentials().toList().last()
 
         assertTrue(result is APIResource.Error)
         val errorResult = result as APIResource.Error
-        assertEquals("Error retrieving stored credentials: null", errorResult.message)
+        assertEquals(
+            "Error retrieving stored credentials: Credentials must have a valid access_token or id_token value.",
+            errorResult.message)
         
         coVerify(exactly = 1) { mockCredentialsManager.getCredentials(any()) }
     }
@@ -105,8 +109,9 @@ class Auth0RepoTest {
         every { mockRequest.validateClaims() } returns mockRequest
 
         every { mockRequest.start(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<Credentials, AuthenticationException>
-            callback.onSuccess(testCredentials)
+            @Suppress("UNCHECKED_CAST")
+            val callback = it.invocation.args[0] as? Callback<Credentials, AuthenticationException>
+            callback?.onSuccess(testCredentials)
         }
 
         coEvery { mockCredentialsManager.saveCredentials(testCredentials) } just Runs
@@ -136,8 +141,9 @@ class Auth0RepoTest {
             every { getDescription() } returns "Invalid credentials"
         }
         every { mockRequest.start(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<Credentials, AuthenticationException>
-            callback.onFailure(mockAuthException)
+            @Suppress("UNCHECKED_CAST")
+            val callback = it.invocation.args[0] as? Callback<Credentials, AuthenticationException>
+            callback?.onFailure(mockAuthException)
         }
 
         val result = auth0Repo.login(userName, password).first()
