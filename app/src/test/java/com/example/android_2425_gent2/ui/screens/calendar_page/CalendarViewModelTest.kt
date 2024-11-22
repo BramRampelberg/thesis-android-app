@@ -7,6 +7,10 @@ import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.ReservationRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import com.example.android_2425_gent2.ui.screens.MainDispatcherRule
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.confirmVerified
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -20,9 +24,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -35,8 +36,8 @@ class CalendarViewModelTest {
     private lateinit var viewModel: CalendarViewModel
 
     // Mock repository
-    private val mockTimeSlotRepositoryRepository: TimeSlotRepository = mock()
-    private val mockReservationRepository: ReservationRepository = mock()
+    private val mockTimeSlotRepositoryRepository: TimeSlotRepository = mockk()
+    private val mockReservationRepository: ReservationRepository = mockk()
 
     @Before
     fun setup() {
@@ -55,7 +56,6 @@ class CalendarViewModelTest {
             DayInfo(date = "2024-10-02", isSlotAvailable = false, isFullyBooked = true)
         )
 
-
         val timeSlotResponse = TimeSlotResponse(
             start = "2024-10-01",
             end = "2024-10-31",
@@ -63,20 +63,20 @@ class CalendarViewModelTest {
             totalDays = testDays.size
         )
 
-
-        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31")).thenReturn(
-            timeSlotResponse
-        )
+        coEvery { mockTimeSlotRepositoryRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31") } returns timeSlotResponse
 
         // Act
         viewModel.changeMonth(newMonth)
 
-
+        // Wait for the UI state to be updated
         val uiState = viewModel.uiState.first { it.monthTimeSlots.isNotEmpty() }
 
         // Assert
         assertEquals(newMonth, uiState.currentMonth)
         assertEquals(testDays, uiState.monthTimeSlots)
+
+        
+        coVerify { mockTimeSlotRepositoryRepository.getTimeSlotsForRange("2024-10-01", "2024-10-31") }
     }
 
     @Test
@@ -87,7 +87,7 @@ class CalendarViewModelTest {
             TimeSlot(id = 1, start = "09:00", end = "10:00", isBookedByUser = false),
             TimeSlot(id = 2, start = "11:00", end = "12:00", isBookedByUser = false)
         )
-        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForDay(2024, 10, 15)).thenReturn(testTimeSlots)
+        coEvery { mockTimeSlotRepositoryRepository.getTimeSlotsForDay(2024, 10, 15) } returns testTimeSlots
 
         // Act
         viewModel.selectDate(selectedDate)
@@ -96,6 +96,9 @@ class CalendarViewModelTest {
         // Assert
         assertEquals(selectedDate, uiState.selectedDate)
         assertEquals(testTimeSlots, uiState.dailyTimeSlots)
+
+        
+        coVerify { mockTimeSlotRepositoryRepository.getTimeSlotsForDay(2024, 10, 15) }
     }
 
     @Test
@@ -104,9 +107,7 @@ class CalendarViewModelTest {
         val month = YearMonth.of(2024, 11)
         val errorMessage = "Network error"
 
-
-        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForRange(any(), any()))
-            .thenAnswer { throw RuntimeException(errorMessage) }
+        coEvery { mockTimeSlotRepositoryRepository.getTimeSlotsForRange(any(), any()) } throws RuntimeException(errorMessage)
 
         // Act
         viewModel.changeMonth(month)
@@ -118,6 +119,9 @@ class CalendarViewModelTest {
 
         // Assert
         assertTrue(uiState.monthTimeSlots.isEmpty())
+
+        
+        coVerify { mockTimeSlotRepositoryRepository.getTimeSlotsForRange(any(), any()) }
     }
 
     @Test
@@ -126,9 +130,7 @@ class CalendarViewModelTest {
         val date = LocalDate.of(2024, 11, 5)
         val errorMessage = "Server unavailable"
 
-
-        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any()))
-            .thenAnswer { throw RuntimeException(errorMessage) }
+        coEvery { mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any()) } throws RuntimeException(errorMessage)
 
         // Act
         viewModel.selectDate(date)
@@ -136,13 +138,16 @@ class CalendarViewModelTest {
         // Ensure all coroutines complete
         advanceUntilIdle()
 
-
         val uiState = viewModel.uiState.value
 
         // Assert
         assertTrue(uiState.dailyTimeSlots.isEmpty())
         assertEquals("Error: $errorMessage", uiState.dailyErrorMessage)
+
+        
+        coVerify { mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any()) }
     }
+
     @Test
     fun selectedTimeSlot_Success() = runTest {
         // Arrange
@@ -156,35 +161,29 @@ class CalendarViewModelTest {
         assertEquals(timeSlot, uiState.selectedTimeSlot)
     }
 
-
     @Test
     fun onReserveClicked_Success() = runTest {
         val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
         val currentMonth = YearMonth.now()
         viewModel.onTimeSlotSelected(timeSlot)
 
-        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
-            flow {
-                emit(APIResource.Loading<Int>())
-                delay(100)
-                emit(APIResource.Success(2))
-            }
-        )
+        coEvery { mockReservationRepository.insertReservation(any()) } returns flow {
+            emit(APIResource.Loading<Int>())
+            delay(100)
+            emit(APIResource.Success(2))
+        }
 
-        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForRange(
+        coEvery { mockTimeSlotRepositoryRepository.getTimeSlotsForRange(
             currentMonth.atDay(1).toString(),
             currentMonth.atEndOfMonth().toString()
-        )).thenReturn(
-            TimeSlotResponse(
-                start = currentMonth.atDay(1).toString(),
-                end = currentMonth.atEndOfMonth().toString(),
-                days = emptyList(),
-                totalDays = 0
-            )
+        ) } returns TimeSlotResponse(
+            start = currentMonth.atDay(1).toString(),
+            end = currentMonth.atEndOfMonth().toString(),
+            days = emptyList(),
+            totalDays = 0
         )
-        whenever(mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any())).thenReturn(
-            emptyList()
-        )
+
+        coEvery { mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any()) } returns emptyList()
 
         viewModel.onReserveClicked()
 
@@ -197,6 +196,14 @@ class CalendarViewModelTest {
         uiState = viewModel.uiState.value
         assertEquals(ReservationState.CONFIRMATION, uiState.reservationState)
         assertTrue(uiState.reservationErrorMessage.isEmpty())
+
+        
+        coVerify { mockReservationRepository.insertReservation(any()) }
+        coVerify { mockTimeSlotRepositoryRepository.getTimeSlotsForRange(
+            currentMonth.atDay(1).toString(),
+            currentMonth.atEndOfMonth().toString()
+        ) }
+        coVerify(exactly = 0) { mockTimeSlotRepositoryRepository.getTimeSlotsForDay(any(), any(), any()) }
     }
 
     @Test
@@ -205,13 +212,11 @@ class CalendarViewModelTest {
         val errorMessage = "Er is iets misgelopen"
         viewModel.onTimeSlotSelected(timeSlot)
 
-        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
-            flow {
-                emit(APIResource.Loading<Int>())
-                delay(100)
-                emit(APIResource.Error(errorMessage))
-            }
-        )
+        coEvery { mockReservationRepository.insertReservation(any()) } returns flow {
+            emit(APIResource.Loading<Int>())
+            delay(100)
+            emit(APIResource.Error(errorMessage))
+        }
 
         viewModel.onReserveClicked()
 
@@ -224,6 +229,9 @@ class CalendarViewModelTest {
         uiState = viewModel.uiState.value
         assertEquals(ReservationState.ERROR, uiState.reservationState)
         assertEquals(errorMessage, uiState.reservationErrorMessage)
+
+        
+        coVerify { mockReservationRepository.insertReservation(any()) }
     }
 
     @Test
@@ -235,6 +243,9 @@ class CalendarViewModelTest {
         val uiState = viewModel.uiState.value
         assertEquals(ReservationState.DETAILS, uiState.reservationState)
         assertFalse(uiState.showReservationFlow)
+
+        
+        confirmVerified(mockReservationRepository)
     }
 
     @Test
@@ -242,11 +253,9 @@ class CalendarViewModelTest {
         val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
         viewModel.onTimeSlotSelected(timeSlot)
 
-        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
-            flow {
-                emit(APIResource.Error<Int>("Er is iets misgelopen"))
-            }
-        )
+        coEvery { mockReservationRepository.insertReservation(any()) } returns flow {
+            emit(APIResource.Error<Int>("Er is iets misgelopen"))
+        }
 
         viewModel.onReserveClicked()
         advanceUntilIdle()
@@ -255,6 +264,9 @@ class CalendarViewModelTest {
 
         val uiState = viewModel.uiState.value
         assertTrue(uiState.reservationErrorMessage.isEmpty())
+
+        
+        coVerify { mockReservationRepository.insertReservation(any()) }
     }
 
     @Test
@@ -262,11 +274,9 @@ class CalendarViewModelTest {
         val timeSlot = TimeSlot(id = 1, start = "10:00", end = "11:00", isBookedByUser = false)
         viewModel.onTimeSlotSelected(timeSlot)
 
-        whenever(mockReservationRepository.insertReservation(any())).thenReturn(
-            flow {
-                emit(APIResource.Success<Int>(2))
-            }
-        )
+        coEvery { mockReservationRepository.insertReservation(any()) } returns flow {
+            emit(APIResource.Success<Int>(2))
+        }
 
         viewModel.onReserveClicked()
         advanceUntilIdle()
@@ -277,8 +287,12 @@ class CalendarViewModelTest {
         assertNull(uiState.selectedTimeSlot)
         assertFalse(uiState.showReservationFlow)
         assertEquals(ReservationState.DETAILS, uiState.reservationState)
+
+        
+        coVerify { mockReservationRepository.insertReservation(any()) }
     }
 }
+
 
 
 

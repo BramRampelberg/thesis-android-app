@@ -5,19 +5,22 @@ import com.example.android_2425_gent2.BuildConfig
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
 import com.example.android_2425_gent2.ui.screens.MainDispatcherRule
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.just
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.*
-import org.mockito.Mockito.*
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.mockito.kotlin.whenever
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -42,8 +45,8 @@ class LoginViewModelTest {
     val coroutineRule = MainDispatcherRule()
 
     private lateinit var viewModel: LoginViewModel
-    private val mockAuthRepo: IAuthRepo = mock()
-    private val mockLogin: (Credentials) -> Unit = mock()
+    private val mockAuthRepo: IAuthRepo = mockk()
+    private val mockLogin: (Credentials) -> Unit = mockk()
 
     @Before
     fun setUp() {
@@ -79,8 +82,6 @@ class LoginViewModelTest {
         assertTrue(viewModel.uiState.disableLogin)
     }
 
-
-
     @Test
     fun handleRegistration_Valid_OpenUrlChanged() {
         viewModel.handleRegister()
@@ -103,8 +104,9 @@ class LoginViewModelTest {
         viewModel.setPassword(password)
         viewModel.onAnyInputChanged()
 
-        whenever(mockAuthRepo.login(email, password))
-            .thenReturn(flow { emit(APIResource.Success(credentials)) })
+        coEvery { mockAuthRepo.login(email, password) } returns flow { emit(APIResource.Success(credentials)) }
+
+        coEvery { mockLogin.invoke(credentials) } just Runs
 
         viewModel.handleLogin()
 
@@ -116,8 +118,8 @@ class LoginViewModelTest {
         assertNull(uiState.error)
         assertEquals(false, uiState.isLoading)
 
-        verify(mockAuthRepo).login(email, password)
-        verify(mockLogin).invoke(credentials)
+        coVerify { mockAuthRepo.login(email, password) }
+        coVerify { mockLogin.invoke(credentials) }
     }
 
     @Test
@@ -127,8 +129,7 @@ class LoginViewModelTest {
         viewModel.setPassword(password)
         viewModel.onAnyInputChanged()
 
-        whenever(mockAuthRepo.login(email, password))
-            .thenReturn(flow { emit(APIResource.Error(errorMessage)) })
+        coEvery { mockAuthRepo.login(email, password) } returns flow { emit(APIResource.Error(errorMessage)) }
 
         viewModel.handleLogin()
 
@@ -140,8 +141,8 @@ class LoginViewModelTest {
         assertEquals(errorMessage, viewModel.uiState.error)
         assertEquals(false, uiState.isLoading)
 
-        verify(mockAuthRepo).login(email, password)
-        verify(mockLogin, times(0)).invoke(credentials)
+        coVerify { mockAuthRepo.login(email, password) }
+        coVerify(exactly = 0) { mockLogin.invoke(credentials) }
     }
 
     @Test
@@ -149,8 +150,7 @@ class LoginViewModelTest {
         viewModel.setEmail(email)
         viewModel.setPassword(password)
 
-        whenever(mockAuthRepo.login(email, password))
-            .thenReturn(flow { emit(APIResource.Loading())})
+        coEvery { mockAuthRepo.login(email, password) } returns flow { emit(APIResource.Loading()) }
 
         viewModel.handleLogin()
 
@@ -161,3 +161,4 @@ class LoginViewModelTest {
         assertTrue(uiState.isLoading)
     }
 }
+
