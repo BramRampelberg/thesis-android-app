@@ -1,104 +1,247 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
-//@RunWith(Parameterized::class)
-//class ReservationsViewModelTests(private val reservationType: ReservationType) {
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @get:Rule
-//    val coroutineRule = MainDispatcherRule()
-//
-//    @get:Rule
-//    val mockitoRule: MockitoRule = MockitoJUnit.rule()
-//
-//    private lateinit var viewModel: ReservationsViewModel
-//
-//    @Mock
-//    lateinit var mockRepository: ReservationRepository
-//
-//    private val reservationsFlow = MutableStateFlow<List<Reservation>>(emptyList())
-//
-//    companion object {
-//        @JvmStatic
-//        @Parameterized.Parameters()
-//        fun data(): Collection<Array<Any>> {
-//            return listOf(
-//                arrayOf(ReservationType.UPCOMING),
-//                arrayOf(ReservationType.OLD),
-//                arrayOf(ReservationType.CANCELED),
-//            )
-//        }
-//    }
-//
-//    @Before
-//    fun setup() {
-//        mockRepository.stub {
-//            onBlocking { getAllReservationsStream() } doAnswer { reservationsFlow }
-//        }
-//        mockRepository.stub {
-//            onBlocking { getAllUpcomingReservationsStream() } doAnswer { reservationsFlow }
-//        }
-//        mockRepository.stub {
-//            onBlocking { getAllPastReservationsStream() } doAnswer { reservationsFlow }
-//        }
-////        whenever(mockRepository.getAllUpcomingReservationsStream())
-////            .thenReturn(reservationsFlow)
-////        whenever(mockRepository.getAllPastReservationsStream())
-////            .thenReturn(reservationsFlow)
-////        whenever(mockRepository.getAllReservationsStream())
-////            .thenReturn(reservationsFlow)
-//        viewModel = ReservationsViewModel(
-//            reservationRepository = mockRepository
-//        )
-//    }
-//
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun `reservationsUiState emits loading then reservations`() = runTest {
-//        val reservations = listOf(
-//            Reservation(
-//                id = 1,
-//                boat = null,
-//                battery = null,
-//                timeSlot = null
-//            )
-//        )
-//        viewModel.reservationsUiState.test {
-//            viewModel.loadReservationsForCurrentType()
-//            assertEquals(ReservationsUiState(loading = true), awaitItem())
-//
-//            reservationsFlow.emit(reservations)
-//            assertEquals(
-//                ReservationsUiState(reservations = reservations, loading = false),
-//                awaitItem()
-//            )
-//
-//            cancelAndConsumeRemainingEvents()
-//        }
-//    }
-//
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun `reservationsUiState emits error state on exception`() = runTest {
-//        whenever(mockRepository.getAllUpcomingReservationsStream())
-//            .thenReturn(flow {
-//                throw Exception("Test exception")
-//            })
-//        whenever(mockRepository.getAllPastReservationsStream())
-//            .thenReturn(flow {
-//                throw Exception("Test exception")
-//            })
-//        whenever(mockRepository.getAllReservationsStream())
-//            .thenReturn(flow {
-//                throw Exception("Test exception")
-//            })
-//
-//
-//        viewModel.reservationsUiState.test {
-//            viewModel.loadReservationsForCurrentType()
-//            assertEquals(ReservationsUiState(loading = true), awaitItem())
-//
-//            assertEquals(ReservationsUiState(hasError = true), awaitItem())
-//
-//            cancelAndConsumeRemainingEvents()
-//        }
-//    }
-//}
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import org.junit.Rule
+import org.junit.Test
+import com.example.android_2425_gent2.data.network.model.ReservationDto
+import com.example.android_2425_gent2.data.network.model.ReservationResponse
+import com.example.android_2425_gent2.data.repository.APIResource
+import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
+import com.example.android_2425_gent2.ui.screens.reservations_page.coroutine.MainDispatcherRule
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import java.time.LocalTime
+import java.time.LocalDate
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class ReservationsViewModelTest {
+
+    @get:Rule
+    val coroutineRule = MainDispatcherRule()
+
+    private val reservationRepository: ReservationRepository = mockk()
+    private lateinit var viewModel: ReservationsViewModel
+
+    private val sampleDate = LocalDate.of(2024, 1, 1)
+    private val sampleStartTime = LocalTime.of(10, 0)
+    private val sampleEndTime = LocalTime.of(12, 0)
+
+    private val sampleReservation1 = ReservationDto(
+        start = sampleStartTime,
+        end = sampleEndTime,
+        date = sampleDate,
+        boatId = 1,
+        boatPersonalName = "Boat 1",
+        id = 1
+    )
+
+    private val sampleReservation2 = ReservationDto(
+        start = sampleStartTime.plusHours(2),
+        end = sampleEndTime.plusHours(2),
+        date = sampleDate,
+        boatId = 2,
+        boatPersonalName = "Boat 2",
+        id = 2
+    )
+
+    @Test
+    fun `initial state should be loading upcoming reservations`() = runTest {
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(ReservationResponse(
+                data = emptyList(),
+                nextId = null,
+                previousId = null,
+                isFirstPage = true
+            )))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+
+        assertEquals(ReservationType.UPCOMING, viewModel.reservationTypeUiState.reservationType)
+        assertTrue(viewModel.reservationsUiState.value.loading)
+    }
+
+    @Test
+    fun `setReservationType should update state and trigger loading`() = runTest {
+        // Use every {} for mockk
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(ReservationResponse(
+                data = emptyList(),
+                nextId = null,
+                previousId = null,
+                isFirstPage = true
+            )))
+        }
+
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = true,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(ReservationResponse(
+                data = emptyList(),
+                nextId = null,
+                previousId = null,
+                isFirstPage = true
+            )))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        viewModel.setReservationType(ReservationType.OLD)
+        advanceUntilIdle()
+
+        assertEquals(ReservationType.OLD, viewModel.reservationTypeUiState.reservationType)
+    }
+
+    @Test
+    fun `successful reservation load should update state correctly`() = runTest {
+        val mockReservations = listOf(sampleReservation1, sampleReservation2)
+
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(
+                ReservationResponse(
+                    data = mockReservations,
+                    nextId = 3,
+                    previousId = null,
+                    isFirstPage = true
+                )
+            ))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        with(viewModel.reservationsUiState.value) {
+            assertFalse(loading)
+            assertFalse(hasError)
+            assertEquals(mockReservations, reservations)
+            assertEquals(3, nextCursor)
+            assertNull(previousCursor)
+            assertTrue(isFirstPage)
+        }
+    }
+
+    @Test
+    fun `error during reservation load should update error state`() = runTest {
+        val errorMessage = "Network error"
+
+        // Use every {} for mockk
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Error(errorMessage))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        with(viewModel.reservationsUiState.value) {
+            assertFalse(loading)
+            assertTrue(hasError)
+            assertEquals(errorMessage, errorMessage)
+        }
+    }
+
+    @Test
+    fun `loadMoreIfNeeded should trigger load when conditions are met`() = runTest {
+        val initialReservations = listOf(sampleReservation1, sampleReservation2)
+
+        // Use every {} for mockk
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(ReservationResponse(
+                data = initialReservations,
+                nextId = 3,
+                previousId = null,
+                isFirstPage = true
+            )))
+        }
+
+        coEvery { reservationRepository.getReservations(
+            cursor = 3,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(ReservationResponse(
+                data = listOf(sampleReservation2),
+                nextId = null,
+                previousId = 2,
+                isFirstPage = false
+            )))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        viewModel.loadMoreIfNeeded(1)
+        advanceUntilIdle()
+
+        // Replace Mockito verify with mockk verify
+        coVerify { reservationRepository.getReservations(
+            cursor = 3,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) }
+    }
+
+    @Test
+    fun `setSelectedReservation should update selected reservation state`() = runTest {
+        // Use every {} for mockk
+        coEvery { reservationRepository.getReservations(
+            cursor = null,
+            isNextPage = true,
+            getPast = false,
+            pageSize = 10
+        ) } returns flow {
+            emit(APIResource.Success(ReservationResponse(
+                data = emptyList(),
+                nextId = null,
+                previousId = null,
+                isFirstPage = true
+            )))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        viewModel.setSelectedReservation(sampleReservation1)
+
+        assertEquals(sampleReservation1, viewModel.selectedReservationUiState.selectedReservation)
+    }
+}

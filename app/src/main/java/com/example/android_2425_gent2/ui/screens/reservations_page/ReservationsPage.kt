@@ -34,6 +34,8 @@ fun ReservationsPage(
     val reservationsUiState by viewModel.reservationsUiState.collectAsState()
     val selectedReservationUiState = viewModel.selectedReservationUiState
     var reservationTypeUiSate = viewModel.reservationTypeUiState
+    val listState by viewModel.reservationListState.collectAsState()
+
 
     Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ReservationTypeSelectionDropDownMenu(
@@ -51,7 +53,7 @@ fun ReservationsPage(
             ) {
                 ErrorMessage(stringResource(R.string.the_reservations_could_not_be_loaded))
             }
-        } else if (reservationsUiState.loading) {
+        } else if (reservationsUiState.loading && reservationsUiState.reservations.isEmpty()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,14 +63,17 @@ fun ReservationsPage(
             }
         } else {
             ReservationList(
-                reservationsUiState.reservations,
-                {
+                state = listState,
+                onSelectedReservationChange = { reservation ->
                     coroutineScope.launch {
-                        viewModel.setSelectedReservation(it)
+                        viewModel.setSelectedReservation(reservation)
                     }
-                }, modifier
+                },
+                onLoadMore = viewModel::loadMoreIfNeeded,
+                modifier = modifier
             )
         }
+
         if (selectedReservationUiState.selectedReservation != null) {
             ReservationDetailsBottomModalSheet(
                 selectedReservationUiState.selectedReservation,
