@@ -38,11 +38,11 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
     override val reservationRepository: ReservationRepository by lazy {
         OfflineFirstReservationRepository(AppDatabase.getDatabase(context).offlineReservationDao()
-        , NetworkModule.reservationApiService)
+        , NetworkModule.provideReservationApiService(authRepo))
     }
 
     override val timeSlotRepository: TimeSlotRepository by lazy {
-        NetworkTimeSlotRepository(NetworkModule.timeSlotApiService)
+        NetworkTimeSlotRepository(NetworkModule.provideTimeSlotApiService(authRepo))
     }
 }
 
