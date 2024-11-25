@@ -40,7 +40,6 @@ fun NotificationRow(notification: Notification = Notification(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
         Column(
