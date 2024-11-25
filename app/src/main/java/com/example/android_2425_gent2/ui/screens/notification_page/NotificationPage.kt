@@ -71,7 +71,7 @@ fun NotificationPage(
             }
         } else {
             LazyColumn(
-                modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
+                modifier = modifier.fillMaxSize().padding(horizontal = 16.dp).testTag("NotificationPageList"),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(reservationsUiState.reservations) { notification ->

@@ -32,4 +32,9 @@ class NotificationsUiTests {
     fun showTitle() {
         composeTestRule.onNodeWithTag("NotificationPageTitle").assertExists()
     }
+
+    @Test
+    fun showList() {
+        composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
+    }
 }
