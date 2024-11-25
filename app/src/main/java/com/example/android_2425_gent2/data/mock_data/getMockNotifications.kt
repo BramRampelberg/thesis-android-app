@@ -8,11 +8,23 @@ fun getMockNotifications(): List<Notification> {
     return (1..20).map {
         Notification(
             id = it,
-            severity = "Warning",
+            severity = getSeverity(it),
             title = "Title " + it,
             message = "Message",
             timeStamp = date,
             isRead = true
         )
     }.toList<Notification>()
+}
+
+private fun getSeverity(severityId: Int): Int {
+    return if(severityId % 4 == 0) {
+        4;
+    } else if(severityId % 3 == 0) {
+        3
+    } else if (severityId % 2 == 0) {
+        2
+    } else {
+        1
+    }
 }

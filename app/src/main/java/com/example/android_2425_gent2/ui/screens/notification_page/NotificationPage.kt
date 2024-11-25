@@ -12,10 +12,7 @@ import com.example.android_2425_gent2.ui.screens.notification_page.partials.Noti
 @Preview
 @Composable
 fun NotificationPage(modifier: Modifier = Modifier) {
-
-
     val notifications = getMockNotifications()
-
 
     LazyColumn(
         modifier = modifier.fillMaxSize() // This makes the LazyColumn take up all available space

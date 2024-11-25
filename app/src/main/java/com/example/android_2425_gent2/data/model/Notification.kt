@@ -4,7 +4,7 @@ import java.util.Date
 
 data class Notification(
     val id: Int,
-    val severity: String,
+    val severity: Int,
     val title: String,
     val message: String,
     val timeStamp: Date,
