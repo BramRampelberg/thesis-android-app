@@ -1,6 +1,8 @@
 package com.example.android_2425_gent2.ui.screens.notification_page.partials
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -74,6 +76,14 @@ fun NotificationRow(notification: Notification = Notification(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
+                if (!notification.isRead) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .background(colorResource(id = R.color.info), CircleShape)
+                    )
+                }
             }
 
             // Message

@@ -12,7 +12,7 @@ fun getMockNotifications(): List<Notification> {
             title = "Title " + it,
             message = "Message",
             timeStamp = date,
-            isRead = true
+            isRead = (it % 2 == 0)
         )
     }.toList<Notification>()
 }
