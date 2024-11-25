@@ -56,7 +56,7 @@ class LocalDateAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> 
 }
 
 object NetworkModule {
-    private const val BASE_URL = BuildConfig.BASE_URL;
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     val gson = GsonBuilder()
         .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
