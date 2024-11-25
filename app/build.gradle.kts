@@ -1,8 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+}
+
+fun getBaseUrl(propertyName: String): String {
+    val p = Properties()
+    p.load(project.rootProject.file("local.properties").reader())
+    return p.getProperty(propertyName)
 }
 
 android {
@@ -21,6 +29,7 @@ android {
 
     buildTypes {
         release {
+            buildConfigField("String", "BASE_URL", "\"${getBaseUrl("PROD_BASE_URL")}\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -29,6 +38,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         debug {
+            buildConfigField("String", "BASE_URL", "\"${getBaseUrl("DEV_BASE_URL")}\"")
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
