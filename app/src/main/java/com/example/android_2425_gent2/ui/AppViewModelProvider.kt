@@ -6,12 +6,14 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarViewModel
+import com.example.android_2425_gent2.ui.screens.notification_page.NotificationViewModel
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             ReservationsViewModel(mainApplication().container.reservationRepository)
+            NotificationViewModel()
         }
 
         initializer {

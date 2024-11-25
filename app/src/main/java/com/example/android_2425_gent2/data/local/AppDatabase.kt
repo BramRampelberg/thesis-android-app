@@ -28,7 +28,7 @@ import com.example.android_2425_gent2.data.local.entity.UserReservationCrossRef
         OfflineReservationEntity::class
     ],
     exportSchema = false,
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -42,7 +42,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context,
                     AppDatabase::class.java,
                     "app_database",
-                ).build().also { Instance = it }
+                ).fallbackToDestructiveMigration().build().also { Instance = it }
             }
 
         }
