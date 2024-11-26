@@ -13,6 +13,10 @@ fun getBaseUrl(propertyName: String): String {
     return p.getProperty(propertyName)
 }
 
+fun getRegistrationUrl(baseUrl: String): String {
+    return "\"${baseUrl}login/registration\""
+}
+
 android {
     namespace = "com.example.android_2425_gent2"
     compileSdk = 34
@@ -37,25 +41,22 @@ android {
 
     buildTypes {
         release {
-            buildConfigField("String", "BASE_URL", "\"${getBaseUrl("PROD_BASE_URL")}\"")
+            val baseUrl = getBaseUrl("PROD_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-            buildConfigField("String", "REGISTRATION_URL", "\"https://buut.k8s.be/login/registration\"")
+            buildConfigField("String", "REGISTRATION_URL", "\"${baseUrl}login/registration\"")
         }
         debug {
-            buildConfigField("String", "BASE_URL", "\"${getBaseUrl("DEV_BASE_URL")}\"")
+            val baseUrl = getBaseUrl("DEV_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
             applicationIdSuffix = ".debug"
             isDebuggable = true
-            buildConfigField("String", "REGISTRATION_URL", "\"https://localhost:5003/login/registration\"")
-        }
-        create("staging") {
-            initWith(getByName("debug"))
-            applicationIdSuffix = ".staging"
-            buildConfigField("String", "REGISTRATION_URL", "\"https://staging.groep2.k8s.be/login/registration\"")
+            buildConfigField("String", "REGISTRATION_URL", "\"${baseUrl}login/registration\"")
         }
     }
 
