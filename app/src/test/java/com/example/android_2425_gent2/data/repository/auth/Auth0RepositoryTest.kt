@@ -137,7 +137,7 @@ class Auth0RepoTest {
         every { mockRequest.setScope(any()) } returns mockRequest
         every { mockRequest.validateClaims() } returns mockRequest
 
-        val mockAuthException = mockk<AuthenticationException> {
+        val mockAuthException = mockk<AuthenticationException>(relaxed = true) {
             every { getDescription() } returns "Invalid credentials"
         }
         every { mockRequest.start(any()) } answers {
