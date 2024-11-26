@@ -45,7 +45,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Create local.properties
-        run: echo "sdk.dir=$ANDROID_HOME" > ./local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > ./local.properties
+          echo "DEV_BASE_URL=${{ env.DEV_BASE_URL }}" >> ./local.properties
+          echo "PROD_BASE_URL=${{ env.PROD_BASE_URL }}" >> ./local.properties
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
