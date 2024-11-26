@@ -71,11 +71,6 @@ fun NotificationRow(notification: Notification = Notification(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Text(
-                    text = notification.timeStamp.formatRelative(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                )
                 if (!notification.isRead) {
                     Spacer(modifier = Modifier.width(4.dp))
                     Box(
@@ -84,6 +79,12 @@ fun NotificationRow(notification: Notification = Notification(
                             .background(colorResource(id = R.color.info), CircleShape)
                     )
                 }
+                Text(
+                    text = notification.timeStamp.formatRelative(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+
             }
 
             // Message
