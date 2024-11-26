@@ -11,8 +11,12 @@
 - Bindo Thorpe - <bindo.thorpe@student.hogent.be> - bindothorpe
 
 ## Running the application
-
-Sync gradle files and run MainActivity on an android emulator.
+1. Create or modify your `local.properties` file in the project root and add the following properties:
+```
+PROD_BASE_URL=https:yourproductionurl.com/ 
+DEV_BASE_URL=http://10.0.2.2:5000/
+```
+2. Sync gradle files and run MainActivity on an android emulator.
 
 ## Testing
 
