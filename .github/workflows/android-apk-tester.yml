@@ -9,6 +9,9 @@ jobs:
   build:
     name: Testing-apk
     runs-on: self-hosted
+    env:
+      DEV_BASE_URL: http://10.0.2.2:5000/
+      PROD_BASE_URL: https://staging.groep2.k8s.be/    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,14 +20,14 @@ jobs:
         run: |
             sudo apt-get update > /dev/null
             sudo apt-get install -y libpulse0 libx11-6 libxrandr2 libxrender1 libxcursor1 libxinerama1 libxi6 libglu1-mesa libpng16-16 libpulse-dev libqt5widgets5 libqt5gui5 libqt5core5a qemu-kvm libvirt-daemon-system bridge-utils virt-manager udev > /dev/null
-    
+
       - name: Enable KVM group perms
         run: |
-          sudo mkdir -p /etc/udev/rules.d  # Zorg ervoor dat de directory bestaat
+          sudo mkdir -p /etc/udev/rules.d
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          # Optioneel: probeer het herladen van regels als u een lokale omgeving heeft die dit ondersteunt
           sudo udevadm control --reload-rules || echo "udevadm not found or unable to reload rules"
           sudo udevadm trigger --name-match=kvm || echo "udevadm not found or unable to trigger rules"      
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -34,18 +37,18 @@ jobs:
       - name: Setup Android SDK
         uses: amyu/setup-android@v4
         with:
-          # default: false
-          # Whether to use the cache
           cache-disabled: true        
-          # sdk version
-          # see https://developer.android.com/studio/releases/platforms
           sdk-version: 26
-          # see https://developer.android.com/studio/releases/build-tools
-          # It will always be installed.
           build-tools-version: 34.0.0
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
+
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > ./local.properties
+          echo "DEV_BASE_URL=${{ env.DEV_BASE_URL }}" >> ./local.properties
+          echo "PROD_BASE_URL=${{ env.PROD_BASE_URL }}" >> ./local.properties
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
@@ -53,7 +56,6 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
         
-      # Update SDK Tools to resolve XML version issue
       - name: Update SDK tools
         run: |
           sdkmanager --update > /dev/null 2>&1
@@ -67,9 +69,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
           disable-animations: true
           script: ./gradlew connectedCheck      
-                
+
       - name: Check test result
         if: ${{ failure() }}
         run: echo "Tests failed, please check the logs."
-
-      

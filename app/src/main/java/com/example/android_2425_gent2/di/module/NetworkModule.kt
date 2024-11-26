@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.di.module
 
 
+import com.example.android_2425_gent2.BuildConfig
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.network.timeslot.TimeSlotApiService
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
@@ -57,7 +58,7 @@ class LocalDateAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> 
 }
 
 object NetworkModule {
-    private const val BASE_URL = "https://staging.groep2.k8s.be/"
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     val gson = GsonBuilder()
         .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
