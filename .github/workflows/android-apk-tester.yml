@@ -9,6 +9,9 @@ jobs:
   build:
     name: Testing-apk
     runs-on: self-hosted
+    env: # Environment variables added at the job level
+      DEV_BASE_URL: http://10.0.2.2:5000/
+      PROD_BASE_URL: https://staging.groep2.k8s.be/    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
