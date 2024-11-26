@@ -72,4 +72,11 @@ jobs:
 
       - name: Check test result
         if: ${{ failure() }}
-        run: echo "Tests failed, please check the logs."
+        run: echo "Tests failed, please check the artifact."
+        
+      - name: Upload test results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: app/build/reports/tests/testDebugUnitTest/
