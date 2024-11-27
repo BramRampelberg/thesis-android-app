@@ -17,6 +17,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDateTime
 
 class LocalTimeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
     override fun serialize(
@@ -54,6 +55,25 @@ class LocalDateAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> 
     }
 }
 
+
+class LocalDateTimeAdapter : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
+    override fun serialize(
+        src: LocalDateTime?,
+        typeOfSrc: Type?,
+        context: JsonSerializationContext?
+    ): JsonElement {
+        return JsonPrimitive(src?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+    }
+
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): LocalDateTime {
+        return LocalDateTime.parse(json?.asString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    }
+}
+
 object NetworkModule {
     private const val BASE_URL = BuildConfig.BASE_URL
 
@@ -61,6 +81,7 @@ object NetworkModule {
             GsonBuilder()
                     .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
                     .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+                .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
                     .create()
 
     private val retrofit: Retrofit by lazy {

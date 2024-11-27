@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 class TestNotificationRepository: NotificationRepository {
 
-    override suspend fun getNotifications(): Flow<APIResource<NotificationResponse>> = flow {
+    override suspend fun getNotifications(): Flow<APIResource<List<NotificationDto>>> = flow {
         val mockNotifications = listOf(
             NotificationDto(
                 id = 1,
@@ -22,9 +22,7 @@ class TestNotificationRepository: NotificationRepository {
             )
         )
 
-        val mockResponse = NotificationResponse(
-            notifications = mockNotifications
-        )
+        val mockResponse = mockNotifications
 
         emit(APIResource.Loading(null))
         delay(100)

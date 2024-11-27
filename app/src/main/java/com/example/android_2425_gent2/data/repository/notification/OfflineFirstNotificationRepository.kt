@@ -1,7 +1,9 @@
 package com.example.android_2425_gent2.data.repository.notification
 
+import android.util.Log
 import com.example.android_2425_gent2.data.local.dao.OfflineNotificationDao
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
+import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.data.network.model.NotificationResponse
 import com.example.android_2425_gent2.data.network.model.asEntity
 import com.example.android_2425_gent2.data.network.notification.NotificationApiService
@@ -25,7 +27,7 @@ class OfflineFirstNotificationRepository(
      * get notifications from local db
      * fetch from network and update local db
      */
-    override suspend fun getNotifications(): Flow<APIResource<NotificationResponse>> = flow {
+    override suspend fun getNotifications(): Flow<APIResource<List<NotificationDto>>> = flow {
         //emit loading
         emit(APIResource.Loading())
 
@@ -34,23 +36,27 @@ class OfflineFirstNotificationRepository(
             .map {
             localNotifications ->
                 APIResource.Success(
-                    NotificationResponse(
-                        notifications = localNotifications.map { it.asExternalModel() }
-                    )
+                    localNotifications.map { it.asExternalModel() }
                 )
             }
 
         //launch network request load in data in local db
         try {
+            println("Trying to fetch data")
             val response = remoteApiService.getNotifications()
 
+            print("1")
             //update local database
             withContext(Dispatchers.IO) {
-                notificationDao.insert(response.notifications.map {it.asEntity() })
+                notificationDao.insert(response.map {it.asEntity() })
             }
 
+            print("2")
             delay(100)
         } catch (e: Exception) {
+            println("Inside exception")
+            e.printStackTrace()
+            Log.e("Inside exception", e.message?: "unknown message")
             val localData = notificationDao.getOfflineNotifications().first()
             if(localData.isEmpty()) {
                 emit(APIResource.Error("No notifications found"))

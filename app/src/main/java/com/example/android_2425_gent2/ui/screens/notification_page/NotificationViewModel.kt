@@ -31,7 +31,7 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
                             val response = apiResource.data
                             if (response != null) {
                                 val currentList = _notificationsUiSate.value.notifications
-                                val newItems = response.notifications
+                                val newItems = response
 
                                 val combinedList = (currentList + newItems).distinctBy { it.id }
 
