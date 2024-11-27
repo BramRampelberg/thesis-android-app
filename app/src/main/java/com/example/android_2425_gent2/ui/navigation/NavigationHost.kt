@@ -5,12 +5,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.android_2425_gent2.ui.screens.AdminDashBoard
+import com.example.android_2425_gent2.ui.screens.profile_page.AdminDashBoard
 import com.example.android_2425_gent2.ui.screens.CalendarPage
-import com.example.android_2425_gent2.ui.screens.GuestUsersList
 import com.example.android_2425_gent2.ui.screens.HomePage
 import com.example.android_2425_gent2.ui.screens.NotificationPage
-import com.example.android_2425_gent2.ui.screens.ProfilePage
+import com.example.android_2425_gent2.ui.screens.profile_page.GuestUsersScreen
+import com.example.android_2425_gent2.ui.screens.profile_page.ProfilePage
 
 @Composable
 fun NavigationHost(navController: NavHostController, modifier: Modifier) {
@@ -44,10 +44,10 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
         }
 
         composable(route = BottomNavItem.PROFILE_ADMIN_USERS) {
-            GuestUsersList()
+            GuestUsersScreen(
+                modifier = modifier,
+                onNavigateToUserDetails ={}
+            )
         }
-
-
-
     }
 }
