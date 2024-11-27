@@ -11,24 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
+import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
 
-
-data class UserListItem(
-    val id: String,
-    val name: String,
-    val createdDate: String
-)
 
 @Composable
 fun GuestUsersList(
     modifier: Modifier = Modifier,
-    onUserClick: (String) -> Unit
+    onUserClick: (String) -> Unit,
+    users: List<UserSurfaceInfoDto>
 ) {
-    val users = listOf(
-        UserListItem("1", "John Doe", "2024-03-15"),
-        UserListItem("2", "Jane Smith", "2024-03-14"),
-        UserListItem("3", "Bob Johnson", "2024-03-13")
-    )
 
     Column(
         modifier = modifier

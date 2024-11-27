@@ -17,9 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.AppTopBar
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileActionCard
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileHeader
@@ -27,10 +25,9 @@ import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileNa
 
 @Composable
 fun ProfilePage(
-    modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    onNavigateToDashboard: () -> Unit
-) {
+    onNavigateToDashboard: () -> Unit,
+    modifier: Modifier = Modifier
+    ) {
     Column(
         modifier = modifier
             .fillMaxSize()

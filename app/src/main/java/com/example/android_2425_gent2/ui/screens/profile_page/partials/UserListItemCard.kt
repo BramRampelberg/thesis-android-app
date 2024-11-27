@@ -16,10 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
 
 @Composable
 fun UserListItemCard(
-    user: UserListItem,
+    user: UserSurfaceInfoDto,
     onClick: (String) -> Unit,
     modifier: Modifier
 ) {
@@ -27,7 +28,7 @@ fun UserListItemCard(
         modifier = modifier
             .fillMaxSize()
             ,
-        onClick = { onClick(user.id) },
+        onClick = { /*nothing happens*/ },
         colors = CardDefaults.cardColors(
             containerColor = colorResource(R.color.secondary_darker)
         )
@@ -41,12 +42,12 @@ fun UserListItemCard(
         ) {
             Column {
                 Text(
-                    text = user.name,
+                    text = user.familyName,
                     style = MaterialTheme.typography.titleMedium,
                     color = colorResource(R.color.secondary_contrast_text),
                 )
                 Text(
-                    text = "Created: ${user.createdDate}",
+                    text = "Created: nothing now",
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(R.color.secondary_contrast_text),
                 )

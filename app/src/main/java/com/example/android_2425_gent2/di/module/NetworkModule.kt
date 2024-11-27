@@ -4,6 +4,7 @@ package com.example.android_2425_gent2.di.module
 import com.example.android_2425_gent2.BuildConfig
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.network.timeslot.TimeSlotApiService
+import com.example.android_2425_gent2.data.network.users.UserApiService
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -77,4 +78,9 @@ object NetworkModule {
     val reservationApiService: ReservationApiService by lazy {
         retrofit.create(ReservationApiService::class.java)
     }
+
+    val userApiService: UserApiService by lazy {
+        retrofit.create(UserApiService::class.java)
+    }
+
 }
