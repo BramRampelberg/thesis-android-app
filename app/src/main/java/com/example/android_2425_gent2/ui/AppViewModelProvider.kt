@@ -13,7 +13,6 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             ReservationsViewModel(mainApplication().container.reservationRepository)
-            NotificationViewModel()
         }
 
         initializer {
@@ -22,8 +21,11 @@ object AppViewModelProvider {
                 mainApplication().container.reservationRepository
             )
         }
-    }
 
+        initializer {
+            NotificationViewModel(mainApplication().container.notificationRepository)
+        }
+    }
 
 }
 

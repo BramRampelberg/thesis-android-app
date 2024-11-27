@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
@@ -23,20 +22,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.data.model.Notification
+import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.extensions.formatRelative
-import java.util.Date
+import java.time.LocalDate
 
-@Preview
 @Composable
-fun NotificationRow(notification: Notification = Notification(
-    id = 1,
-    severity = 1,
-    title = "Test Title, this is a realy long title so",
-    message = "Test message content goes here. It is a realy long message",
-    timeStamp = Date(),
-    isRead = false
-)) {
+fun NotificationRow(notification: NotificationDto) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -80,7 +71,7 @@ fun NotificationRow(notification: Notification = Notification(
                     )
                 }
                 Text(
-                    text = notification.timeStamp.formatRelative(),
+                    text = notification.createdAt.formatRelative(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )

@@ -28,7 +28,7 @@ fun NotificationPage(
     viewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
-    val reservationsUiState by viewModel.notificationsUiState.collectAsState()
+    val notificationsUiState by viewModel.notificationsUiState.collectAsState()
 
     Column {
         Text(
@@ -36,20 +36,20 @@ fun NotificationPage(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp).testTag("NotificationPageTitle")
         )
-        if(reservationsUiState.hasError) {
+        if(notificationsUiState.hasError) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Something went wrong",
+                    text = notificationsUiState.errorMessage?: "Something went wrong",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.error
                 )
             }
         }
-        else if(reservationsUiState.loading && reservationsUiState.reservations.isEmpty()) {
+        else if(notificationsUiState.loading && notificationsUiState.notifications.isEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -57,7 +57,7 @@ fun NotificationPage(
             ) {
                 CircularProgressIndicator()
             }
-        } else if (reservationsUiState.reservations.isEmpty()) {
+        } else if (notificationsUiState.notifications.isEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -74,7 +74,7 @@ fun NotificationPage(
                 modifier = modifier.fillMaxSize().padding(horizontal = 16.dp).testTag("NotificationPageList"),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(reservationsUiState.reservations) { notification ->
+                items(notificationsUiState.notifications) { notification ->
                     NotificationRow(notification)
                 }
             }
