@@ -17,5 +17,9 @@ enum class BottomNavItem(
     Home("home", Icons.Default.Home, R.string.home, 0),
     Calendar("calendar", Icons.Default.DateRange, R.string.calendar, 0),
     Notifications("notifications", Icons.Default.Notifications, R.string.notifications, 0),
-    Profile("profile", Icons.Default.Person, R.string.profile, 0)
+    Profile("profile", Icons.Default.Person, R.string.profile, 0);
+
+    companion object {
+        const val PROFILE_ADMIN_DASHBOARD = "profile/admin-dashboard"
+    }
 }
