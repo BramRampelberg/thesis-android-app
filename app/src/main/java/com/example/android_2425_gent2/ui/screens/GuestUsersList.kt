@@ -2,34 +2,25 @@ package com.example.android_2425_gent2.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 
-
-
 @Composable
-fun AdminDashBoard(
-    onNavigateToUsers: () -> Unit
-) {
+fun GuestUsersList() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Admin Dashboard",
+            text = "Users List",
             style = MaterialTheme.typography.headlineMedium
         )
 
         Text(
-            text = "Welcome to the admin panel",
+            text = "Here you can view and manage all users",
             style = MaterialTheme.typography.bodyLarge
         )
-
-        Button(onClick = onNavigateToUsers) {
-            Text("View Users List")
-        }
     }
 }

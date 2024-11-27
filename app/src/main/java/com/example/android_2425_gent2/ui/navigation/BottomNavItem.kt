@@ -21,5 +21,7 @@ enum class BottomNavItem(
 
     companion object {
         const val PROFILE_ADMIN_DASHBOARD = "profile/admin-dashboard"
+        const val PROFILE_ADMIN_USERS = "profile/admin-dashboard/users"
+
     }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.android_2425_gent2.ui.screens.AdminDashBoard
 import com.example.android_2425_gent2.ui.screens.CalendarPage
+import com.example.android_2425_gent2.ui.screens.GuestUsersList
 import com.example.android_2425_gent2.ui.screens.HomePage
 import com.example.android_2425_gent2.ui.screens.NotificationPage
 import com.example.android_2425_gent2.ui.screens.ProfilePage
@@ -37,7 +38,13 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
 
 
         composable(route = BottomNavItem.PROFILE_ADMIN_DASHBOARD) {
-            AdminDashBoard()
+            AdminDashBoard(
+                onNavigateToUsers = { navController.navigate(BottomNavItem.PROFILE_ADMIN_USERS) }
+            )
+        }
+
+        composable(route = BottomNavItem.PROFILE_ADMIN_USERS) {
+            GuestUsersList()
         }
 
 
