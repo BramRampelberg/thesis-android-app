@@ -19,18 +19,17 @@ fun GuestUsersScreen(
 
     ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.secondary))
     ) {
-        AppTopBar(
-            title = stringResource(R.string.users_list),
-            modifier = modifier.fillMaxWidth()
-        )
+        AppTopBar(title = stringResource(R.string.users_list))
 
         GuestUsersList(
             onUserClick = onNavigateToUserDetails,
             modifier = Modifier.fillMaxWidth()
         )
+
     }
+
 }

@@ -54,12 +54,12 @@ fun ProfilePage(
             val profileActions = listOf(
                 ProfileAction(
                     icon = Icons.Default.Edit,
-                    text = "Edit Profile",
+                    text = stringResource(R.string.edit_profile),
                     onClick = { /* TODO: handle this later*/ }
                 ),
                 ProfileAction(
                     icon = Icons.Default.Lock,
-                    text = "Privacy Settings",
+                    text = stringResource(R.string.privacy_settings),
                     onClick = { /* TODO: handle this later*/ }
                 )
             )

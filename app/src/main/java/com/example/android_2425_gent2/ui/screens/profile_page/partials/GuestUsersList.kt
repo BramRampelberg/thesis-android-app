@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.Alignment
 
 
 data class UserListItem(
@@ -33,7 +34,7 @@ fun GuestUsersList(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LazyColumn(
             modifier = modifier.fillMaxWidth(),
