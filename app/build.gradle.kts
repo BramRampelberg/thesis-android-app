@@ -13,6 +13,10 @@ fun getBaseUrl(propertyName: String): String {
     return p.getProperty(propertyName)
 }
 
+fun getRegistrationUrl(baseUrl: String): String {
+    return "\"${baseUrl}login/registration\""
+}
+
 android {
     namespace = "com.example.android_2425_gent2"
     compileSdk = 34
@@ -24,25 +28,38 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        addManifestPlaceholders(
+            mapOf(
+                "auth0Domain" to "@string/com_auth0_domain",
+                "auth0ClientId" to "@string/com_auth0_client_id",
+                "auth0Scheme" to "@string/com_auth0_scheme"
+            )
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            buildConfigField("String", "BASE_URL", "\"${getBaseUrl("PROD_BASE_URL")}\"")
+            val baseUrl = getBaseUrl("PROD_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String", "REGISTRATION_URL", "\"${baseUrl}login/registration\"")
         }
         debug {
-            buildConfigField("String", "BASE_URL", "\"${getBaseUrl("DEV_BASE_URL")}\"")
+            val baseUrl = getBaseUrl("DEV_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"${baseUrl}\"")
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            buildConfigField("String", "REGISTRATION_URL", "\"${baseUrl}login/registration\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -82,8 +99,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.mockito.core)
     testImplementation(libs.turbine)
@@ -103,4 +119,7 @@ dependencies {
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+
+    //Auth
+    implementation(libs.android.auth0)
 }
