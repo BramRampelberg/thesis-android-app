@@ -29,9 +29,6 @@ fun ProfilePage(
     modifier: Modifier = Modifier
     ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(colorResource(R.color.secondary))
     ) {
         AppTopBar(title=stringResource(R.string.profile))
 

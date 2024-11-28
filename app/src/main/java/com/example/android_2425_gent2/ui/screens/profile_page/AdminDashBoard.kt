@@ -6,7 +6,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,10 +28,15 @@ data class QuickAction(
 @Composable
 fun AdminDashBoard(
     onNavigateToUsers: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit
 ) {
     Column{
-        AppTopBar(title = stringResource(R.string.admin_dashboard))
+        AppTopBar(
+            title = stringResource(R.string.admin_dashboard),
+                    canNavigateBack = true,
+            onNavigateBack = onNavigateBack
+        )
 
         Column(
             modifier = modifier

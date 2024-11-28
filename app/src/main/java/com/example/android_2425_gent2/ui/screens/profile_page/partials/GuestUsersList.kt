@@ -11,14 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
-import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
+import com.example.android_2425_gent2.data.model.UserSurface
 
 
 @Composable
 fun GuestUsersList(
     modifier: Modifier = Modifier,
     onUserClick: (String) -> Unit,
-    users: List<UserSurfaceInfoDto>
+    users: List<UserSurface>
 ) {
 
     Column(

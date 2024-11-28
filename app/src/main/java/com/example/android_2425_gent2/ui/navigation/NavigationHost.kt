@@ -28,28 +28,8 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
         composable(route = BottomNavItem.Notifications.route) {
             NotificationPage()
         }
-        composable(route = BottomNavItem.Profile.route) {
 
-
-            ProfilePage(
-                onNavigateToDashboard = { navController.navigate(BottomNavItem.PROFILE_ADMIN_DASHBOARD) }
-            )
-        }
-
-
-        composable(route = BottomNavItem.PROFILE_ADMIN_DASHBOARD) {
-            AdminDashBoard(
-                modifier = modifier,
-                onNavigateToUsers = { navController.navigate(BottomNavItem.PROFILE_ADMIN_USERS) }
-            )
-        }
-
-        composable(route = BottomNavItem.PROFILE_ADMIN_USERS) {
-            GuestUsersScreen(
-                modifier = modifier,
-                onNavigateToUserDetails ={}
-            )
-        }
+        profileNavigation(navController, modifier)
 
 
     }

@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
+import com.example.android_2425_gent2.data.model.UserSurface
 
 @Composable
 fun UserListItemCard(
-    user: UserSurfaceInfoDto,
+    user: UserSurface,
     onClick: (String) -> Unit,
     modifier: Modifier
 ) {
