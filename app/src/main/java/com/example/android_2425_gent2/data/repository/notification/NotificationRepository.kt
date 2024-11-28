@@ -8,4 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
     suspend fun getNotifications(): Flow<APIResource<List<NotificationDto>>>
+
+    suspend fun getNotificationDetails(id: Int): Flow<APIResource<NotificationDto>>
 }

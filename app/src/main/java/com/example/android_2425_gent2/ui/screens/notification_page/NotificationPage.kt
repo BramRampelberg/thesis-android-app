@@ -26,6 +26,7 @@ import com.example.android_2425_gent2.ui.screens.notification_page.partials.Noti
 @Preview
 @Composable
 fun NotificationPage(
+    onNotificationClick: (Int) -> Unit = {},
     viewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -81,7 +82,7 @@ fun NotificationPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(notificationsUiState.notifications) { notification ->
-                    NotificationRow(notification)
+                    NotificationRow(notification, onClick = { onNotificationClick(notification.id) })
                 }
             }
         }

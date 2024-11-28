@@ -23,9 +23,7 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
         composable(route = BottomNavItem.Calendar.route) {
             CalendarPage()
         }
-        composable(route = BottomNavItem.Notifications.route) {
-            NotificationPage()
-        }
+        notificationNavigation(navController)
         composable(route = BottomNavItem.Profile.route) {
             ProfilePage()
         }
