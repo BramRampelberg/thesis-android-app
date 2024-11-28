@@ -15,9 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.partials.NotificationRow
 
@@ -31,9 +33,11 @@ fun NotificationPage(
 
     Column {
         Text(
-            text = "Notifications",
+            text = stringResource(R.string.notifications),
             style = MaterialTheme.typography.headlineMedium,
-            modifier = modifier.padding(horizontal = 16.dp, vertical = 24.dp).testTag("NotificationPageTitle")
+            modifier = modifier
+                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .testTag("NotificationPageTitle")
         )
         if(notificationsUiState.hasError) {
             Column(
@@ -42,7 +46,7 @@ fun NotificationPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = notificationsUiState.errorMessage?: "Something went wrong",
+                    text = notificationsUiState.errorMessage?: stringResource(R.string.something_went_wrong),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -70,7 +74,10 @@ fun NotificationPage(
             }
         } else {
             LazyColumn(
-                modifier = modifier.fillMaxSize().padding(horizontal = 16.dp).testTag("NotificationPageList"),
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .testTag("NotificationPageList"),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(notificationsUiState.notifications) { notification ->
