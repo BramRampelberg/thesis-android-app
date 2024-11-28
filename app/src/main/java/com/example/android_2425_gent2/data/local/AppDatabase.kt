@@ -19,6 +19,7 @@ import com.example.android_2425_gent2.data.local.entity.ReservationEntity
 import com.example.android_2425_gent2.data.local.entity.TimeSlotEntity
 import com.example.android_2425_gent2.data.local.entity.UserEntity
 import com.example.android_2425_gent2.data.local.entity.UserReservationCrossRef
+import com.example.android_2425_gent2.data.local.migration.MIGRATION_1_2
 
 @Database(
     entities = [
@@ -31,7 +32,7 @@ import com.example.android_2425_gent2.data.local.entity.UserReservationCrossRef
         OfflineNotificationEntity::class
     ],
     exportSchema = false,
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -45,7 +46,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context,
                     AppDatabase::class.java,
                     "app_database",
-                ).build().also { Instance = it }
+                ).addMigrations(MIGRATION_1_2)
+                    .build().also { Instance = it }
             }
 
         }
