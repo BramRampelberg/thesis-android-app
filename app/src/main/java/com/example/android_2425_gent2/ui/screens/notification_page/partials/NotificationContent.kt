@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
@@ -36,7 +37,8 @@ fun NotificationContent(
             Text(
                 text = notification.createdAt.formatRelative(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = modifier.testTag("NotificationDetailsTimestamp")
             )
         }
 
@@ -45,7 +47,8 @@ fun NotificationContent(
         // Title
         Text(
             text = notification.title,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = modifier.testTag("NotificationDetailsTitle")
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -54,7 +57,8 @@ fun NotificationContent(
         Text(
             text = notification.message,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = modifier.testTag("NotificationDetailsMessage")
         )
     }
 }

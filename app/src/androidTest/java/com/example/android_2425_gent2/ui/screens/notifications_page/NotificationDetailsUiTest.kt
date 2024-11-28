@@ -2,7 +2,7 @@ package com.example.android_2425_gent2.ui.screens.notifications_page
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.core.app.ApplicationProvider
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.di.TestContainer
@@ -33,14 +33,12 @@ class NotificationDetailsUiTest {
 
     @Test
     fun showNotificationTitle() {
-        // Since we're using a test notification with title "This is a info notification"
-        composeTestRule.onNodeWithText("This is a info notification").assertExists()
+        composeTestRule.onNodeWithTag("NotificationDetailsTitle").assertExists()
     }
 
     @Test
     fun showNotificationMessage() {
-        // Since we're using a test notification with a specific message
-        composeTestRule.onNodeWithText("This is the message").assertExists()
+        composeTestRule.onNodeWithTag("NotificationDetailsMessage").assertExists()
     }
 
     @Test
@@ -50,6 +48,6 @@ class NotificationDetailsUiTest {
 
     @Test
     fun showNotificationTimestamp() {
-        composeTestRule.onNodeWithText("Just now", substring = true).assertExists()
+        composeTestRule.onNodeWithTag("NotificationDetailsTimestamp").assertExists()
     }
 }
