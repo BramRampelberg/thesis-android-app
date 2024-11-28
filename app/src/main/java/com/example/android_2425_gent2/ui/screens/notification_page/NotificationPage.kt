@@ -34,11 +34,11 @@ fun NotificationPage(
         Text(
             text = "Notifications",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp).testTag("NotificationPageTitle")
+            modifier = modifier.padding(horizontal = 16.dp, vertical = 24.dp).testTag("NotificationPageTitle")
         )
         if(notificationsUiState.hasError) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -51,7 +51,7 @@ fun NotificationPage(
         }
         else if(notificationsUiState.loading && notificationsUiState.notifications.isEmpty()) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -59,7 +59,7 @@ fun NotificationPage(
             }
         } else if (notificationsUiState.notifications.isEmpty()) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

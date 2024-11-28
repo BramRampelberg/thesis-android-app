@@ -27,34 +27,34 @@ import com.example.android_2425_gent2.extensions.formatRelative
 import java.time.LocalDate
 
 @Composable
-fun NotificationRow(notification: NotificationDto) {
+fun NotificationRow(notification: NotificationDto, modifier: Modifier = Modifier) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = modifier.padding(16.dp)
         ) {
             // Top row with icon, title and time
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                    modifier = Modifier.weight(1f),
+                    modifier = modifier.weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         getSeverityIcon(notification.severity),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
+                        modifier = modifier.size(24.dp),
                         tint = getSeverityColor(notification.severity)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = modifier.width(8.dp))
                     Text(
                         text = notification.title,
                         style = MaterialTheme.typography.titleMedium,
@@ -63,9 +63,9 @@ fun NotificationRow(notification: NotificationDto) {
                     )
                 }
                 if (!notification.isRead) {
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = modifier.width(4.dp))
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .size(8.dp)
                             .background(colorResource(id = R.color.info), CircleShape)
                     )
@@ -79,7 +79,7 @@ fun NotificationRow(notification: NotificationDto) {
             }
 
             // Message
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = modifier.height(8.dp))
             Text(
                 text = notification.message,
                 style = MaterialTheme.typography.bodyMedium,
