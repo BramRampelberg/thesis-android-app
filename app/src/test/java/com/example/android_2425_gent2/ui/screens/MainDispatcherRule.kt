@@ -1,4 +1,4 @@
-package com.example.android_2425_gent2.ui.screens.calendar_page.coroutine
+package com.example.android_2425_gent2.ui.screens
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

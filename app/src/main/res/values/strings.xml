@@ -17,6 +17,9 @@
     <string name="end_time">Tot: %1$s</string>
     <string name="reserve_time_slot">Reserveer</string>
     <string name="canceled_reservations">Geannuleerde reservaties</string>
+    <string name="com_auth0_domain">rise-gent2.eu.auth0.com</string>
+    <string name="com_auth0_client_id">8vJtbXg2FptHGmKrpFl1tZwhiXOJZ57l</string>
+    <string name="com_auth0_scheme">password</string>
     <string name="the_reservations_could_not_be_loaded">De reservaties konden niet geladen worden.</string>
     <string name="unknown_error_occurred">Er is iets misgelopen</string>
     <string name="wait_for_process_your_payment">Even geduld terwijl we uw betaling verwerken.</string>
