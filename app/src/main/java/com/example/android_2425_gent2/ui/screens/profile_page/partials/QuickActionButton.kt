@@ -31,7 +31,7 @@ fun QuickActionButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = modifier.padding(end = 8.dp)
         )
         Text(text)
     }

@@ -32,7 +32,7 @@ fun ProfileActionItem(
         color = Color.Transparent
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 12.dp),
+            modifier = modifier.padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -40,12 +40,12 @@ fun ProfileActionItem(
                 contentDescription = null,
                 tint = colorResource(R.color.primary)
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = modifier.width(16.dp))
             Text(
                 text = text,
                 color = colorResource(R.color.secondary_contrast_text)
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = modifier.weight(1f))
             Icon(
                 imageVector = Icons.Default.AccountBox,
                 contentDescription = null,

@@ -27,7 +27,7 @@ fun ProfileActionCard(
             containerColor = colorResource(R.color.secondary),
         )
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = modifier.padding(16.dp)) {
             actions.forEach { action ->
                 ProfileActionItem(
                     icon = action.icon,

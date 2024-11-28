@@ -36,7 +36,7 @@ fun ProfilePage(
         AppTopBar(title=stringResource(R.string.profile))
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -46,7 +46,7 @@ fun ProfilePage(
                 email = "john.doe@example.com"
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = modifier.height(24.dp))
 
             val profileActions = listOf(
                 ProfileAction(
@@ -63,7 +63,7 @@ fun ProfilePage(
 
             ProfileActionCard(actions = profileActions)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = modifier.height(24.dp))
 
             ProfileNavigationButton(
                 text = stringResource(R.string.go_to_dashboard),

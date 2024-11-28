@@ -47,7 +47,7 @@ fun UserListItemCard(
                     color = colorResource(R.color.secondary_contrast_text),
                 )
                 Text(
-                    text = "Created: nothing now",
+                    text = "Created: 11/11/2024",
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(R.color.secondary_contrast_text),
                 )

@@ -28,17 +28,14 @@ data class QuickAction(
 
 @Composable
 fun AdminDashBoard(
-    onNavigateToUsers: () -> Unit
+    onNavigateToUsers: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(R.color.secondary))
-    ) {
+    Column{
         AppTopBar(title = stringResource(R.string.admin_dashboard))
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,8 +46,6 @@ fun AdminDashBoard(
                 style = MaterialTheme.typography.headlineMedium,
                 color = colorResource(R.color.secondary_contrast_text)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             val quickActions = listOf(
                 QuickAction(

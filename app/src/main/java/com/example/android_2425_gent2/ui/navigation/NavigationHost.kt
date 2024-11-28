@@ -39,6 +39,7 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
 
         composable(route = BottomNavItem.PROFILE_ADMIN_DASHBOARD) {
             AdminDashBoard(
+                modifier = modifier,
                 onNavigateToUsers = { navController.navigate(BottomNavItem.PROFILE_ADMIN_USERS) }
             )
         }
@@ -49,5 +50,7 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
                 onNavigateToUserDetails ={}
             )
         }
+
+
     }
 }

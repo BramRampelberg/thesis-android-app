@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,15 +25,11 @@ import com.example.android_2425_gent2.ui.screens.profile_page.partials.GuestUser
 fun GuestUsersScreen(
     viewModel: GuestUsersViewModel = viewModel(factory = AppViewModelProvider.Factory),
     onNavigateToUserDetails: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(R.color.secondary))
-    ) {
+    Column() {
         AppTopBar(title = stringResource(R.string.users_list))
 
         when {
@@ -50,7 +48,7 @@ fun GuestUsersScreen(
                 GuestUsersList(
                     users = uiState.users,
                     onUserClick = onNavigateToUserDetails,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
                 )
             }
         }
