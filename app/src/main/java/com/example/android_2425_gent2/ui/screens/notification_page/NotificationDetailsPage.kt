@@ -8,9 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.partials.NotificationContent
 
@@ -33,14 +35,14 @@ fun NotificationDetailsPage(
             TopAppBar(
                 title = {
                     Text(
-                        text = uiState.notification?.title ?: "Notification Details",
+                        text = uiState.notification?.title ?: stringResource(R.string.notification_details),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Rounded.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Rounded.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -57,7 +59,7 @@ fun NotificationDetailsPage(
                 )
             } else if (uiState.hasError) {
                 Text(
-                    text = uiState.errorMessage ?: "Something went wrong",
+                    text = uiState.errorMessage ?: stringResource(R.string.something_went_wrong),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
