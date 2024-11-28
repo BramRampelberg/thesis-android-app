@@ -91,9 +91,9 @@ object NetworkModule {
         return retrofit.create(ReservationApiService::class.java)
     }
 
-    val provideUserApiSerivce(authRepo: IAuthRepo): UserApiService by lazy {
+    fun provideUserApiSerivce(authRepo: IAuthRepo): UserApiService {
         val retrofit = provideRetrofit(authRepo)
-        retrofit.create(UserApiService::class.java)
+        return retrofit.create(UserApiService::class.java)
     }
 
 }

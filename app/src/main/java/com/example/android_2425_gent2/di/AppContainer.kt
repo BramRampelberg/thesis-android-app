@@ -18,7 +18,7 @@ import com.example.android_2425_gent2.data.repository.auth.Auth0Repo
 import com.example.android_2425_gent2.data.repository.auth.TestAuth0Repo
 import com.example.android_2425_gent2.data.repository.user.RemoteUserRepository
 import com.example.android_2425_gent2.data.repository.user.UserRepository
-import com.example.android_2425_gent2.di.module.NetworkModule
+
 
 interface AppContainer {
     val reservationRepository: ReservationRepository
@@ -50,7 +50,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
         NetworkTimeSlotRepository(NetworkModule.provideTimeSlotApiService(authRepo))
     }
     override val userRepository: UserRepository by lazy {
-        RemoteUserRepository(NetworkModule.userApiService)
+        RemoteUserRepository(NetworkModule.provideUserApiSerivce(authRepo))
     }
 }
 
