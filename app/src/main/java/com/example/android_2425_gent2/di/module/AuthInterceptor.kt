@@ -17,11 +17,12 @@ class AuthInterceptor(private val authRepo: IAuthRepo) : Interceptor {
 
         if (credentialsResponse is APIResource.Success) {
             val accessToken = credentialsResponse.data?.accessToken
+            val type = credentialsResponse.data?.type
 
             if (accessToken != null)
                 request = request.addHeader(
                     "Authorization",
-                    "Bearer $accessToken"
+                    "$type $accessToken"
                 )
         }
 

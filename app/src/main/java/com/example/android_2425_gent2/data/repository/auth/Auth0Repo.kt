@@ -7,6 +7,7 @@ import com.auth0.android.authentication.storage.CredentialsManagerException
 import com.auth0.android.authentication.storage.SecureCredentialsManager
 import com.auth0.android.callback.Callback
 import com.auth0.android.result.Credentials
+import com.auth0.android.result.UserProfile
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -51,6 +52,7 @@ class Auth0Repo(
             val credentials = withContext(Dispatchers.IO) {
                 suspendCoroutine { continuation ->
                     authentication.login(userName, password)
+                        .setAudience("https://api.buut.be")
                         .setScope("openid profile email")
                         .validateClaims()
                         .start(object : Callback<Credentials, AuthenticationException> {

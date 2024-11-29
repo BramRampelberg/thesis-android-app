@@ -7,6 +7,9 @@ import com.auth0.android.authentication.storage.SecureCredentialsManager
 import com.auth0.android.authentication.storage.SharedPreferencesStorage
 import com.example.android_2425_gent2.di.module.NetworkModule
 import com.example.android_2425_gent2.data.local.AppDatabase
+import com.example.android_2425_gent2.data.repository.notification.NotificationRepository
+import com.example.android_2425_gent2.data.repository.notification.OfflineFirstNotificationRepository
+import com.example.android_2425_gent2.data.repository.notification.TestNotificationRepository
 import com.example.android_2425_gent2.data.repository.reservation.OfflineFirstReservationRepository
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
 import com.example.android_2425_gent2.data.repository.reservation.TestReservationRepository
@@ -23,6 +26,7 @@ import com.example.android_2425_gent2.data.repository.user.UserRepository
 interface AppContainer {
     val reservationRepository: ReservationRepository
     val timeSlotRepository: TimeSlotRepository
+    val notificationRepository: NotificationRepository
     val authRepo: IAuthRepo
     val userRepository: UserRepository
 
@@ -49,6 +53,11 @@ class AppDataContainer(private val context: Context) : AppContainer {
     override val timeSlotRepository: TimeSlotRepository by lazy {
         NetworkTimeSlotRepository(NetworkModule.provideTimeSlotApiService(authRepo))
     }
+
+    override val notificationRepository: NotificationRepository by lazy {
+        OfflineFirstNotificationRepository(AppDatabase.getDatabase(context).offlineNotificationDao(),
+            NetworkModule.provideNotificationApiService(authRepo))
+    }
     override val userRepository: UserRepository by lazy {
         RemoteUserRepository(NetworkModule.provideUserApiSerivce(authRepo))
     }
@@ -65,6 +74,9 @@ class TestContainer() : AppContainer {
     }
     override val timeSlotRepository: TimeSlotRepository by lazy {
         TestTimeSlotRepository()
+    }
+    override val notificationRepository: NotificationRepository by lazy {
+        TestNotificationRepository()
     }
     override val userRepository: UserRepository
         get() = TODO("Not yet implemented")

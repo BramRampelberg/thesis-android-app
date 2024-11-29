@@ -11,6 +11,8 @@ import com.example.android_2425_gent2.ui.screens.HomePage
 import com.example.android_2425_gent2.ui.screens.NotificationPage
 import com.example.android_2425_gent2.ui.screens.profile_page.GuestUsersScreen
 import com.example.android_2425_gent2.ui.screens.profile_page.ProfilePage
+import com.example.android_2425_gent2.ui.screens.notification_page.NotificationPage
+import com.example.android_2425_gent2.ui.screens.ProfilePage
 
 @Composable
 fun NavigationHost(navController: NavHostController, modifier: Modifier) {
@@ -25,9 +27,7 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
         composable(route = BottomNavItem.Calendar.route) {
             CalendarPage()
         }
-        composable(route = BottomNavItem.Notifications.route) {
-            NotificationPage()
-        }
+        notificationNavigation(navController)
 
         profileNavigation(navController, modifier)
 

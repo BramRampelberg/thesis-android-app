@@ -41,4 +41,7 @@
     <string name="users_list">Gasten</string>
     <string name="edit_profile">Profiel bijwerken</string>
     <string name="privacy_settings">Instellingen</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="notification_details">Notification Details</string>
+    <string name="back">Back</string>
 </resources>
