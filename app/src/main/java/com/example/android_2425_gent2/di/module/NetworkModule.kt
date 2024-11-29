@@ -4,6 +4,7 @@ import com.example.android_2425_gent2.BuildConfig
 import com.example.android_2425_gent2.data.network.notification.NotificationApiService
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.network.timeslot.TimeSlotApiService
+import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -15,6 +16,7 @@ import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDateTime
@@ -84,22 +86,33 @@ object NetworkModule {
                 .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
                     .create()
 
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
+    private fun provideOkHttpClient(authRepo: IAuthRepo): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(authRepo))
+            .build()
     }
 
-    val timeSlotApiService: TimeSlotApiService by lazy {
-        retrofit.create(TimeSlotApiService::class.java)
+    private fun provideRetrofit(authRepo: IAuthRepo): Retrofit {
+        val okHttpClient = provideOkHttpClient(authRepo)
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
     }
 
-    val reservationApiService: ReservationApiService by lazy {
-        retrofit.create(ReservationApiService::class.java)
+    fun provideTimeSlotApiService(authRepo: IAuthRepo): TimeSlotApiService {
+        val retrofit = provideRetrofit(authRepo)
+        return retrofit.create(TimeSlotApiService::class.java)
     }
 
-    val notificationApiService: NotificationApiService by lazy {
-        retrofit.create(NotificationApiService::class.java)
+    fun provideReservationApiService(authRepo: IAuthRepo): ReservationApiService {
+        val retrofit = provideRetrofit(authRepo)
+        return retrofit.create(ReservationApiService::class.java)
+    }
+
+    fun provideNotificationApiService(authRepo: IAuthRepo): NotificationApiService {
+        val retrofit = provideRetrofit(authRepo)
+        return retrofit.create(NotificationApiService::class.java)
     }
 }
