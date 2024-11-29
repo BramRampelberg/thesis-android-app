@@ -33,4 +33,5 @@
     <string name="time">Tijd</string>
     <string name="placed_reservation">Reservering geplaats</string>
     <string name="payment_loading_indicator">betaling laden</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>
