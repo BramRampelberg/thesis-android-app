@@ -17,4 +17,8 @@ interface OfflineNotificationDao: EntityDao<OfflineNotificationEntity> {
     )
     fun getOfflineNotifications(): Flow<List<OfflineNotificationEntity>>
 
+    @Transaction
+    @Query("SELECT * FROM offline_notification WHERE id = :id")
+    fun getNotificationById(id: Int): Flow<OfflineNotificationEntity?>
+
 }

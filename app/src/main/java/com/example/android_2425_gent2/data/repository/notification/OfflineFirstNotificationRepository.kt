@@ -71,4 +71,45 @@ class OfflineFirstNotificationRepository(
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun getNotificationDetails(id: Int): Flow<APIResource<NotificationDto>> = flow {
+        emit(APIResource.Loading())
+
+        val notificationFlow = notificationDao.getNotificationById(id)
+            .distinctUntilChanged()
+            .map { localNotification ->
+                if (localNotification != null) {
+                    APIResource.Success(localNotification.asExternalModel())
+                } else {
+                    APIResource.Error("Notification not found")
+                }
+            }
+
+        // try to fetch fresh data from network
+        try {
+            println("Trying to fetch notification details")
+            val response = remoteApiService.getNotificationDetails(id)
+
+            // update local database
+            withContext(Dispatchers.IO) {
+                notificationDao.insert(response.asEntity())
+            }
+
+            delay(100)
+        } catch (e: Exception) {
+            println("Inside exception")
+            e.printStackTrace()
+            Log.e("Inside exception", e.message ?: "unknown message")
+            val localData = notificationDao.getNotificationById(id).first()
+            if (localData == null) {
+                emit(APIResource.Error("Notification not found"))
+                return@flow
+            }
+        }
+
+        // collect and emit
+        notificationFlow.collect { emission ->
+            emit(emission)
+        }
+    }.flowOn(Dispatchers.IO)
+
 }

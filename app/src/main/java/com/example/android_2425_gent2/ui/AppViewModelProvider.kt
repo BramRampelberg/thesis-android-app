@@ -8,6 +8,7 @@ import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.ui.screens.app_page.AppViewModel
 import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarViewModel
+import com.example.android_2425_gent2.ui.screens.notification_page.NotificationDetailsViewModel
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationViewModel
 import com.example.android_2425_gent2.ui.screens.login_page.LoginViewModel
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsViewModel
@@ -33,6 +34,12 @@ object AppViewModelProvider {
         initializer {
             AppViewModel(mainApplication().container.authRepo)
         }
+        initializer {
+            NotificationDetailsViewModel(
+                mainApplication().container.notificationRepository
+            )
+        }
+
         initializer {
             NotificationViewModel(mainApplication().container.notificationRepository)
         }

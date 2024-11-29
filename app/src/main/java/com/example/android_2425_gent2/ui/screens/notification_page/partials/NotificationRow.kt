@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.ui.screens.notification_page.partials
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -25,13 +26,18 @@ import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.extensions.formatRelative
 
 @Composable
-fun NotificationRow(notification: NotificationDto, modifier: Modifier = Modifier) {
+fun NotificationRow(
+    notification: NotificationDto,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
         modifier = modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = modifier.padding(16.dp)
