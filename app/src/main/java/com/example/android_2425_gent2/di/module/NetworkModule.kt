@@ -71,7 +71,7 @@ object NetworkModule {
             .build()
     }
 
-    fun provideRetrofit(authRepo: IAuthRepo): Retrofit {
+    private fun provideRetrofit(authRepo: IAuthRepo): Retrofit {
         val okHttpClient = provideOkHttpClient(authRepo)
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
