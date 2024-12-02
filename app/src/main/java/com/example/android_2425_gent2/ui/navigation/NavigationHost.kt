@@ -5,14 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.android_2425_gent2.ui.screens.profile_page.AdminDashBoard
 import com.example.android_2425_gent2.ui.screens.CalendarPage
 import com.example.android_2425_gent2.ui.screens.HomePage
-import com.example.android_2425_gent2.ui.screens.NotificationPage
-import com.example.android_2425_gent2.ui.screens.profile_page.GuestUsersScreen
-import com.example.android_2425_gent2.ui.screens.profile_page.ProfilePage
-import com.example.android_2425_gent2.ui.screens.notification_page.NotificationPage
-import com.example.android_2425_gent2.ui.screens.ProfilePage
+
 
 @Composable
 fun NavigationHost(navController: NavHostController, modifier: Modifier) {

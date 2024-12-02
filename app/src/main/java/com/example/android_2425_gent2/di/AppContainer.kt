@@ -20,6 +20,7 @@ import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
 import com.example.android_2425_gent2.data.repository.auth.Auth0Repo
 import com.example.android_2425_gent2.data.repository.auth.TestAuth0Repo
 import com.example.android_2425_gent2.data.repository.user.RemoteUserRepository
+import com.example.android_2425_gent2.data.repository.user.TestUserRepository
 import com.example.android_2425_gent2.data.repository.user.UserRepository
 
 
@@ -78,6 +79,7 @@ class TestContainer() : AppContainer {
     override val notificationRepository: NotificationRepository by lazy {
         TestNotificationRepository()
     }
-    override val userRepository: UserRepository
-        get() = TODO("Not yet implemented")
+    override val userRepository: UserRepository by lazy {
+        TestUserRepository()
+    }
 }

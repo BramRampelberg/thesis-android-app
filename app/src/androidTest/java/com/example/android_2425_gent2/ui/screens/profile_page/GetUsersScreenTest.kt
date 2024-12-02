@@ -1,111 +1,110 @@
-//package com.example.android_2425_gent2.ui.screens.profile_page
-//
-//import androidx.compose.ui.test.junit4.createComposeRule
-//import androidx.compose.ui.test.onNodeWithText
-//import androidx.compose.ui.test.onNodeWithTag
-//import androidx.compose.ui.test.assertIsDisplayed
-//import androidx.compose.ui.test.performClick
-//import androidx.test.core.app.ApplicationProvider
-//import com.example.android_2425_gent2.MainApplication
-//import com.example.android_2425_gent2.di.TestContainer
-//import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
-//import org.junit.Before
-//import org.junit.Rule
-//import org.junit.Test
-//import org.mockito.kotlin.mock
-//import kotlinx.coroutines.flow.MutableStateFlow
-//
-//class GuestUsersScreenTest {
-//    @get:Rule
-//    val composeTestRule = createComposeRule()
-//
-//    private lateinit var viewModel: GuestUsersViewModel
-//    private val mockNavigateToUserDetails: (String) -> Unit = mock()
-//    private val mockNavigateBack: () -> Unit = mock()
-//
-//    @Before
-//    fun setUp() {
-//        val application = ApplicationProvider.getApplicationContext() as MainApplication
-//        application.container = TestContainer()
-//
-//        viewModel = mock()
-//    }
-//
-//    @Test
-//    fun showLoadingState() {
-//        val uiState = GuestUsersUiState(isLoading = true)
-//        setContent(uiState)
-//
-//        composeTestRule.onNodeWithTag("loading_indicator")
-//            .assertExists()
-//            .assertIsDisplayed()
-//    }
-//
-//    @Test
-//    fun showErrorState() {
-//        val errorMessage = "Error loading users"
-//        val uiState = GuestUsersUiState(errorMessage = errorMessage)
-//        setContent(uiState)
-//
-//        composeTestRule.onNodeWithText(errorMessage)
-//            .assertExists()
-//            .assertIsDisplayed()
-//    }
-//
-//    @Test
-//    fun showUsersList() {
-//        val users = listOf(
-//            GuestUser("1", "John Doe", "john@example.com"),
-//            GuestUser("2", "Jane Smith", "jane@example.com")
-//        )
-//        val uiState = GuestUsersUiState(users = users)
-//        setContent(uiState)
-//
-//        // Verify each user is displayed
-//        users.forEach { user ->
-//            composeTestRule.onNodeWithText(user.name)
-//                .assertExists()
-//                .assertIsDisplayed()
-//        }
-//    }
-//
-//    @Test
-//    fun clickUser_navigatesToUserDetails() {
-//        val users = listOf(
-//            GuestUser("1", "John Doe", "john@example.com")
-//        )
-//        val uiState = GuestUsersUiState(users = users)
-//        setContent(uiState)
-//
-//        composeTestRule.onNodeWithText("John Doe")
-//            .performClick()
-//
-//        verify(mockNavigateToUserDetails).invoke("1")
-//    }
-//
-//    @Test
-//    fun clickBackButton_navigatesBack() {
-//        val uiState = GuestUsersUiState()
-//        setContent(uiState)
-//
-//        composeTestRule.onNodeWithTag("back_button")
-//            .performClick()
-//
-//        verify(mockNavigateBack).invoke()
-//    }
-//
-//    private fun setContent(uiState: GuestUsersUiState) {
-//        // Setup mock ViewModel state
-//        whenever(viewModel.uiState).thenReturn(MutableStateFlow(uiState))
-//
-//        composeTestRule.setContent {
-//            Android2425gent2Theme {
-//                GuestUsersScreen(
-//                    viewModel = viewModel,
-//                    onNavigateToUserDetails = mockNavigateToUserDetails,
-//                    onNavigateBack = mockNavigateBack
-//                )
-//            }
-//        }
-//    }
-//}
+package com.example.android_2425_gent2.ui.screens.guest_users
+
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.core.app.ApplicationProvider
+import com.example.android_2425_gent2.MainApplication
+import com.example.android_2425_gent2.data.model.UserSurface
+import com.example.android_2425_gent2.data.repository.user.TestUserRepository
+import com.example.android_2425_gent2.di.AppContainer
+import com.example.android_2425_gent2.di.TestContainer
+import com.example.android_2425_gent2.ui.screens.profile_page.GuestUsersScreen
+import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+class GuestUsersUITests {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    private fun getContainer(): AppContainer {
+        val application = ApplicationProvider.getApplicationContext() as MainApplication
+        return application.container
+    }
+
+    private fun getTestUserRepo(): TestUserRepository {
+        return getContainer().userRepository as TestUserRepository
+    }
+
+    @Before
+    fun setContainer() {
+        val application = ApplicationProvider.getApplicationContext() as MainApplication
+        application.container = TestContainer()
+
+        composeTestRule.setContent {
+            Android2425gent2Theme {
+                GuestUsersScreen(
+                    onNavigateToUserDetails = {},
+                    onNavigateBack = {}
+                )
+            }
+        }
+    }
+
+    private fun checkErrorMessage(errorMessage: String) {
+        composeTestRule.onNodeWithText(errorMessage).assertExists()
+        composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
+    }
+
+    private fun checkUsersList(users: List<UserSurface>) {
+        users.forEach { user ->
+            composeTestRule.onNodeWithText(user.familyName).assertExists()
+            composeTestRule.onNodeWithText(user.familyName).assertIsDisplayed()
+        }
+    }
+
+
+    @Test
+    fun showsErrorMessage() {
+        val userRepo = getTestUserRepo()
+        val errorMessage = "Failed to load users"
+
+        userRepo.triggerError(errorMessage)
+        composeTestRule.waitForIdle()
+
+        checkErrorMessage(errorMessage)
+    }
+
+    @Test
+    fun showsUsersList() {
+        val userRepo = getTestUserRepo()
+        val testUsers = listOf(
+            UserSurface(id = 1, familyName = "Test User 1"),
+            UserSurface(id = 2, familyName = "Test User 2")
+        )
+
+        userRepo.triggerSuccessWithCustomUsers(testUsers)
+        composeTestRule.waitForIdle()
+        checkUsersList(testUsers)
+    }
+
+    @Test
+    fun loadingToSuccess_ShowsUsersList() {
+        val userRepo = getTestUserRepo()
+
+        userRepo.triggerLoading()
+
+        val testUsers = listOf(
+            UserSurface(id = 1, familyName = "Test User 1"),
+            UserSurface(id = 2, familyName = "Test User 2")
+        )
+
+        userRepo.triggerSuccessWithCustomUsers(testUsers)
+        composeTestRule.waitForIdle()
+        checkUsersList(testUsers)
+    }
+
+    @Test
+    fun loadingToError_ShowsErrorMessage() {
+        val userRepo = getTestUserRepo()
+        val errorMessage = "Failed to load users"
+
+        userRepo.triggerLoading()
+
+        userRepo.triggerError(errorMessage)
+        composeTestRule.waitForIdle()
+        checkErrorMessage(errorMessage)
+    }
+}

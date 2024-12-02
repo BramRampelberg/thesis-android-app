@@ -3,7 +3,6 @@ package com.example.android_2425_gent2.ui.screens.profile_page
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_2425_gent2.data.model.UserSurface
-import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.user.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +29,7 @@ class GuestUsersViewModel(
 
     private fun fetchUsers() {
         viewModelScope.launch {
-            userRepository.getReservations().collect { result ->
+            userRepository.getUsers().collect { result ->
                 when (result) {
                     is APIResource.Loading -> {
                         _uiState.update {

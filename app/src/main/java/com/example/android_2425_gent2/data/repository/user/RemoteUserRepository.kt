@@ -2,7 +2,6 @@ package com.example.android_2425_gent2.data.repository.user
 
 import com.example.android_2425_gent2.data.model.UserSurface
 import com.example.android_2425_gent2.data.model.toDomain
-import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
 import com.example.android_2425_gent2.data.network.users.UserApiService
 import kotlinx.coroutines.flow.Flow
 import com.example.android_2425_gent2.data.repository.APIResource
@@ -16,13 +15,14 @@ class RemoteUserRepository (
 
 ) : UserRepository {
 
-    override suspend fun getReservations(): Flow<APIResource<List<UserSurface>>> = flow {
+    override suspend fun getUsers(): Flow<APIResource<List<UserSurface>>> = flow {
 
         emit(APIResource.Loading())
 
         val result = withContext(Dispatchers.IO) {
             try {
-                val response = remoteUserRepository.getGuests().map { it.toDomain() }
+                println("trying to get users")
+                val response = remoteUserRepository.getGuests().items.map { it.toDomain() }
                 APIResource.Success(response)
             } catch (e: Exception) {
                 APIResource.Error("Failed to fetch user surface info: ${e.message}")
