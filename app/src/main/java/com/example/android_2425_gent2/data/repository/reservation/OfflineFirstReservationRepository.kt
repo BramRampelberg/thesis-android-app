@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import com.example.android_2425_gent2.data.local.dao.OfflineReservationDao
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
+import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.network.model.asEntity
@@ -31,21 +32,15 @@ class OfflineFirstReservationRepository(
         isNextPage: Boolean?,
         getPast: Boolean,
         pageSize: Int
-    ): Flow<APIResource<ReservationResponse>> = flow {
+    ): Flow<APIResource<List<OfflineReservation>>> = flow {
         //emit loading
         emit(APIResource.Loading())
-
 
         val reservationsFlow = reservationDao.getOfflineReservations(getPast = getPast)
             .distinctUntilChanged()
             .map { localReservations ->
                 APIResource.Success(
-                    ReservationResponse(
-                        data = localReservations.map { it.asExternalModel() },
-                        isFirstPage = cursor == null,
-                        previousId = cursor,
-                        nextId = null
-                    )
+                    localReservations.map { it.asExternalModel() },
                 )
             }
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,18 +34,22 @@ fun ReservationsPage(
     val coroutineScope = rememberCoroutineScope()
     val reservationsUiState by viewModel.reservationsUiState.collectAsState()
     val selectedReservationUiState = viewModel.selectedReservationUiState
-    var reservationTypeUiSate = viewModel.reservationTypeUiState
-    val listState by viewModel.reservationListState.collectAsState()
+    val reservationTypeUiState = viewModel.reservationTypeUiState
+
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
 
 
     Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ReservationTypeSelectionDropDownMenu(
-            reservationTypeUiSate.reservationType,
+            reservationTypeUiState.reservationType,
             {
                 viewModel.setReservationType(it)
             },
             modifier = modifier.testTag("ReservationTypeSelectionDropDownMenu"),
         )
+
         if (reservationsUiState.hasError) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -63,14 +68,13 @@ fun ReservationsPage(
             }
         } else {
             ReservationList(
-                state = listState,
+                reservations = reservationsUiState.reservations,
                 onSelectedReservationChange = { reservation ->
                     coroutineScope.launch {
                         viewModel.setSelectedReservation(reservation)
                     }
                 },
-                onLoadMore = viewModel::loadMoreIfNeeded,
-                modifier = modifier
+                modifier = modifier,
             )
         }
 
