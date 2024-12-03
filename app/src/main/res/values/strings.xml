@@ -4,7 +4,7 @@
     <string name="calendar">kalender</string>
     <string name="reservations">Reservaties</string>
     <string name="notifications">Notificaties</string>
-    <string name="profile">profiel</string>
+    <string name="profile">Profiel</string>
     <string name="upcoming_reservations">Aankomende reservaties</string>
     <string name="old_reservations">Oude reservaties</string>
     <string name="select_type_reservations">Selecteer type reservaties</string>
@@ -33,6 +33,14 @@
     <string name="time">Tijd</string>
     <string name="placed_reservation">Reservering geplaats</string>
     <string name="payment_loading_indicator">betaling laden</string>
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="go_to_dashboard">Admin Dashbord</string>
+    <string name="manage_guests">Gasten beheren</string>
+    <string name="welcome_admin_message">Welkom bij het Admin Paneel</string>
+    <string name="quick_actions">Snelle Acties</string>
+    <string name="users_list">Gasten</string>
+    <string name="edit_profile">Profiel bijwerken</string>
+    <string name="privacy_settings">Instellingen</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="notification_details">Notification Details</string>
     <string name="back">Back</string>

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.ui.screens.app_page.AppViewModel
+import com.example.android_2425_gent2.ui.screens.profile_page.GuestUsersViewModel
 import com.example.android_2425_gent2.ui.screens.calendar_page.CalendarViewModel
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationDetailsViewModel
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationViewModel
@@ -43,6 +44,13 @@ object AppViewModelProvider {
         initializer {
             NotificationViewModel(mainApplication().container.notificationRepository)
         }
+
+        initializer {
+            GuestUsersViewModel(
+                mainApplication().container.userRepository
+            )
+        }
+
     }
 
 }

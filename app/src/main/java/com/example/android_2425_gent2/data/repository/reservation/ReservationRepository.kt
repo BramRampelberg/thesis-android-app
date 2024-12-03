@@ -14,7 +14,6 @@ interface ReservationRepository {
         pageSize: Int = 5
     ): Flow<APIResource<ReservationResponse>>
 
-
     suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>>
 
 }
