@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import com.example.android_2425_gent2.ui.screens.CalendarPage
 import com.example.android_2425_gent2.ui.screens.HomePage
 
-
 @Composable
 fun NavigationHost(navController: NavHostController, modifier: Modifier) {
     NavHost(
@@ -23,9 +22,6 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
             CalendarPage()
         }
         notificationNavigation(navController)
-
         profileNavigation(navController, modifier)
-
-
     }
 }

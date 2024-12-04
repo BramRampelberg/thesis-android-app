@@ -16,24 +16,27 @@ class NotificationDetailsViewModel(
     private val _notificationDetailsUiState = MutableStateFlow(NotificationDetailsUiState())
     val notificationDetailsUiState: StateFlow<NotificationDetailsUiState> = _notificationDetailsUiState
 
-    fun loadNotificationDetails(notificationId: Int) {
+    fun setNotification(notification: NotificationDto) {
+        _notificationDetailsUiState.value = NotificationDetailsUiState(notification = notification)
+        markAsRead(notification.id)
+    }
+
+    private fun markAsRead(notificationId: Int) {
         viewModelScope.launch {
-            notificationRepository.getNotificationDetails(notificationId)
+            notificationRepository.markNotificationAsRead(notificationId)
                 .collect { apiResource ->
                     when (apiResource) {
-                        is APIResource.Loading -> {
-                            _notificationDetailsUiState.value = NotificationDetailsUiState(isLoading = true)
-                        }
-                        is APIResource.Success -> {
-                            _notificationDetailsUiState.value = NotificationDetailsUiState(
-                                notification = apiResource.data
-                            )
-                        }
                         is APIResource.Error -> {
-                            _notificationDetailsUiState.value = NotificationDetailsUiState(
+                            _notificationDetailsUiState.value = _notificationDetailsUiState.value.copy(
                                 hasError = true,
                                 errorMessage = apiResource.message
                             )
+                        }
+                        is APIResource.Loading -> {
+                            // We don't need to show loading state for mark as read
+                        }
+                        is APIResource.Success -> {
+                            // Successfully marked as read
                         }
                     }
                 }

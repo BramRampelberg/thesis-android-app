@@ -20,13 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.partials.NotificationRow
 
-@Preview
 @Composable
 fun NotificationPage(
-    onNotificationClick: (Int) -> Unit = {},
+    onNotificationClick: (NotificationDto) -> Unit,
     viewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -82,7 +82,7 @@ fun NotificationPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(notificationsUiState.notifications) { notification ->
-                    NotificationRow(notification, onClick = { onNotificationClick(notification.id) })
+                    NotificationRow(notification, onClick = { onNotificationClick(notification) })
                 }
             }
         }

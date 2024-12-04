@@ -30,14 +30,14 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
                         is APIResource.Success -> {
                             val response = apiResource.data
                             if (response != null) {
-                                val currentList = _notificationsUiSate.value.notifications
-                                val newItems = response
-
-                                val combinedList = (currentList + newItems).distinctBy { it.id }
+//                                val currentList = _notificationsUiSate.value.notifications
+//                                val newItems = response
+//
+//                                val combinedList = (currentList + newItems).distinctBy { it.id }
 
                                 _notificationsUiSate.value = NotificationsUiState(
                                     loading = false,
-                                    notifications = combinedList
+                                    notifications = response
                                 )
                             } else {
                                 _notificationsUiSate.value = NotificationsUiState(
