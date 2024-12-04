@@ -1,30 +1,21 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_2425_gent2.data.model.OfflineReservation
-import com.example.android_2425_gent2.data.network.model.ReservationDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val TAG = "ReservationsViewModel"
 //the amount of reservations we want to load at a time
 //when
 class ReservationsViewModel(private val reservationRepository: ReservationRepository) : ViewModel() {
-    private val _refreshTrigger = MutableStateFlow(0)
-
     var reservationTypeUiState by mutableStateOf(ReservationTypeUiSate(ReservationType.UPCOMING))
         private set
 
@@ -40,20 +31,10 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
     }
 
     init {
-        viewModelScope.launch {
-            combine(
-                _refreshTrigger,
-                snapshotFlow { reservationTypeUiState.reservationType }
-            ) { _, type -> type }
-                .collect { type ->
-                    loadReservationsForCurrentType()
-                }
-        }
+        loadReservationsForCurrentType()
     }
 
-    fun refresh() {
-        _refreshTrigger.value = _refreshTrigger.value + 1
-    }
+
 
     fun setSelectedReservation(reservation: OfflineReservation?) {
         selectedReservationUiState = SelectedReservationUiState(reservation)

@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.data.model.OfflineReservation
-import com.example.android_2425_gent2.data.network.model.ReservationDto
 import com.example.android_2425_gent2.utils.TIME_FORMATTER
 
 @RequiresApi(Build.VERSION_CODES.O)

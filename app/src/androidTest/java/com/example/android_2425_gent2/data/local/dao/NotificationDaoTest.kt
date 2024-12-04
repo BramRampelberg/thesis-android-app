@@ -15,7 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.time.LocalDateTime
-import kotlin.jvm.Throws
 
 @RunWith(AndroidJUnit4::class)
 class NotificationDaoTest {

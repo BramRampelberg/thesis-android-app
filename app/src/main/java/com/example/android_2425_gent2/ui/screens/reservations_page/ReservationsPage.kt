@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,10 +34,6 @@ fun ReservationsPage(
     val reservationsUiState by viewModel.reservationsUiState.collectAsState()
     val selectedReservationUiState = viewModel.selectedReservationUiState
     val reservationTypeUiState = viewModel.reservationTypeUiState
-
-    LaunchedEffect(Unit) {
-        viewModel.refresh()
-    }
 
 
     Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {

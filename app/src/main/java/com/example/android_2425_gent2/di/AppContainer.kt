@@ -5,8 +5,10 @@ import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.storage.SecureCredentialsManager
 import com.auth0.android.authentication.storage.SharedPreferencesStorage
-import com.example.android_2425_gent2.di.module.NetworkModule
 import com.example.android_2425_gent2.data.local.AppDatabase
+import com.example.android_2425_gent2.data.repository.auth.Auth0Repo
+import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
+import com.example.android_2425_gent2.data.repository.auth.TestAuth0Repo
 import com.example.android_2425_gent2.data.repository.notification.NotificationRepository
 import com.example.android_2425_gent2.data.repository.notification.OfflineFirstNotificationRepository
 import com.example.android_2425_gent2.data.repository.notification.TestNotificationRepository
@@ -16,9 +18,7 @@ import com.example.android_2425_gent2.data.repository.reservation.TestReservatio
 import com.example.android_2425_gent2.data.repository.timeslot.NetworkTimeSlotRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TestTimeSlotRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
-import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
-import com.example.android_2425_gent2.data.repository.auth.Auth0Repo
-import com.example.android_2425_gent2.data.repository.auth.TestAuth0Repo
+import com.example.android_2425_gent2.di.module.NetworkModule
 
 interface AppContainer {
     val reservationRepository: ReservationRepository

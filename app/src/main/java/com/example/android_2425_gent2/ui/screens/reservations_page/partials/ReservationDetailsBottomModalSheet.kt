@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.OfflineReservation
-import com.example.android_2425_gent2.data.network.model.ReservationDto
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

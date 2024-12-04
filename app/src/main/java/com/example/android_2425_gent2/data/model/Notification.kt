@@ -1,8 +1,6 @@
 package com.example.android_2425_gent2.data.model
 
 import com.example.android_2425_gent2.data.local.entity.OfflineNotificationEntity
-import com.example.android_2425_gent2.data.local.entity.ReservationEntity
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 

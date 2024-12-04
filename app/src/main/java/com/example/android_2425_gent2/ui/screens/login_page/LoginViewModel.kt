@@ -1,12 +1,12 @@
 package com.example.android_2425_gent2.ui.screens.login_page
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_2425_gent2.BuildConfig
 import com.auth0.android.result.Credentials
+import com.example.android_2425_gent2.BuildConfig
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
 import kotlinx.coroutines.launch

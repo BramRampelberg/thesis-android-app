@@ -1,11 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import org.junit.Rule
-import org.junit.Test
 import com.example.android_2425_gent2.data.network.model.ReservationDto
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.repository.APIResource
@@ -13,14 +7,19 @@ import com.example.android_2425_gent2.data.repository.reservation.ReservationRep
 import com.example.android_2425_gent2.ui.screens.reservations_page.coroutine.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import java.time.LocalTime
+import org.junit.Rule
+import org.junit.Test
 import java.time.LocalDate
+import java.time.LocalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ReservationsViewModelTest {

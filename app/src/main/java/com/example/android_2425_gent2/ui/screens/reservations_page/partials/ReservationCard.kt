@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.data.model.OfflineReservation
-import com.example.android_2425_gent2.data.network.model.ReservationDto
 
 @Composable
 fun ReservationCard(

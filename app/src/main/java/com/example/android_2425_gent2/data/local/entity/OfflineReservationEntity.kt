@@ -3,7 +3,6 @@ package com.example.android_2425_gent2.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.android_2425_gent2.data.model.OfflineReservation
-import com.example.android_2425_gent2.data.network.model.ReservationDto
 import java.time.LocalDate
 import java.time.LocalTime
 
