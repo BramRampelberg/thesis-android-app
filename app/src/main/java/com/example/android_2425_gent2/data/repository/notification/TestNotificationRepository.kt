@@ -1,22 +1,24 @@
 package com.example.android_2425_gent2.data.repository.notification
 
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
+import java.util.Date
 
 class TestNotificationRepository: NotificationRepository {
 
-    override suspend fun getNotifications(): Flow<APIResource<List<NotificationDto>>> = flow {
+    override suspend fun getNotifications(): Flow<APIResource<List<Notification>>> = flow {
         val mockNotifications = listOf(
-            NotificationDto(
+            Notification(
                 id = 1,
                 severity = 1,
                 title = "This is a info notification",
                 message = "This is the message",
-                createdAt = LocalDateTime.now(),
+                timeStamp = Date(),
                 isRead = false
             )
         )

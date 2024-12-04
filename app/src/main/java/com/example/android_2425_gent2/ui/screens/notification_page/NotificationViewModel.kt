@@ -2,7 +2,7 @@ package com.example.android_2425_gent2.ui.screens.notification_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_2425_gent2.data.network.model.NotificationDto
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.notification.NotificationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +61,7 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
 
 
 data class NotificationsUiState(
-    val notifications: List<NotificationDto> = emptyList(),
+    val notifications: List<Notification> = emptyList(),
     val loading: Boolean = false,
     val hasError: Boolean = false,
     val errorMessage: String? = null

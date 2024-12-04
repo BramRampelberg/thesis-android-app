@@ -2,6 +2,7 @@ package com.example.android_2425_gent2.ui.screens.notification_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.notification.NotificationRepository
@@ -16,7 +17,7 @@ class NotificationDetailsViewModel(
     private val _notificationDetailsUiState = MutableStateFlow(NotificationDetailsUiState())
     val notificationDetailsUiState: StateFlow<NotificationDetailsUiState> = _notificationDetailsUiState
 
-    fun setNotification(notification: NotificationDto) {
+    fun setNotification(notification: Notification) {
         _notificationDetailsUiState.value = NotificationDetailsUiState(notification = notification)
         markAsRead(notification.id)
     }
@@ -45,7 +46,7 @@ class NotificationDetailsViewModel(
 }
 
 data class NotificationDetailsUiState(
-    val notification: NotificationDto? = null,
+    val notification: Notification? = null,
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
     val errorMessage: String? = null

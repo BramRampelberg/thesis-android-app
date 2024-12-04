@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.partials.NotificationContent
@@ -21,7 +22,7 @@ import com.example.android_2425_gent2.ui.screens.notification_page.partials.Noti
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationDetailsPage(
-    notification: NotificationDto,
+    notification: Notification,
     onNavigateBack: () -> Unit,
     viewModel: NotificationDetailsViewModel = viewModel(
         factory = AppViewModelProvider.Factory

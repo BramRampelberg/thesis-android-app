@@ -15,12 +15,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.extensions.formatRelative
 
 @Composable
 fun NotificationContent(
-    notification: NotificationDto,
+    notification: Notification,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -47,7 +48,7 @@ fun NotificationContent(
             }
 
             Text(
-                text = notification.createdAt.formatRelative(),
+                text = notification.timeStamp.formatRelative(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.testTag("NotificationDetailsTimestamp")

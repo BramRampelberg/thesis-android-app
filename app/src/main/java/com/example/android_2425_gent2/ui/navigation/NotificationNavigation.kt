@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationDetailsPage
@@ -29,7 +30,7 @@ fun NavGraphBuilder.notificationNavigation(navController: NavController) {
     composable(
         route = NotificationNavigation.NOTIFICATION_DETAILS_ROUTE
     ) {
-        val notification = navController.previousBackStackEntry?.savedStateHandle?.get<NotificationDto>("notification")
+        val notification = navController.previousBackStackEntry?.savedStateHandle?.get<Notification>("notification")
 
         if (notification != null) {
             NotificationDetailsPage(

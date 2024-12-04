@@ -3,6 +3,7 @@ package com.example.android_2425_gent2.data.repository.notification
 import android.util.Log
 import com.example.android_2425_gent2.data.local.dao.OfflineNotificationDao
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.data.network.model.asEntity
 import com.example.android_2425_gent2.data.network.notification.NotificationApiService
@@ -43,7 +44,7 @@ class OfflineFirstNotificationRepository(
         }
     }
 
-    override suspend fun getNotifications(): Flow<APIResource<List<NotificationDto>>> = flow {
+    override suspend fun getNotifications(): Flow<APIResource<List<Notification>>> = flow {
         emit(APIResource.Loading())
 
         val notificationsFlow = notificationDao.getOfflineNotifications()

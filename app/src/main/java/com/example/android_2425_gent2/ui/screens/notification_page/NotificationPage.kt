@@ -20,13 +20,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.partials.NotificationRow
 
 @Composable
 fun NotificationPage(
-    onNotificationClick: (NotificationDto) -> Unit,
+    onNotificationClick: (Notification) -> Unit,
     viewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
