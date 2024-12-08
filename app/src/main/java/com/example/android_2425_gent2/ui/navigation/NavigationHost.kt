@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.android_2425_gent2.ui.screens.CalendarPage
 import com.example.android_2425_gent2.ui.screens.HomePage
-import com.example.android_2425_gent2.ui.screens.ProfilePage
 
 @Composable
 fun NavigationHost(navController: NavHostController, modifier: Modifier) {
