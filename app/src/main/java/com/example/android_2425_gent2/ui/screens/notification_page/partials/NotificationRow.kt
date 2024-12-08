@@ -22,11 +22,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.extensions.formatRelative
+import java.time.LocalDateTime
+import java.util.Date
 
 @Composable
 fun NotificationRow(
@@ -64,7 +67,7 @@ fun NotificationRow(
                     )
                     Spacer(modifier = modifier.width(8.dp))
                     Text(
-                        text = "notification_${notification.id}",
+                        text = notification.title,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -121,4 +124,59 @@ private fun getSeverityColor(severity: Int): Color {
         4 -> colorResource(id = R.color.error) // Error
         else -> colorResource(id = R.color.info) // Default
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationRowPreview() {
+    val sampleNotification = Notification(
+        id = 1,
+        message = "This is a sample notification message that might be longer than one line to demonstrate overflow",
+        severity = 1, // Info severity
+        isRead = false,
+        timeStamp = Date(),
+        title = "Notification Title"
+    )
+
+    NotificationRow(
+        notification = sampleNotification,
+        onClick = { /* Preview click handler */ }
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationRowPreviewRead() {
+    val sampleNotification = Notification(
+        id = 2,
+        message = "This is a read notification with warning severity",
+        severity = 3, // Warning severity
+        isRead = true,
+        timeStamp = Date(),
+        title = "Unread warning notification"
+    )
+
+    NotificationRow(
+        notification = sampleNotification,
+        onClick = { /* Preview click handler */ }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationRowPreviewSuccess() {
+    val sampleNotification = Notification(
+        id = 3,
+        message = "This is a success notification",
+        severity = 2, // Success severity
+        isRead = false,
+        timeStamp = Date(),
+        title = "Success notification"
+    )
+
+    NotificationRow(
+        notification = sampleNotification,
+        onClick = { /* Preview click handler */ }
+    )
 }
