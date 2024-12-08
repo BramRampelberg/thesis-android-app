@@ -131,11 +131,11 @@ private fun getSeverityColor(severity: Int): Color {
 fun NotificationRowPreview() {
     val sampleNotification = Notification(
         id = 1,
+        title = "Notification Title that might be longer than one line to demonstrate overflow",
         message = "This is a sample notification message that might be longer than one line to demonstrate overflow",
         severity = 1, // Info severity
         isRead = false,
-        timeStamp = Date(),
-        title = "Notification Title"
+        timeStamp = Date()
     )
 
     NotificationRow(
@@ -150,11 +150,11 @@ fun NotificationRowPreview() {
 fun NotificationRowPreviewRead() {
     val sampleNotification = Notification(
         id = 2,
+        title = "Unread warning notification",
         message = "This is a read notification with warning severity",
         severity = 3, // Warning severity
         isRead = true,
-        timeStamp = Date(),
-        title = "Unread warning notification"
+        timeStamp = Date()
     )
 
     NotificationRow(
@@ -168,11 +168,11 @@ fun NotificationRowPreviewRead() {
 fun NotificationRowPreviewSuccess() {
     val sampleNotification = Notification(
         id = 3,
+        title = "Success notification",
         message = "This is a success notification",
         severity = 2, // Success severity
         isRead = false,
-        timeStamp = Date(),
-        title = "Success notification"
+        timeStamp = Date()
     )
 
     NotificationRow(
