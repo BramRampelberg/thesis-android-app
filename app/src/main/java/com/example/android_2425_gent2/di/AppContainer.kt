@@ -18,13 +18,19 @@ import com.example.android_2425_gent2.data.repository.reservation.TestReservatio
 import com.example.android_2425_gent2.data.repository.timeslot.NetworkTimeSlotRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TestTimeSlotRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
+import com.example.android_2425_gent2.data.repository.user.RemoteUserRepository
 import com.example.android_2425_gent2.di.module.NetworkModule
+import com.example.android_2425_gent2.data.repository.user.TestUserRepository
+import com.example.android_2425_gent2.data.repository.user.UserRepository
+
 
 interface AppContainer {
     val reservationRepository: ReservationRepository
     val timeSlotRepository: TimeSlotRepository
-    val notificationRepository: NotificationRepository    
+    val notificationRepository: NotificationRepository
     val authRepo: IAuthRepo
+    val userRepository: UserRepository
+
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
@@ -53,6 +59,9 @@ class AppDataContainer(private val context: Context) : AppContainer {
         OfflineFirstNotificationRepository(AppDatabase.getDatabase(context).offlineNotificationDao(),
             NetworkModule.provideNotificationApiService(authRepo))
     }
+    override val userRepository: UserRepository by lazy {
+        RemoteUserRepository(NetworkModule.provideUserApiSerivce(authRepo))
+    }
 }
 
 class TestContainer() : AppContainer {
@@ -69,5 +78,8 @@ class TestContainer() : AppContainer {
     }
     override val notificationRepository: NotificationRepository by lazy {
         TestNotificationRepository()
+    }
+    override val userRepository: UserRepository by lazy {
+        TestUserRepository()
     }
 }

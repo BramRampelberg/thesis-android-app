@@ -4,6 +4,7 @@ import com.example.android_2425_gent2.BuildConfig
 import com.example.android_2425_gent2.data.network.notification.NotificationApiService
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.network.timeslot.TimeSlotApiService
+import com.example.android_2425_gent2.data.network.users.UserApiService
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
@@ -115,4 +116,10 @@ object NetworkModule {
         val retrofit = provideRetrofit(authRepo)
         return retrofit.create(NotificationApiService::class.java)
     }
+
+    fun provideUserApiSerivce(authRepo: IAuthRepo): UserApiService {
+        val retrofit = provideRetrofit(authRepo)
+        return retrofit.create(UserApiService::class.java)
+    }
+
 }

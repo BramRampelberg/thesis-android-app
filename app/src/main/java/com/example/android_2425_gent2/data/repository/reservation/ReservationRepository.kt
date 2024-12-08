@@ -11,7 +11,6 @@ interface ReservationRepository {
         getPast: Boolean = false,
     ): Flow<APIResource<List<OfflineReservation>>>
 
-
     suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>>
 
 }
