@@ -12,7 +12,7 @@ import java.util.Locale
 fun Date.formatRelative(): String {
     val now = Date()
     val formatter = SimpleDateFormat("h:mm a", Locale.getDefault())
-    val dateFormatter = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     val dayFormatter = SimpleDateFormat("EEEE", Locale.getDefault())
 
     val calendarThis = Calendar.getInstance().apply { time = this@formatRelative }

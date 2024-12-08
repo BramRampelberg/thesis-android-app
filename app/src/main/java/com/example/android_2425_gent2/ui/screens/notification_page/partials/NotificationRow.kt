@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
@@ -39,6 +41,7 @@ fun NotificationRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            .testTag("notification_${notification.id}")
     ) {
         Column(
             modifier = modifier.padding(16.dp)
@@ -50,8 +53,8 @@ fun NotificationRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                    modifier = modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = modifier.weight(1f).testTag("row_content_${notification.id}"),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         getSeverityIcon(notification.severity),
@@ -61,7 +64,7 @@ fun NotificationRow(
                     )
                     Spacer(modifier = modifier.width(8.dp))
                     Text(
-                        text = notification.title,
+                        text = "notification_${notification.id}",
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -73,6 +76,8 @@ fun NotificationRow(
                         modifier = modifier
                             .size(8.dp)
                             .background(colorResource(id = R.color.info), CircleShape)
+                            .testTag("unread_indicator_${notification.id}")
+                            .semantics(mergeDescendants = false) {}
                     )
                 }
                 Text(

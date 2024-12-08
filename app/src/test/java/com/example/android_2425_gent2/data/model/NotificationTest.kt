@@ -1,20 +1,33 @@
 package com.example.android_2425_gent2.data.model
 
 import com.example.android_2425_gent2.data.local.entity.OfflineNotificationEntity
+import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.data.test_data.getTestNotifications
+import com.example.android_2425_gent2.extensions.toDate
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.Date
 
 class NotificationTest {
-    val notification = getTestNotifications()[0]
+    private val testDate = Date()
+    private val notification = Notification(
+        id = 1,
+        severity = 1,
+        title = "Test Title",
+        message = "Test Message",
+        timeStamp = testDate,
+        isRead = false
+    )
 
     @Test
     fun notificationAsEntity_returnsNotificationEntity() {
         val notificationEntity = notification.asEntity()
 
         assertEquals(
-            notificationEntity, OfflineNotificationEntity(
+            notificationEntity,
+            OfflineNotificationEntity(
                 id = notification.id,
                 title = notification.title,
                 message = notification.message,
