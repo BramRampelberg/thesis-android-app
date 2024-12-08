@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.data.repository.reservation
 
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.network.model.ReservationDto
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.repository.APIResource
@@ -70,5 +71,21 @@ class TestReservationRepository : ReservationRepository {
         return listOf(APIResource.Success(1)).asFlow()
     }
 
+    override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
+        emit(APIResource.Loading())
+        delay(500) // Simulate network delay
+        
+        emit(APIResource.Success(
+            ReservationDetailsDto(
+                pickupPersonName = "Her De Gaver",
+                phoneNumber = "+32477587465",
+                email = "patrick.her.der.gaver@gmail.com",
+                street = "Korenlei 7",
+                postalCode = "9000",
+                city = "Gent",
+                mentorName = "Her De Gaver"
+            )
+        ))
+    }
 
 }

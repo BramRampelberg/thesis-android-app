@@ -77,6 +77,8 @@ fun ReservationsPage(
         if (selectedReservationUiState.selectedReservation != null) {
             ReservationDetailsBottomModalSheet(
                 selectedReservationUiState.selectedReservation,
+                reservationDetails = selectedReservationUiState.details,
+                isLoading = selectedReservationUiState.isLoadingDetails,
                 {
                     coroutineScope.launch {
                         viewModel.setSelectedReservation(it)

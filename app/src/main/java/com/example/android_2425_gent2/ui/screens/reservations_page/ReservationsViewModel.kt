@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_2425_gent2.data.network.model.ReservationDto
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,6 +61,9 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
 
     fun setSelectedReservation(reservation: ReservationDto?) {
         selectedReservationUiState = SelectedReservationUiState(reservation)
+        if (reservation != null) {
+            loadReservationDetails(reservation.id)
+        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -152,6 +156,31 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         }
     }
 
+    private fun loadReservationDetails(reservationId: Int) {
+        viewModelScope.launch {
+            selectedReservationUiState = selectedReservationUiState.copy(isLoadingDetails = true)
+            reservationRepository.getReservationDetails(reservationId).collect { result ->
+                selectedReservationUiState = when (result) {
+                    is APIResource.Loading -> {
+                        selectedReservationUiState.copy(isLoadingDetails = true)
+                    }
+                    is APIResource.Success -> {
+                        selectedReservationUiState.copy(
+                            details = result.data,
+                            isLoadingDetails = false,
+                            error = null
+                        )
+                    }
+                    is APIResource.Error -> {
+                        selectedReservationUiState.copy(
+                            error = result.message,
+                            isLoadingDetails = false
+                        )
+                    }
+                }
+            }
+        }
+    }
 
 }
 
@@ -167,7 +196,10 @@ data class ReservationsUiState(
 )
 
 data class SelectedReservationUiState(
-    val selectedReservation: ReservationDto?
+    val selectedReservation: ReservationDto?,
+    val details: ReservationDetailsDto? = null,
+    val isLoadingDetails: Boolean = false,
+    val error: String? = null
 )
 
 data class ReservationTypeUiSate(

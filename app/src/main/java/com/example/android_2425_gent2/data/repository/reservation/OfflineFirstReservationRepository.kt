@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import com.example.android_2425_gent2.data.local.dao.OfflineReservationDao
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.network.model.asEntity
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
@@ -101,6 +102,21 @@ class OfflineFirstReservationRepository(
                 APIResource.Success(response)
             } catch (e: Exception) {
                 APIResource.Error("Failed to create reservation: ${e.message}")
+            }
+        }
+
+        emit(result)
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
+        emit(APIResource.Loading())
+
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val response = remoteApiService.getReservationDetails(reservationId)
+                APIResource.Success(response)
+            } catch (e: Exception) {
+                APIResource.Error("Failed to fetch reservation details: ${e.message}")
             }
         }
 
