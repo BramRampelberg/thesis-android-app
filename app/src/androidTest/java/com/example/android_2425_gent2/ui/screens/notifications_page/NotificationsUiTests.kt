@@ -3,7 +3,6 @@ package com.example.android_2425_gent2.ui.screens.notifications_page
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
@@ -29,9 +28,7 @@ import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.Date
 import android.util.Log
-import androidx.compose.ui.test.assertIsNotDisplayed
 
 class NotificationsUiTests {
     private lateinit var testContainer: TestContainer
@@ -115,65 +112,27 @@ class NotificationsUiTests {
 
     @Test
     fun unreadIndicatorDisappearsAfterReading() {
-        // Wait for the list to be loaded
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            try {
-                composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
-                true
-            } catch (e: AssertionError) {
-                false
-            }
-        }
+        // Verify that the list is being loaded
+        composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
 
         // Verify unread indicator exists initially
         composeTestRule.onNodeWithTag("unread_indicator_1", useUnmergedTree = true).assertExists()
 
-        // Print the UI tree for debugging
-        composeTestRule.onRoot().printToLog("NOTIFICATION_TEST")
-
         // Click the notification
         composeTestRule.onNodeWithTag("notification_1").performClick()
 
-        // Wait for navigation to complete and detail screen to be visible
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            try {
-                composeTestRule.onNodeWithTag("notification_details_page").assertExists()
-                true
-            } catch (e: AssertionError) {
-                false
-            }
-        }
-
-
-        // Add a small delay to allow for state updates
-        kotlinx.coroutines.runBlocking {
-            kotlinx.coroutines.delay(5000)  // 500ms delay
-        }
+        // Verify that the details page is being loaded
+        composeTestRule.onNodeWithTag("notification_details_page").assertExists()
 
         // Click back
         composeTestRule.onNodeWithContentDescription("Back").performClick()
 
-        // Wait for the list to be loaded
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            try {
-                composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
-                true
-            } catch (e: AssertionError) {
-                false
-            }
-        }
+        // Verify that the list is being loaded
+        composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
 
-
-        // Wait for navigation back to complete and verify unread indicator is gone
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            try {
-                composeTestRule
-                    .onNodeWithTag("unread_indicator_1", useUnmergedTree = true)
-                    .assertIsNotDisplayed()
-                true
-            } catch (e: AssertionError) {
-                false
-            }
-        }
+        // Verify unread indicator is gone
+        composeTestRule
+            .onNodeWithTag("unread_indicator_1", useUnmergedTree = true)
+            .assertDoesNotExist()
     }
 }
