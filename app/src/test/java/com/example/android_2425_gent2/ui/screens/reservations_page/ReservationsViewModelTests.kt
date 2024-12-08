@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
+import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.data.network.model.ReservationDto
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.repository.APIResource
@@ -34,7 +35,7 @@ class ReservationsViewModelTest {
     private val sampleStartTime = LocalTime.of(10, 0)
     private val sampleEndTime = LocalTime.of(12, 0)
 
-    private val sampleReservation1 = ReservationDto(
+    private val sampleReservation1 = OfflineReservation(
         start = sampleStartTime,
         end = sampleEndTime,
         date = sampleDate,
@@ -43,7 +44,7 @@ class ReservationsViewModelTest {
         id = 1
     )
 
-    private val sampleReservation2 = ReservationDto(
+    private val sampleReservation2 = OfflineReservation(
         start = sampleStartTime.plusHours(2),
         end = sampleEndTime.plusHours(2),
         date = sampleDate,
@@ -55,17 +56,9 @@ class ReservationsViewModelTest {
     @Test
     fun `initial state should be loading upcoming reservations`() = runTest {
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
             getPast = false,
-            pageSize = 10
         ) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+            emit(APIResource.Success(emptyList()))
         }
 
         viewModel = ReservationsViewModel(reservationRepository)
@@ -78,31 +71,19 @@ class ReservationsViewModelTest {
     fun `setReservationType should update state and trigger loading`() = runTest {
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
+
             getPast = false,
-            pageSize = 10
+
         ) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+            emit(APIResource.Success(emptyList()))
         }
 
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
+
             getPast = true,
-            pageSize = 10
+
         ) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+            emit(APIResource.Success(emptyList()))
         }
 
         viewModel = ReservationsViewModel(reservationRepository)
@@ -119,19 +100,15 @@ class ReservationsViewModelTest {
         val mockReservations = listOf(sampleReservation1, sampleReservation2)
 
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
             getPast = false,
-            pageSize = 10
+
         ) } returns flow {
             emit(APIResource.Success(
-                ReservationResponse(
-                    data = mockReservations,
-                    nextId = 3,
-                    previousId = null,
-                    isFirstPage = true
+
+                    mockReservations
+
                 )
-            ))
+            )
         }
 
         viewModel = ReservationsViewModel(reservationRepository)
@@ -141,9 +118,6 @@ class ReservationsViewModelTest {
             assertFalse(loading)
             assertFalse(hasError)
             assertEquals(mockReservations, reservations)
-            assertEquals(3, nextCursor)
-            assertNull(previousCursor)
-            assertTrue(isFirstPage)
         }
     }
 
@@ -153,10 +127,7 @@ class ReservationsViewModelTest {
 
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
             getPast = false,
-            pageSize = 10
         ) } returns flow {
             emit(APIResource.Error(errorMessage))
         }
@@ -177,63 +148,34 @@ class ReservationsViewModelTest {
 
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
+
             getPast = false,
-            pageSize = 10
         ) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = initialReservations,
-                nextId = 3,
-                previousId = null,
-                isFirstPage = true
-            )))
+            emit(APIResource.Success(initialReservations))
         }
 
         coEvery { reservationRepository.getReservations(
-            cursor = 3,
-            isNextPage = true,
             getPast = false,
-            pageSize = 10
+
         ) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = listOf(sampleReservation2),
-                nextId = null,
-                previousId = 2,
-                isFirstPage = false
-            )))
+            emit(APIResource.Success(listOf(sampleReservation2)))
         }
 
         viewModel = ReservationsViewModel(reservationRepository)
         advanceUntilIdle()
 
-        viewModel.loadMoreIfNeeded(1)
-        advanceUntilIdle()
 
-        // Replace Mockito verify with mockk verify
-        coVerify { reservationRepository.getReservations(
-            cursor = 3,
-            isNextPage = true,
-            getPast = false,
-            pageSize = 10
-        ) }
     }
 
     @Test
     fun `setSelectedReservation should update selected reservation state`() = runTest {
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-            cursor = null,
-            isNextPage = true,
+
             getPast = false,
-            pageSize = 10
+
         ) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+            emit(APIResource.Success(emptyList()))
         }
 
         viewModel = ReservationsViewModel(reservationRepository)

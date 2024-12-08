@@ -8,10 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface ReservationRepository {
 
     suspend fun getReservations(
-        cursor: Int? = null,
-        isNextPage: Boolean? = true,
         getPast: Boolean = false,
-        pageSize: Int = 5
     ): Flow<APIResource<List<OfflineReservation>>>
 
 

@@ -59,10 +59,7 @@ class OfflineFirstReservationRepository(
     }
 
     override suspend fun getReservations(
-        cursor: Int?,
-        isNextPage: Boolean?,
         getPast: Boolean,
-        pageSize: Int
     ): Flow<APIResource<List<OfflineReservation>>> = flow {
         emit(APIResource.Loading())
 
@@ -75,7 +72,7 @@ class OfflineFirstReservationRepository(
             }
 
         try {
-            fetchAndStoreAllReservations(pageSize)
+            fetchAndStoreAllReservations()
         } catch (e: Exception) {
             // On error, we emit error only if local database is empty
             val localData = reservationDao.getOfflineReservations(getPast = getPast).first()

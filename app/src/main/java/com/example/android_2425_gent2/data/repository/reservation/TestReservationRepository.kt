@@ -13,10 +13,7 @@ import java.time.LocalTime
 class TestReservationRepository : ReservationRepository {
 
     override suspend fun getReservations(
-        cursor: Int?,
-        isNextPage: Boolean?,
         getPast: Boolean,
-        pageSize: Int
     ): Flow<APIResource<List<OfflineReservation>>> = flow {
 
         val mockReservations = listOf(
