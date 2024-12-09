@@ -16,14 +16,16 @@ object ProfileNavigation {
 
 fun NavGraphBuilder.profileNavigation(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    logout: () -> Unit
 ) {
     composable(route = BottomNavItem.Profile.route) {
         ProfilePage(
             modifier = modifier,
             onNavigateToDashboard = {
                 navController.navigate(ProfileNavigation.PROFILE_ADMIN_DASHBOARD)
-            }
+            },
+            logout = logout
         )
     }
 
