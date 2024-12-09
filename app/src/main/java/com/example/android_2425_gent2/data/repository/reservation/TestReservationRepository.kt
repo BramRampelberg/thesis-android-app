@@ -77,13 +77,22 @@ class TestReservationRepository : ReservationRepository {
         
         emit(APIResource.Success(
             ReservationDetailsDto(
-                pickupPersonName = "Her De Gaver",
-                phoneNumber = "+32477587465",
-                email = "patrick.her.der.gaver@gmail.com",
-                street = "Korenlei 7",
-                postalCode = "9000",
-                city = "Gent",
-                mentorName = "Her De Gaver"
+                id = reservationId,
+                start = "10:00:00",
+                end = "13:00:00",
+                date = "2024-10-30",
+                isDeleted = false,
+                boatPersonalName = "Limba",
+                mentorName = "Her De Gaver",
+                batteryId = 42,
+                currentBatteryUserName = "Jane Smith",
+                currentBatteryUserId = 42,
+                currentHolderPhoneNumber = "+32477587465",
+                currentHolderEmail = "jane@example.com",
+                currentHolderStreet = "Main Street",
+                currentHolderNumber = "123",
+                currentHolderCity = "Brussels",
+                currentHolderPostalCode = "1000"
             )
         ))
     }

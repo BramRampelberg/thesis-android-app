@@ -8,6 +8,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.QueryMap
 import retrofit2.http.Path
+import retrofit2.http.Headers
+import retrofit2.Response
 
 interface ReservationApiService {
     @POST("/api/Reservation")
@@ -20,8 +22,12 @@ interface ReservationApiService {
         @QueryMap queryParams: Map<String, @JvmSuppressWildcards Any>
     ): ReservationResponse
 
-    @GET("/api/Reservation/{id}/details")
+    @GET("/api/Reservation/{id}")
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
     suspend fun getReservationDetails(
         @Path("id") reservationId: Int
-    ): ReservationDetailsDto
+    ): Response<ReservationDetailsDto>
 }

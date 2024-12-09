@@ -157,27 +157,54 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
     }
 
     private fun loadReservationDetails(reservationId: Int) {
+        println("Loading details for reservation: $reservationId")
         viewModelScope.launch {
-            selectedReservationUiState = selectedReservationUiState.copy(isLoadingDetails = true)
-            reservationRepository.getReservationDetails(reservationId).collect { result ->
-                selectedReservationUiState = when (result) {
-                    is APIResource.Loading -> {
-                        selectedReservationUiState.copy(isLoadingDetails = true)
-                    }
-                    is APIResource.Success -> {
-                        selectedReservationUiState.copy(
-                            details = result.data,
-                            isLoadingDetails = false,
-                            error = null
-                        )
-                    }
-                    is APIResource.Error -> {
-                        selectedReservationUiState.copy(
-                            error = result.message,
-                            isLoadingDetails = false
-                        )
+            try {
+                selectedReservationUiState = selectedReservationUiState.copy(isLoadingDetails = true)
+                reservationRepository.getReservationDetails(reservationId).collect { result ->
+                    println("Received details result: $result")
+                    selectedReservationUiState = when (result) {
+                        is APIResource.Loading -> {
+                            println("Details loading state")
+                            selectedReservationUiState.copy(isLoadingDetails = true)
+                        }
+                        is APIResource.Success -> {
+                            println("Details success: ${result.data}")
+                            result.data?.let { details ->
+                                if (details.currentBatteryUserName == "Unknown") {
+                                    selectedReservationUiState.copy(
+                                        details = null,
+                                        error = "Details temporarily unavailable",
+                                        isLoadingDetails = false
+                                    )
+                                } else {
+                                    selectedReservationUiState.copy(
+                                        details = details,
+                                        isLoadingDetails = false,
+                                        error = null
+                                    )
+                                }
+                            } ?: selectedReservationUiState.copy(
+                                error = "No details available",
+                                isLoadingDetails = false
+                            )
+                        }
+                        is APIResource.Error -> {
+                            println("Details error: ${result.message}")
+                            selectedReservationUiState.copy(
+                                error = result.message,
+                                isLoadingDetails = false
+                            )
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                println("Error in loadReservationDetails: ${e.message}")
+                e.printStackTrace()
+                selectedReservationUiState = selectedReservationUiState.copy(
+                    error = "Failed to load details: ${e.message}",
+                    isLoadingDetails = false
+                )
             }
         }
     }

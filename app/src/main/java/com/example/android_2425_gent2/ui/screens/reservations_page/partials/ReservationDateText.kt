@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.network.model.ReservationDto
 import java.util.Locale
+import com.example.android_2425_gent2.utils.DATE_FORMATTER
 
 @Composable
 fun ReservationDateText(reservation: ReservationDto, modifier: Modifier) {
@@ -18,6 +19,6 @@ fun ReservationDateText(reservation: ReservationDto, modifier: Modifier) {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }: ${reservation.date}", fontSize = 20.sp
+        }: ${reservation.date.format(DATE_FORMATTER)}", fontSize = 20.sp
     )
 }

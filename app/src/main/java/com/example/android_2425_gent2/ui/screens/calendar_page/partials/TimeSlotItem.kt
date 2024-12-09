@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
+import com.example.android_2425_gent2.utils.TIME_FORMATTER
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -57,14 +58,14 @@ fun TimeSlotItem(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Start: ${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                text = "Start: ${startTime.format(TIME_FORMATTER)}",
                 color = textColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
 
             Text(
-                text = "End: ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                text = "End: ${endTime.format(TIME_FORMATTER)}",
                 color = textColor,
                 fontSize = 12.sp
             )

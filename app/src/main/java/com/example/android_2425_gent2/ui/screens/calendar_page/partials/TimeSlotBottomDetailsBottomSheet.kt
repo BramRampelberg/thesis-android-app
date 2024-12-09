@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.remote.model.TimeSlot
+import com.example.android_2425_gent2.utils.DATE_FORMATTER
+import com.example.android_2425_gent2.utils.TIME_FORMATTER
 import java.time.LocalDate
 
 
@@ -48,7 +50,7 @@ fun TimeSlotDetailsBottomSheet(
             Box(modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.reserve_time_slot) + ": "+ dayInfo.toString(),
+                text = stringResource(R.string.reserve_time_slot) + ": " + dayInfo?.format(DATE_FORMATTER),
                 fontSize = 20.sp,
             )
 
@@ -56,10 +58,10 @@ fun TimeSlotDetailsBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(timeSlot.start
-                        + " - " +
-                         timeSlot.end,
-                        fontSize = 32.sp)
+                Text(
+                    timeSlot.start.format(TIME_FORMATTER) + " - " + timeSlot.end.format(TIME_FORMATTER),
+                    fontSize = 32.sp
+                )
 
             }
 

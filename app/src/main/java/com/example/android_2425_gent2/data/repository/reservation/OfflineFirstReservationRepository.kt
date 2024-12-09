@@ -17,6 +17,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 
 class OfflineFirstReservationRepository(
     private val reservationDao: OfflineReservationDao,
@@ -35,7 +37,6 @@ class OfflineFirstReservationRepository(
     ): Flow<APIResource<ReservationResponse>> = flow {
         //emit loading
         emit(APIResource.Loading())
-
 
         val reservationsFlow = reservationDao.getOfflineReservations(getPast = getPast)
             .distinctUntilChanged()
@@ -62,8 +63,10 @@ class OfflineFirstReservationRepository(
                     put("getPast", getPast)
                     put("pageSize", pageSize)
                 }
+                println("Making API call with queryParams: $queryParams")
 
                 val response = remoteApiService.getReservationPage(queryParams)
+                println("Received API response: $response")
 
                 // udpdate local database
                 withContext(Dispatchers.IO) {
@@ -76,6 +79,8 @@ class OfflineFirstReservationRepository(
                 delay(100)
             }
         } catch (e: Exception) {
+            println("Error in getReservations: ${e.message}")
+            e.printStackTrace()
             // On  error, we emit error only if local database is empty
             val localData = reservationDao.getOfflineReservations(getPast = getPast).first()
             if (localData.isEmpty()) {
@@ -109,13 +114,33 @@ class OfflineFirstReservationRepository(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
+        println("Getting reservation details for ID: $reservationId")
         emit(APIResource.Loading())
 
         val result = withContext(Dispatchers.IO) {
             try {
+                println("Making API call for reservation details")
                 val response = remoteApiService.getReservationDetails(reservationId)
-                APIResource.Success(response)
+                
+                if (response.isSuccessful && response.body() != null) {
+                    println("Received successful API Response: ${response.body()}")
+                    APIResource.Success(response.body()!!)
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    println("Error response: $errorBody")
+                    try {
+                        // Try to parse error message from response
+                        val errorMessage = Gson().fromJson(errorBody, ErrorResponse::class.java)?.message
+                            ?: "Failed to fetch reservation details"
+                        APIResource.Error(errorMessage)
+                    } catch (e: JsonSyntaxException) {
+                        // If parsing fails, return the raw error message
+                        APIResource.Error(errorBody ?: "Failed to fetch reservation details")
+                    }
+                }
             } catch (e: Exception) {
+                println("Error getting reservation details: ${e.message}")
+                e.printStackTrace()
                 APIResource.Error("Failed to fetch reservation details: ${e.message}")
             }
         }
@@ -123,3 +148,7 @@ class OfflineFirstReservationRepository(
         emit(result)
     }.flowOn(Dispatchers.IO)
 }
+
+data class ErrorResponse(
+    val message: String?
+)
