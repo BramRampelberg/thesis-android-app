@@ -12,7 +12,7 @@ import com.example.android_2425_gent2.ui.screens.HomePage
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationViewModel
 
 @Composable
-fun NavigationHost(navController: NavHostController, modifier: Modifier,     notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory)
+fun NavigationHost(navController: NavHostController, modifier: Modifier, logout: () -> Unit,     notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     NavHost(
         navController = navController,
@@ -26,6 +26,6 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier,     not
             CalendarPage()
         }
         notificationNavigation(navController)
-        profileNavigation(navController, modifier)
+        profileNavigation(navController, modifier, logout)
     }
 }

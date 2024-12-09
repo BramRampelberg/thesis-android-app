@@ -35,6 +35,7 @@
     <string name="payment_loading_indicator">betaling laden</string>
     <string name="admin_dashboard">Admin Dashboard</string>
     <string name="go_to_dashboard">Admin Dashbord</string>
+    <string name="logout">Log out</string>
     <string name="manage_guests">Gasten beheren</string>
     <string name="welcome_admin_message">Welkom bij het Admin Paneel</string>
     <string name="quick_actions">Snelle Acties</string>

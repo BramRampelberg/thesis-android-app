@@ -16,6 +16,7 @@ import com.example.android_2425_gent2.ui.navigation.NavigationHost
 fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    logout: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier.testTag("MainScreen"),
@@ -28,6 +29,7 @@ fun MainScreen(
         NavigationHost(
             modifier = modifier.padding(innerPadding),
             navController = navController,
+            logout = logout
         )
     }
 }

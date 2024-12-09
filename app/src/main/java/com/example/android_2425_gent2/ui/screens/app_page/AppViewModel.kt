@@ -12,7 +12,7 @@ class AppViewModel(
     var appState by mutableStateOf(AppState(isLoggedIn = authRepo.isLoggedIn()))
         private set
 
-    fun login() {
+    fun verifyLoginState() {
         appState = appState.copy(isLoggedIn = authRepo.isLoggedIn())
     }
 }

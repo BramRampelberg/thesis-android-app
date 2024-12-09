@@ -31,13 +31,13 @@ class AppViewModelTest {
     @Test
     fun isLoggedIn_UpdateAppState_True() {
 
-        appViewModel.login()
+        appViewModel.verifyLoginState()
 
         assertEquals(true, appViewModel.appState.isLoggedIn)
 
         every { authRepo.isLoggedIn() } returns false
 
-        appViewModel.login()
+        appViewModel.verifyLoginState()
 
         assertEquals(false, appViewModel.appState.isLoggedIn)
     }
