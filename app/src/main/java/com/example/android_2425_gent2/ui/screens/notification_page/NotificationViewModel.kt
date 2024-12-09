@@ -53,10 +53,6 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
         }
     }
 
-    fun reloadNotifications() {
-        loadNotifications()
-    }
-
     private fun loadNotifications() {
         viewModelScope.launch {
             notificationRepository.getNotifications().collect(::updateUiState)
