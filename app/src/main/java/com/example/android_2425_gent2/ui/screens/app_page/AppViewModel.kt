@@ -1,7 +1,7 @@
-package com.example.android_2425_gent2.ui.screens.app_page;
+package com.example.android_2425_gent2.ui.screens.app_page
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo

@@ -10,21 +10,21 @@ import com.auth0.android.request.AuthenticationRequest
 import com.auth0.android.result.Credentials
 import com.example.android_2425_gent2.data.repository.APIResource
 import io.mockk.coEvery
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.coVerify
-import io.mockk.coJustRun
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
 
 
 class Auth0RepoTest {

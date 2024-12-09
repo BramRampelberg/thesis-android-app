@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.data.repository.notification
 
+
 import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.Dispatchers
