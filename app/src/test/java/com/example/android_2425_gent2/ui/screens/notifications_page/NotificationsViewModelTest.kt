@@ -100,4 +100,45 @@ class NotificationViewModelTest {
             assertEquals(errorMessage, errorMessage)
         }
     }
+
+    @Test
+    fun `unread count should update correctly when notifications change`() = runTest {
+        val mockNotifications = listOf(
+            sampleNotification1.copy(isRead = false),
+            sampleNotification2.copy(isRead = false),
+            sampleNotification1.copy(id = 3, isRead = true)
+        )
+
+        coEvery { notificationRepository.notifications } returns flow {
+            emit(APIResource.Success(mockNotifications))
+        }
+        coEvery { notificationRepository.getNotifications() } returns flow {
+            emit(APIResource.Success(mockNotifications))
+        }
+
+        viewModel = NotificationViewModel(notificationRepository)
+        advanceUntilIdle()
+
+        assertEquals(2, viewModel.unreadCount.value)
+    }
+
+    @Test
+    fun `unread count should be zero when all notifications are read`() = runTest {
+        val mockNotifications = listOf(
+            sampleNotification1.copy(isRead = true),
+            sampleNotification2.copy(isRead = true)
+        )
+
+        coEvery { notificationRepository.notifications } returns flow {
+            emit(APIResource.Success(mockNotifications))
+        }
+        coEvery { notificationRepository.getNotifications() } returns flow {
+            emit(APIResource.Success(mockNotifications))
+        }
+
+        viewModel = NotificationViewModel(notificationRepository)
+        advanceUntilIdle()
+
+        assertEquals(0, viewModel.unreadCount.value)
+    }
 }
