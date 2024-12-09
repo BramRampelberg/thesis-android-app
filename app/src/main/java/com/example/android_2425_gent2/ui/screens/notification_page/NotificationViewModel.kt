@@ -7,14 +7,17 @@ import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.notification.NotificationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class NotificationViewModel(private val notificationRepository: NotificationRepository): ViewModel() {
     private val _notificationsUiState = MutableStateFlow(NotificationsUiState(loading = true))
     val notificationsUiState: StateFlow<NotificationsUiState> = _notificationsUiState
 
+    private val _unreadCount = MutableStateFlow(0)
+    val unreadCount: StateFlow<Int> = _unreadCount.asStateFlow()
+
     init {
-        // Observe shared notifications flow
         viewModelScope.launch {
             notificationRepository.notifications
                 .collect { apiResource ->
@@ -36,6 +39,8 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
                         loading = false,
                         notifications = response
                     )
+                    // Update unread count
+                    _unreadCount.value = response.count { !it.isRead }
                 } else {
                     _notificationsUiState.value = NotificationsUiState(
                         hasError = true,
