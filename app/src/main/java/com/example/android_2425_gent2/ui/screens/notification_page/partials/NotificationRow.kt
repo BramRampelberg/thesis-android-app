@@ -27,16 +27,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.extensions.formatRelative
+import java.time.LocalDateTime
+import java.util.Date
 
 @Composable
 fun NotificationRow(
-    notification: NotificationDto,
+    notification: Notification,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -47,6 +53,7 @@ fun NotificationRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            .testTag("notification_${notification.id}")
     ) {
         Column(
             modifier = modifier.padding(16.dp)
@@ -58,8 +65,8 @@ fun NotificationRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                    modifier = modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = modifier.weight(1f).testTag("row_content_${notification.id}"),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         getSeverityIcon(notification.severity),
@@ -81,10 +88,12 @@ fun NotificationRow(
                         modifier = modifier
                             .size(8.dp)
                             .background(colorResource(id = R.color.info), CircleShape)
+                            .testTag("unread_indicator_${notification.id}")
+                            .semantics(mergeDescendants = false) {}
                     )
                 }
                 Text(
-                    text = notification.createdAt.formatRelative(),
+                    text = notification.timeStamp.formatRelative(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
@@ -124,4 +133,59 @@ private fun getSeverityColor(severity: Int): Color {
         4 -> colorResource(id = R.color.error) // Error
         else -> colorResource(id = R.color.info) // Default
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationRowPreview() {
+    val sampleNotification = Notification(
+        id = 1,
+        title = "Notification Title that might be longer than one line to demonstrate overflow",
+        message = "This is a sample notification message that might be longer than one line to demonstrate overflow",
+        severity = 1, // Info severity
+        isRead = false,
+        timeStamp = Date()
+    )
+
+    NotificationRow(
+        notification = sampleNotification,
+        onClick = { /* Preview click handler */ }
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationRowPreviewRead() {
+    val sampleNotification = Notification(
+        id = 2,
+        title = "Unread warning notification",
+        message = "This is a read notification with warning severity",
+        severity = 3, // Warning severity
+        isRead = true,
+        timeStamp = Date()
+    )
+
+    NotificationRow(
+        notification = sampleNotification,
+        onClick = { /* Preview click handler */ }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NotificationRowPreviewSuccess() {
+    val sampleNotification = Notification(
+        id = 3,
+        title = "Success notification",
+        message = "This is a success notification",
+        severity = 2, // Success severity
+        isRead = false,
+        timeStamp = Date()
+    )
+
+    NotificationRow(
+        notification = sampleNotification,
+        onClick = { /* Preview click handler */ }
+    )
 }

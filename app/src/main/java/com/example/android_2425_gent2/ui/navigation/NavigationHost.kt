@@ -22,9 +22,6 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier) {
             CalendarPage()
         }
         notificationNavigation(navController)
-
         profileNavigation(navController, modifier)
-
-
     }
 }
