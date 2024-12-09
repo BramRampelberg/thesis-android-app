@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -15,6 +16,7 @@ import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.AppViewModelProvider
+import com.example.android_2425_gent2.ui.navigation.BottomNavigationBar
 import com.example.android_2425_gent2.ui.navigation.NotificationNavigation
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationDetailsPage
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationPage
@@ -53,10 +55,11 @@ class NotificationsUiTests {
             startDestination = NotificationNavigation.NOTIFICATION_ROUTE,
             modifier = Modifier
         ) {
+            composable(route = "home") { }
+            composable(route = "calendar") { }
             composable(route = NotificationNavigation.NOTIFICATION_ROUTE) {
                 NotificationPage(
                     onNotificationClick = { notification ->
-                        // First handle the navigation
                         navController.currentBackStackEntry?.savedStateHandle?.set(
                             "notification",
                             notification
@@ -68,7 +71,6 @@ class NotificationsUiTests {
 
             composable(route = NotificationNavigation.NOTIFICATION_DETAILS_ROUTE) {
                 val notification = navController.previousBackStackEntry?.savedStateHandle?.get<Notification>("notification")
-
                 if (notification != null) {
                     NotificationDetailsPage(
                         notification = notification,
@@ -77,7 +79,14 @@ class NotificationsUiTests {
                     )
                 }
             }
+            composable(route = "profile") { }
+
         }
+
+        BottomNavigationBar(
+            navController = navController,
+            modifier = Modifier
+        )
     }
 
     @Test
@@ -92,8 +101,6 @@ class NotificationsUiTests {
 
     @Test
     fun unreadIndicatorDisappearsAfterReading() {
-        // Verify that the list is being loaded
-        composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
 
         // Verify unread indicator exists initially
         composeTestRule.onNodeWithTag("unread_indicator_1", useUnmergedTree = true).assertExists()
@@ -112,13 +119,35 @@ class NotificationsUiTests {
 
         // Wait for UI update after navigation
         composeTestRule.waitForIdle()
-
-        // Verify that the list is being loaded
-        composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
-
+        
         // Verify unread indicator is gone
         composeTestRule
             .onNodeWithTag("unread_indicator_1", useUnmergedTree = true)
             .assertDoesNotExist()
     }
+
+    @Test
+    fun notificationBadgeShowsCorrectCount() {
+        // The test repository has 2 unread notifications by default
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("2", useUnmergedTree = true).assertExists()
+    }
+
+    @Test
+    fun badgeHidesAfterReadingNotification() {
+        // Navigate to notification view and mark as read
+        composeTestRule.onNodeWithTag("NotificationPageList").assertExists()
+        composeTestRule.onNodeWithTag("notification_1").performClick()
+        composeTestRule.onNodeWithTag("notification_details_page").assertExists()
+        composeTestRule.waitForIdle()
+
+        // Back to bottom nav
+        composeTestRule.onNodeWithContentDescription("Back").performClick()
+        composeTestRule.waitForIdle()
+
+        // Only 1 unread notification remains
+        composeTestRule.onNodeWithText("1", useUnmergedTree = true).assertExists()
+    }
+
+
 }
