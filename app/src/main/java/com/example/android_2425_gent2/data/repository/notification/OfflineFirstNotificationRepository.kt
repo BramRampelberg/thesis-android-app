@@ -11,6 +11,8 @@ import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -22,6 +24,9 @@ class OfflineFirstNotificationRepository(
     private val notificationDao: OfflineNotificationDao,
     private val remoteApiService: NotificationApiService
 ): NotificationRepository {
+
+    private val _notifications = MutableStateFlow<APIResource<List<Notification>>>(APIResource.Loading())
+    override val notifications: Flow<APIResource<List<Notification>>> = _notifications.asStateFlow()
 
     private suspend fun fetchAndStoreNotifications() {
         try {
@@ -46,6 +51,7 @@ class OfflineFirstNotificationRepository(
 
     override suspend fun getNotifications(): Flow<APIResource<List<Notification>>> = flow {
         emit(APIResource.Loading())
+        _notifications.emit(APIResource.Loading())
 
         val notificationsFlow = notificationDao.getOfflineNotifications()
             .distinctUntilChanged()
@@ -58,12 +64,15 @@ class OfflineFirstNotificationRepository(
         try {
             fetchAndStoreNotifications()
         } catch (e: Exception) {
-            emit(APIResource.Error("No notifications found"))
+            val error = APIResource.Error<List<Notification>>("No notifications found")
+            emit(error)
+            _notifications.emit(error)
             return@flow
         }
 
         notificationsFlow.collect { emission ->
             emit(emission)
+            _notifications.emit(emission)
         }
     }.flowOn(Dispatchers.IO)
 
@@ -83,6 +92,10 @@ class OfflineFirstNotificationRepository(
 
             // Fetch fresh notifications after marking as read
             fetchAndStoreNotifications()
+
+            // Update shared flow with latest notifications
+            val latestNotifications = notificationDao.getOfflineNotifications().first()
+            _notifications.emit(APIResource.Success(latestNotifications.map { it.asExternalModel() }))
 
             emit(APIResource.Success(Unit))
         } catch (e: Exception) {

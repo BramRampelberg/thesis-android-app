@@ -5,9 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.printToLog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ApplicationProvider
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.data.model.Notification
-import com.example.android_2425_gent2.data.repository.notification.TestNotificationRepository
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.navigation.NotificationNavigation
@@ -23,12 +20,9 @@ import com.example.android_2425_gent2.ui.screens.notification_page.NotificationD
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationPage
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import android.util.Log
 
 class NotificationsUiTests {
     private lateinit var testContainer: TestContainer
@@ -68,20 +62,6 @@ class NotificationsUiTests {
                             notification
                         )
                         navController.navigate(NotificationNavigation.NOTIFICATION_DETAILS_ROUTE)
-
-                        // Then mark as read
-                        GlobalScope.launch {
-                            try {
-                                Log.d("NotificationTest", "Attempting to mark notification ${notification.id} as read")
-                                (testContainer.notificationRepository as TestNotificationRepository)
-                                    .markNotificationAsRead(notification.id)
-                                    .collect {
-                                        Log.d("NotificationTest", "Successfully marked notification as read")
-                                    }
-                            } catch (e: Exception) {
-                                Log.e("NotificationTest", "Error marking notification as read", e)
-                            }
-                        }
                     }
                 )
             }
@@ -124,8 +104,14 @@ class NotificationsUiTests {
         // Verify that the details page is being loaded
         composeTestRule.onNodeWithTag("notification_details_page").assertExists()
 
+        // Wait for UI update
+        composeTestRule.waitForIdle()
+
         // Click back
         composeTestRule.onNodeWithContentDescription("Back").performClick()
+
+        // Wait for UI update after navigation
+        composeTestRule.waitForIdle()
 
         // Verify that the list is being loaded
         composeTestRule.onNodeWithTag("NotificationPageList").assertExists()

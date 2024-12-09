@@ -37,7 +37,7 @@ class NotificationDetailsViewModel(
                             // We don't need to show loading state for mark as read
                         }
                         is APIResource.Success -> {
-                            // Successfully marked as read
+                            // No need to manually reload - shared flow will handle updates
                         }
                     }
                 }
