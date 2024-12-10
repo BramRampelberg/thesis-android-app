@@ -56,8 +56,8 @@ class ReservationsUITests {
         composeTestRule.onNodeWithTag("ReservationType.UPCOMING").performClick()
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("11:30 - 01:30").assertExists()
-        composeTestRule.onNodeWithText("02:00 - 04:00").assertExists()
+        composeTestRule.onNodeWithText("11:30 - 13:30").assertExists()
+        composeTestRule.onNodeWithText("14:00 - 16:00").assertExists()
     }
 
     @Test
@@ -70,7 +70,7 @@ class ReservationsUITests {
             .performClick()
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("02:00 - 04:00")
+        composeTestRule.onNodeWithText("14:00 - 16:00")
             .assertExists().performClick()
         composeTestRule.waitForIdle()
 

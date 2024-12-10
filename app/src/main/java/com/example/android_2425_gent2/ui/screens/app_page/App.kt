@@ -20,14 +20,18 @@ fun App(modifier: Modifier = Modifier) {
 
     if(!appState.isLoggedIn){
         LoginPage(login = { credentials ->
-                viewModel.login()
+                viewModel.verifyLoginState()
                 Log.i("LOGIN", "App state login with token: " + credentials.accessToken)
         }, modifier = modifier)
     }
     else{
         MainScreen(
             navController = rememberNavController(),
-            modifier = modifier
+            modifier = modifier,
+            logout = {
+                viewModel.verifyLoginState()
+                Log.i("LOGOUT", "User logged out")
+            }
         )
     }
 }
