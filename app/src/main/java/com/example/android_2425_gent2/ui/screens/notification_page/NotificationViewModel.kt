@@ -37,7 +37,7 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
                 if (response != null) {
                     _notificationsUiState.value = NotificationsUiState(
                         loading = false,
-                        notifications = response
+                        notifications = response.sortedByDescending { it.timeStamp }
                     )
                     // Update unread count
                     _unreadCount.value = response.count { !it.isRead }
