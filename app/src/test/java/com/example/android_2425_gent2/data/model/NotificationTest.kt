@@ -1,12 +1,8 @@
 package com.example.android_2425_gent2.data.model
 
 import com.example.android_2425_gent2.data.local.entity.OfflineNotificationEntity
-import com.example.android_2425_gent2.data.network.model.NotificationDto
-import com.example.android_2425_gent2.data.test_data.getTestNotifications
-import com.example.android_2425_gent2.extensions.toDate
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 

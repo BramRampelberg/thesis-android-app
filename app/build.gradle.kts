@@ -123,4 +123,7 @@ dependencies {
 
     //Auth
     implementation(libs.android.auth0)
+
+    implementation(libs.android.jwt)
+
 }

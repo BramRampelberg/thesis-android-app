@@ -1,7 +1,6 @@
 package com.example.android_2425_gent2.data.local.entity
 
 import com.example.android_2425_gent2.data.model.Notification
-import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.extensions.toDate
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
