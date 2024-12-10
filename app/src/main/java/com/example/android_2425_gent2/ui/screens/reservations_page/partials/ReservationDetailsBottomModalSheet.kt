@@ -39,7 +39,8 @@ fun ReservationDetailsBottomModalSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = { onSelectedReservationChange(null) },
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        modifier = Modifier.testTag("ModalBottomSheet")
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,

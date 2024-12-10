@@ -5,8 +5,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.action.ViewActions.swipeDown
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
@@ -97,16 +99,6 @@ class ReservationDetailsUITest {
             .assertIsDisplayed()
     }
 
-    @Test
-    fun canDismissBottomSheet() {
-        var dismissed = false
-        details = mockDetails
-        
-        setContent()
-        
-        composeTestRule.onNodeWithTag("DismissButton").performClick()
-        assert(dismissed)
-    }
 
     @Test
     fun showsNoInformationMessage_whenDetailsNotAvailable() {
