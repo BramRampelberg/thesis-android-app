@@ -27,7 +27,7 @@ class GuestUsersViewModel(
         fetchUsers()
     }
 
-    private fun fetchUsers() {
+    fun fetchUsers() {
         viewModelScope.launch {
             userRepository.getUsers().collect { result ->
                 when (result) {
@@ -61,4 +61,3 @@ class GuestUsersViewModel(
         }
     }
 }
-
