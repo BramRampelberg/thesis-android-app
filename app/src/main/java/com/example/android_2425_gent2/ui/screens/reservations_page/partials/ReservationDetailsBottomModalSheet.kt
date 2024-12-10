@@ -7,18 +7,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.network.model.ReservationDto
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,17 +59,57 @@ fun ReservationDetailsBottomModalSheet(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 } else if (reservationDetails != null) {
-                    ReservationDetailsPersonInfoSection(reservationDetails, modifier)
-                    Spacer(modifier.height(16.dp))
-                    ReservationDetailsAddressSection(reservationDetails, modifier)
-                    Spacer(modifier.height(16.dp))
-                    ReservationDetailsMentor(reservationDetails.mentorName, modifier)
+                    // Check if any essential details are null or blank
+                    val hasValidDetails = !(
+                        reservationDetails.currentBatteryUserName.isNullOrBlank() || 
+                        reservationDetails.currentHolderPhoneNumber.isNullOrBlank() || 
+                        reservationDetails.currentHolderEmail.isNullOrBlank() ||
+                        reservationDetails.currentHolderStreet.isNullOrBlank() || 
+                        reservationDetails.currentHolderNumber.isNullOrBlank() || 
+                        reservationDetails.currentHolderCity.isNullOrBlank() || 
+                        reservationDetails.currentHolderPostalCode.isNullOrBlank()
+                    )
+
+                    if (hasValidDetails) {
+                        ReservationDetailsPersonInfoSection(reservationDetails, modifier)
+                        Spacer(modifier.height(16.dp))
+                        ReservationDetailsAddressSection(reservationDetails, modifier)
+                        
+                        if (!reservationDetails.mentorName.isNullOrBlank()) {
+                            Spacer(modifier.height(16.dp))
+                            ReservationDetailsMentor(reservationDetails.mentorName, modifier)
+                        }
+                    } else {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
+                                tint = colorResource(R.color.primary)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Geen ophaal informatie beschikbaar",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                color = colorResource(R.color.secondary_contrast_text)
+                            )
+                        }
+                        Spacer(modifier.height(32.dp))
+                    }
                 }
             }
 
             CancelReservationButton(
                 enabled = false,
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
             )
         }
     }
@@ -72,10 +121,15 @@ fun ReservationDetailsPersonInfoSection(
     modifier: Modifier
 ) {
     Column(modifier = modifier) {
-        Text("Current Holder Information:")
-        Text("Name: ${details.currentBatteryUserName}")
-        Text("Phone: ${details.currentHolderPhoneNumber}")
-        Text("Email: ${details.currentHolderEmail}")
+        Text(
+            text = "Gegevens ophaal persoon",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(R.color.primary)
+        )
+        Text("Naam: ${details.currentBatteryUserName}")
+        Text("Tel.: ${details.currentHolderPhoneNumber}")
+        Text("E-mail: ${details.currentHolderEmail}")
     }
 }
 
@@ -85,9 +139,13 @@ fun ReservationDetailsAddressSection(
     modifier: Modifier
 ) {
     Column(modifier = modifier) {
-        Text("Address:")
-        Text("Street: ${details.currentHolderStreet} ${details.currentHolderNumber}")
-        Text("City: ${details.currentHolderCity}")
-        Text("Postal Code: ${details.currentHolderPostalCode}")
+        Text(
+            text = "Adres",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(R.color.primary)
+        )
+        Text("${details.currentHolderStreet} ${details.currentHolderNumber}")
+        Text("${details.currentHolderPostalCode} ${details.currentHolderCity}")
     }
 }
