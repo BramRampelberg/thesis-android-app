@@ -20,6 +20,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +56,7 @@ fun ReservationDetailsBottomModalSheet(
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
+                                           .testTag("LoadingIndicator")
                     )
                 } else if (reservationDetails != null) {
                     // Check if any essential details are null or blank
