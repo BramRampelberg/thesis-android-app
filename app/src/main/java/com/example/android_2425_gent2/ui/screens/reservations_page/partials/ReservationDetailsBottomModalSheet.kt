@@ -26,8 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.network.model.ReservationDto
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,9 +69,9 @@ fun ReservationDetailsBottomModalSheet(
                     )
 
                     if (hasValidDetails) {
-                        ReservationDetailsPersonInfoSection(reservationDetails, modifier)
+                        ReservationDetailsPersonInfo(reservationDetails, modifier)
                         Spacer(modifier.height(16.dp))
-                        ReservationDetailsAddressSection(reservationDetails, modifier)
+                        ReservationDetailsAddress(reservationDetails, modifier)
                         
                         if (!reservationDetails.mentorName.isNullOrBlank()) {
                             Spacer(modifier.height(16.dp))
@@ -112,40 +110,5 @@ fun ReservationDetailsBottomModalSheet(
                     .padding(top = 16.dp)
             )
         }
-    }
-}
-
-@Composable
-fun ReservationDetailsPersonInfoSection(
-    details: ReservationDetailsDto,
-    modifier: Modifier
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = "Gegevens ophaal persoon",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.primary)
-        )
-        Text("Naam: ${details.currentBatteryUserName}")
-        Text("Tel.: ${details.currentHolderPhoneNumber}")
-        Text("E-mail: ${details.currentHolderEmail}")
-    }
-}
-
-@Composable
-fun ReservationDetailsAddressSection(
-    details: ReservationDetailsDto,
-    modifier: Modifier
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = "Adres",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.primary)
-        )
-        Text("${details.currentHolderStreet} ${details.currentHolderNumber}")
-        Text("${details.currentHolderPostalCode} ${details.currentHolderCity}")
     }
 }
