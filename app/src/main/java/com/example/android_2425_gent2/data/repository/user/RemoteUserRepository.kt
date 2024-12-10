@@ -1,7 +1,10 @@
 package com.example.android_2425_gent2.data.repository.user
 
+import android.net.http.HttpException
 import com.example.android_2425_gent2.data.model.UserSurface
 import com.example.android_2425_gent2.data.model.toDomain
+import com.example.android_2425_gent2.data.network.model.UpdateUserRoleRequest
+import com.example.android_2425_gent2.data.network.model.UserDetailsDto
 import com.example.android_2425_gent2.data.network.users.UserApiService
 import kotlinx.coroutines.flow.Flow
 import com.example.android_2425_gent2.data.repository.APIResource
@@ -32,4 +35,24 @@ class RemoteUserRepository (
         // Emit the final result
         emit(result)
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun getUserDetails(userId: String): Flow<APIResource<UserDetailsDto>> = flow {
+        try {
+            emit(APIResource.Loading())
+            val response = remoteUserRepository.getUserDetails(userId)
+            emit(APIResource.Success(response))
+        } catch (e: Exception) {
+            emit(APIResource.Error(message = "An unexpected error occurred"))
+        }
+    }
+
+    override suspend fun updateUserRole(userId: Int, role: String): Flow<APIResource<Unit>> = flow {
+        try {
+            emit(APIResource.Loading())
+            remoteUserRepository.updateUserRole(UpdateUserRoleRequest(userId, role))
+            emit(APIResource.Success(Unit))
+        } catch (e: Exception) {
+            emit(APIResource.Error(message = "An unexpected error occurred"))
+        }
+    }
 }

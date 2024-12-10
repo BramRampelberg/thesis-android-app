@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.ui.screens.profile_page.partials
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,7 @@ fun UserListItemCard(
         modifier = modifier
             .fillMaxSize()
             ,
-        onClick = { /*nothing happens*/ },
+        onClick = { onClick(user.id.toString()) },
         colors = CardDefaults.cardColors(
             containerColor = colorResource(R.color.secondary_darker)
         )
@@ -44,11 +45,6 @@ fun UserListItemCard(
                 Text(
                     text = user.familyName,
                     style = MaterialTheme.typography.titleMedium,
-                    color = colorResource(R.color.secondary_contrast_text),
-                )
-                Text(
-                    text = "Created: 11/11/2024",
-                    style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(R.color.secondary_contrast_text),
                 )
             }
