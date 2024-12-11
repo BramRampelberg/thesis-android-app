@@ -33,10 +33,8 @@ import com.example.android_2425_gent2.data.model.OfflineReservation
 fun ReservationDetailsBottomModalSheet(
     selectedReservation: OfflineReservation,
     onSelectedReservationChange: (OfflineReservation?) -> Unit,
-    selectedReservation: ReservationDto,
     reservationDetails: ReservationDetailsDto?,
     isLoading: Boolean,
-    onSelectedReservationChange: (ReservationDto?) -> Unit,
     modifier: Modifier
 ) {
     ModalBottomSheet(

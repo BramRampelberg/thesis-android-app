@@ -6,7 +6,6 @@ import androidx.room.Transaction
 import com.example.android_2425_gent2.data.local.entity.OfflineReservationEntity
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalTime
 
 @Dao
 interface OfflineReservationDao : EntityDao<OfflineReservationEntity> {
@@ -14,20 +13,18 @@ interface OfflineReservationDao : EntityDao<OfflineReservationEntity> {
     @Transaction
     @Query(
         """
-        SELECT * FROM offline_reservation 
-        WHERE CASE 
-            WHEN :getPast = 1 THEN date < :currentDate OR (date = :currentDate AND `end` < :currentTime)
-            ELSE date > :currentDate OR (date = :currentDate AND start >= :currentTime)
-        END
-        ORDER BY date ASC, start ASC
-    """
+    SELECT * FROM offline_reservation 
+    WHERE CASE 
+        WHEN :getPast = 1 THEN date < :currentDate
+        ELSE date >= :currentDate
+    END
+    ORDER BY date ASC, start ASC
+"""
     )
     fun getOfflineReservations(
         getPast: Boolean,
-        currentDate: LocalDate = LocalDate.now(),
-        currentTime: LocalTime = LocalTime.now()
+        currentDate: LocalDate = LocalDate.now()
     ): Flow<List<OfflineReservationEntity>>
-
 
     @Transaction
     @Query(

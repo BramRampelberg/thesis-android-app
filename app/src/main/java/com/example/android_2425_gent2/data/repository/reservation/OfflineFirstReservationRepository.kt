@@ -6,7 +6,6 @@ import com.example.android_2425_gent2.data.local.entity.asReservationDetails
 import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
-import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.network.model.asEntity
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.repository.APIResource
@@ -18,8 +17,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.withContext
 
 class OfflineFirstReservationRepository(
@@ -33,31 +30,6 @@ class OfflineFirstReservationRepository(
         // Fetch past reservations
         fetchReservationsForType(getPast = true, pageSize = pageSize)
     }
-    /**
-     * get reservations from local db
-     * fetch from network and update local db
-     */
-    override suspend fun getReservations(
-        cursor: Int?,
-        isNextPage: Boolean?,
-        getPast: Boolean,
-        pageSize: Int
-    ): Flow<APIResource<ReservationResponse>> = flow {
-        //emit loading
-        emit(APIResource.Loading())
-
-        val reservationsFlow = reservationDao.getOfflineReservations(getPast = getPast)
-            .distinctUntilChanged()
-            .map { localReservations ->
-                APIResource.Success(
-                    ReservationResponse(
-                        data = localReservations.map { it.asExternalModel() },
-                        isFirstPage = cursor == null,
-                        previousId = cursor,
-                        nextId = null
-                    )
-                )
-            }
 
     private suspend fun fetchReservationsForType(getPast: Boolean, pageSize: Int) {
         var currentCursor: Int? = null
@@ -70,10 +42,8 @@ class OfflineFirstReservationRepository(
                     put("getPast", getPast)
                     put("pageSize", pageSize)
                 }
-                println("Making API call with queryParams: $queryParams")
 
                 val response = remoteApiService.getReservationPage(queryParams)
-                println("Received API response: $response")
 
                 withContext(Dispatchers.IO) {
                     reservationDao.insert(response.data.map { it.asEntity() })
@@ -107,9 +77,6 @@ class OfflineFirstReservationRepository(
             fetchAndStoreAllReservations()
         } catch (e: Exception) {
             // On error, we emit error only if local database is empty
-            println("Error in getReservations: ${e.message}")
-            e.printStackTrace()
-            // On  error, we emit error only if local database is empty
             val localData = reservationDao.getOfflineReservations(getPast = getPast).first()
             if (localData.isEmpty()) {
                 emit(APIResource.Error("No reservations found"))
@@ -141,7 +108,7 @@ class OfflineFirstReservationRepository(
         emit(result)
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
+     override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
         emit(APIResource.Loading())
 
         // First try to get from local database
@@ -188,6 +155,3 @@ class OfflineFirstReservationRepository(
     }.flowOn(Dispatchers.IO)
 }
 
-data class ErrorResponse(
-    val message: String?
-)
