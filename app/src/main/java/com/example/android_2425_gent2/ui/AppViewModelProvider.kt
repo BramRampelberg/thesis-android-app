@@ -47,7 +47,7 @@ object AppViewModelProvider {
         }
 
         initializer {
-            ProfilePageViewModel(mainApplication().container.authRepo)
+            ProfilePageViewModel(mainApplication().container.authRepo, mainApplication().container.userRepository)
         }
 
         initializer {

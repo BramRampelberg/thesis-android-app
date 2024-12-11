@@ -21,6 +21,7 @@ class TestUserRepository : UserRepository {
     override suspend fun getUsers(): Flow<APIResource<List<UserSurface>>> = stateFlow
 
     override suspend fun getUserDetails(userId: String): Flow<APIResource<UserDetailsDto>> = userDetailsStateFlow
+    override suspend fun getUserDetails(): Flow<APIResource<UserDetailsDto>> = userDetailsStateFlow
 
     override suspend fun updateUserRole(userId: Int, role: String): Flow<APIResource<Unit>> = updateRoleStateFlow
 

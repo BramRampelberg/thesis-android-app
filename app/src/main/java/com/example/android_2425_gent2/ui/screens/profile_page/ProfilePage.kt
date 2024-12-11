@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.ui.AppViewModelProvider
+import com.example.android_2425_gent2.ui.common.ErrorMessage
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.AppTopBar
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.LogOutButton
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileActionCard
@@ -37,7 +39,7 @@ fun ProfilePage(
         factory = AppViewModelProvider.Factory,
     )
 
-    val isAdmin by viewModel.isAdmin.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
 
     Column {
@@ -49,46 +51,62 @@ fun ProfilePage(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileHeader(
-                name = "John Doe",
-                email = "john.doe@example.com"
-            )
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(64.dp))
+                uiState.errorMessage.isNotEmpty() -> {
+                    ErrorMessage(
+                        message = uiState.errorMessage,
+                    )
+                }
 
-            val profileActions = listOf(
-                ProfileAction(
-                    icon = Icons.Default.Edit,
-                    text = stringResource(R.string.edit_profile),
-                    onClick = { /* TODO: handle this later*/ }
-                ),
-                ProfileAction(
-                    icon = Icons.Default.Lock,
-                    text = stringResource(R.string.privacy_settings),
-                    onClick = { /* TODO: handle this later*/ }
-                )
-            )
+                else -> {
+                    ProfileHeader(
+                        name = uiState.user.firstName + " " + uiState.user.familyName,
+                        email = uiState.user.email
+                    )
 
-            ProfileActionCard(actions = profileActions)
+                    Spacer(modifier = Modifier.height(64.dp))
 
-            Spacer(modifier = Modifier.height(64.dp))
+                    val profileActions = listOf(
+                        ProfileAction(
+                            icon = Icons.Default.Edit,
+                            text = stringResource(R.string.edit_profile),
+                            onClick = { /* TODO: handle this later*/ }
+                        ),
+                        ProfileAction(
+                            icon = Icons.Default.Lock,
+                            text = stringResource(R.string.privacy_settings),
+                            onClick = { /* TODO: handle this later*/ }
+                        )
+                    )
 
-            if (isAdmin) {
-                ProfileNavigationButton(
-                    text = stringResource(R.string.go_to_dashboard),
-                    icon = Icons.Default.AccountBox,
-                    onClick = onNavigateToDashboard
-                )
+                    ProfileActionCard(actions = profileActions)
 
-                Spacer(modifier = Modifier.height(72.dp))
+                    Spacer(modifier = Modifier.height(64.dp))
+
+                    if (uiState.isAdmin) {
+                        ProfileNavigationButton(
+                            text = stringResource(R.string.go_to_dashboard),
+                            icon = Icons.Default.AccountBox,
+                            onClick = onNavigateToDashboard
+                        )
+
+                        Spacer(modifier = Modifier.height(72.dp))
+                    }
+
+                    LogOutButton(
+                        onClick = {
+                            viewModel.handleLogout()
+                            logout()
+                        },
+                    )
+                }
             }
-
-            LogOutButton(
-                onClick = {
-                    viewModel.handleLogout()
-                    logout()
-                },
-            )
         }
     }
 }

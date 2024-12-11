@@ -9,5 +9,6 @@ interface UserRepository {
 
     suspend fun getUsers() : Flow<APIResource<List<UserSurface>>>
     suspend fun getUserDetails(userId: String): Flow<APIResource<UserDetailsDto>>
+    suspend fun getUserDetails(): Flow<APIResource<UserDetailsDto>>
     suspend fun updateUserRole(userId: Int, role: String): Flow<APIResource<Unit>>
 }
