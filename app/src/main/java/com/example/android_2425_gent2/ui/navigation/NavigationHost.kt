@@ -16,12 +16,9 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier, logout:
 ) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavItem.Home.route,
+        startDestination = BottomNavItem.Calendar.route,
         modifier = modifier
     ) {
-        composable(route = BottomNavItem.Home.route) {
-            HomePage()
-        }
         composable(route = BottomNavItem.Calendar.route) {
             CalendarPage()
         }
