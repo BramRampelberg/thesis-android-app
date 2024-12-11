@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import com.example.android_2425_gent2.data.local.dao.OfflineReservationDao
 import com.example.android_2425_gent2.data.local.entity.asExternalModel
+import com.example.android_2425_gent2.data.local.entity.asReservationDetails
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
@@ -114,38 +115,49 @@ class OfflineFirstReservationRepository(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
-        println("Getting reservation details for ID: $reservationId")
         emit(APIResource.Loading())
 
-        val result = withContext(Dispatchers.IO) {
-            try {
-                println("Making API call for reservation details")
-                val response = remoteApiService.getReservationDetails(reservationId)
-                
-                if (response.isSuccessful && response.body() != null) {
-                    println("Received successful API Response: ${response.body()}")
-                    APIResource.Success(response.body()!!)
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    println("Error response: $errorBody")
-                    try {
-                        // Try to parse error message from response
-                        val errorMessage = Gson().fromJson(errorBody, ErrorResponse::class.java)?.message
-                            ?: "Failed to fetch reservation details"
-                        APIResource.Error(errorMessage)
-                    } catch (e: JsonSyntaxException) {
-                        // If parsing fails, return the raw error message
-                        APIResource.Error(errorBody ?: "Failed to fetch reservation details")
-                    }
-                }
-            } catch (e: Exception) {
-                println("Error getting reservation details: ${e.message}")
-                e.printStackTrace()
-                APIResource.Error("Failed to fetch reservation details: ${e.message}")
-            }
+        // First try to get from local database
+        val localReservation = reservationDao.getOfflineReservationById(reservationId).first()
+        if (localReservation != null) {
+            emit(APIResource.Success(localReservation.asReservationDetails()))
         }
 
-        emit(result)
+        try {
+            val response = remoteApiService.getReservationDetails(reservationId)
+            if (response.isSuccessful && response.body() != null) {
+                val details = response.body()!!
+                
+                // Update local database with new details
+                withContext(Dispatchers.IO) {
+                    val updatedEntity = localReservation?.copy(
+                        isDeleted = details.isDeleted,
+                        mentorName = details.mentorName,
+                        batteryId = details.batteryId,
+                        currentBatteryUserName = details.currentBatteryUserName,
+                        currentBatteryUserId = details.currentBatteryUserId,
+                        currentHolderPhoneNumber = details.currentHolderPhoneNumber,
+                        currentHolderEmail = details.currentHolderEmail,
+                        currentHolderStreet = details.currentHolderStreet,
+                        currentHolderNumber = details.currentHolderNumber,
+                        currentHolderCity = details.currentHolderCity,
+                        currentHolderPostalCode = details.currentHolderPostalCode
+                    )
+                    if (updatedEntity != null) {
+                        reservationDao.update(updatedEntity)
+                        emit(APIResource.Success(details))
+                    }
+                }
+            } else {
+                if (localReservation == null) {
+                    emit(APIResource.Error("Failed to fetch reservation details"))
+                }
+            }
+        } catch (e: Exception) {
+            if (localReservation == null) {
+                emit(APIResource.Error("Failed to fetch reservation details: ${e.message}"))
+            }
+        }
     }.flowOn(Dispatchers.IO)
 }
 
