@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.ui.navigation
 
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,6 +16,7 @@ import com.example.android_2425_gent2.ui.screens.notification_page.NotificationV
 @Composable
 fun NavigationHost(
     navController: NavHostController,
+    windowSize: WindowWidthSizeClass,
     modifier: Modifier,
     logout: () -> Unit,
     notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -31,7 +33,7 @@ fun NavigationHost(
             CalendarPage()
         }
         composable(route = BottomNavItem.Notifications.route) {
-            NotificationScreen()
+            NotificationScreen(windowSize = windowSize)
         }
         profileNavigation(navController, modifier, logout)
     }

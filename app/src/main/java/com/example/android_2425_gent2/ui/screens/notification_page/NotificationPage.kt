@@ -26,86 +26,59 @@ import com.example.android_2425_gent2.data.model.Notification
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.partials.NotificationRow
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationPage(
+fun NotificationPageContent(
+    notificationsUiState: NotificationsUiState,
     onNotificationClick: (Notification) -> Unit,
-    viewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
-    val notificationsUiState by viewModel.notificationsUiState.collectAsState()
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.notifications),
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.testTag("NotificationPageTitle")
-                    )
-                }
-            )
+    when {
+        notificationsUiState.hasError -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = notificationsUiState.errorMessage
+                        ?: stringResource(R.string.something_went_wrong),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
-    ) { paddingValues ->
-        when {
-            notificationsUiState.hasError -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = notificationsUiState.errorMessage
-                            ?: stringResource(R.string.something_went_wrong),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.error
+        notificationsUiState.loading && notificationsUiState.notifications.isEmpty() -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        notificationsUiState.notifications.isEmpty() -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "No notifications",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+        }
+        else -> {
+            LazyColumn(
+                modifier = modifier.testTag("NotificationPageList"),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(notificationsUiState.notifications) { notification ->
+                    NotificationRow(
+                        notification = notification,
+                        onClick = { onNotificationClick(notification) }
                     )
-                }
-            }
-            notificationsUiState.loading && notificationsUiState.notifications.isEmpty() -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            notificationsUiState.notifications.isEmpty() -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "No notifications",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
-                }
-            }
-            else -> {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(horizontal = 16.dp)
-                        .testTag("NotificationPageList"),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(notificationsUiState.notifications) { notification ->
-                        NotificationRow(
-                            notification = notification,
-                            onClick = { onNotificationClick(notification) }
-                        )
-                    }
                 }
             }
         }
