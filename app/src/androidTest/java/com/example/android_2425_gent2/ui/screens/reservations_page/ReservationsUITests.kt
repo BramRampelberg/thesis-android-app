@@ -43,7 +43,11 @@ class ReservationsUITests {
         composeTestRule.onNodeWithTag("ReservationTypeSelectionDropDownMenu").performClick()
         composeTestRule.onNodeWithText("Oude reservaties").performClick()
         
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onAllNodesWithText("11:30 - 13:30")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         
         composeTestRule.onNodeWithText("11:30 - 13:30", useUnmergedTree = true).assertExists()
         composeTestRule.onNodeWithText("14:00 - 16:00", useUnmergedTree = true).assertExists()
@@ -56,9 +60,14 @@ class ReservationsUITests {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("ReservationType.UPCOMING").performClick()
-        composeTestRule.waitForIdle()
+        
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onAllNodesWithText("11:30 - 13:30")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
 
         composeTestRule.onNodeWithText("11:30 - 13:30", useUnmergedTree = true).assertExists()
         composeTestRule.onNodeWithText("14:00 - 16:00", useUnmergedTree = true).assertExists()
-       }
+    }
 }
