@@ -2,6 +2,7 @@ package com.example.android_2425_gent2.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.network.model.ReservationDto
 import java.time.LocalDate
@@ -29,7 +30,7 @@ data class OfflineReservationEntity(
     val currentHolderPostalCode: String? = null
 )
 
-fun OfflineReservationEntity.asExternalModel() = ReservationDto(
+fun OfflineReservationEntity.asExternalModel() = OfflineReservation(
     id = id,
     start = start,
     end = end,

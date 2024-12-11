@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.data.repository.reservation
 
+import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.network.model.ReservationDto
@@ -15,14 +16,11 @@ import java.time.LocalTime
 class TestReservationRepository : ReservationRepository {
 
     override suspend fun getReservations(
-        cursor: Int?,
-        isNextPage: Boolean?,
         getPast: Boolean,
-        pageSize: Int
-    ): Flow<APIResource<ReservationResponse>> = flow {
+    ): Flow<APIResource<List<OfflineReservation>>> = flow {
 
         val mockReservations = listOf(
-            ReservationDto(
+            OfflineReservation(
                 start = LocalTime.of(9, 0),
                 end = LocalTime.of(11, 0),
                 date = LocalDate.now(),
@@ -30,7 +28,7 @@ class TestReservationRepository : ReservationRepository {
                 boatPersonalName = "Speedboat 1",
                 id = 1
             ),
-            ReservationDto(
+            OfflineReservation(
                 start = LocalTime.of(11, 30),
                 end = LocalTime.of(13, 30),
                 date = LocalDate.now(),
@@ -38,7 +36,7 @@ class TestReservationRepository : ReservationRepository {
                 boatPersonalName = "Kayak 1",
                 id = 2
             ),
-            ReservationDto(
+            OfflineReservation(
                 start = LocalTime.of(14, 0),
                 end = LocalTime.of(16, 0),
                 date = LocalDate.now(),
@@ -49,12 +47,6 @@ class TestReservationRepository : ReservationRepository {
         )
 
 
-        val mockResponse = ReservationResponse(
-            data = mockReservations,
-            nextId = if (isNextPage == true) 4 else null,
-            previousId = if (isNextPage == false) 0 else null,
-            isFirstPage = cursor == null
-        )
 
 
         emit(APIResource.Loading(null))
@@ -63,7 +55,7 @@ class TestReservationRepository : ReservationRepository {
         delay(100)
 
 
-        emit(APIResource.Success(mockResponse))
+        emit(APIResource.Success(mockReservations))
     }
 
     override suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>> {
@@ -74,7 +66,7 @@ class TestReservationRepository : ReservationRepository {
     override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
         emit(APIResource.Loading())
         delay(500) // Simulate network delay
-        
+
         emit(APIResource.Success(
             ReservationDetailsDto(
                 id = reservationId,

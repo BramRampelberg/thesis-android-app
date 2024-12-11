@@ -26,11 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.data.network.model.ReservationDto
+import com.example.android_2425_gent2.data.model.OfflineReservation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationDetailsBottomModalSheet(
+    selectedReservation: OfflineReservation,
+    onSelectedReservationChange: (OfflineReservation?) -> Unit,
     selectedReservation: ReservationDto,
     reservationDetails: ReservationDetailsDto?,
     isLoading: Boolean,
@@ -47,7 +49,7 @@ fun ReservationDetailsBottomModalSheet(
             modifier = modifier.padding(16.dp)
         ) {
             ReservationDetailsHeader(stringResource(R.string.reservation_details))
-            
+
             Column {
                 ReservationDateText(selectedReservation, modifier)
                 ReservationTimeSlotText(selectedReservation, modifier)
@@ -62,12 +64,12 @@ fun ReservationDetailsBottomModalSheet(
                 } else if (reservationDetails != null) {
                     // Check if any essential details are null or blank
                     val hasValidDetails = !(
-                        reservationDetails.currentBatteryUserName.isNullOrBlank() || 
-                        reservationDetails.currentHolderPhoneNumber.isNullOrBlank() || 
+                        reservationDetails.currentBatteryUserName.isNullOrBlank() ||
+                        reservationDetails.currentHolderPhoneNumber.isNullOrBlank() ||
                         reservationDetails.currentHolderEmail.isNullOrBlank() ||
-                        reservationDetails.currentHolderStreet.isNullOrBlank() || 
-                        reservationDetails.currentHolderNumber.isNullOrBlank() || 
-                        reservationDetails.currentHolderCity.isNullOrBlank() || 
+                        reservationDetails.currentHolderStreet.isNullOrBlank() ||
+                        reservationDetails.currentHolderNumber.isNullOrBlank() ||
+                        reservationDetails.currentHolderCity.isNullOrBlank() ||
                         reservationDetails.currentHolderPostalCode.isNullOrBlank()
                     )
 
@@ -75,7 +77,7 @@ fun ReservationDetailsBottomModalSheet(
                         ReservationDetailsPersonInfo(reservationDetails, modifier)
                         Spacer(modifier.height(16.dp))
                         ReservationDetailsAddress(reservationDetails, modifier)
-                        
+
                         if (!reservationDetails.mentorName.isNullOrBlank()) {
                             Spacer(modifier.height(16.dp))
                             ReservationDetailsMentor(reservationDetails.mentorName, modifier)

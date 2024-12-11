@@ -2,7 +2,8 @@ package com.example.android_2425_gent2.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.android_2425_gent2.data.network.model.NotificationDto
+import com.example.android_2425_gent2.data.model.Notification
+import com.example.android_2425_gent2.extensions.toDate
 import java.time.LocalDateTime
 
 @Entity(tableName = "offline_notification")
@@ -16,11 +17,11 @@ data class OfflineNotificationEntity(
     val isRead: Boolean
 )
 
-fun OfflineNotificationEntity.asExternalModel() = NotificationDto(
+fun OfflineNotificationEntity.asExternalModel() = Notification(
     id = id,
     severity = severity,
     title = title,
     message = message,
-    createdAt = createdAt,
+    timeStamp = createdAt.toDate(),
     isRead = isRead
 )

@@ -1,29 +1,53 @@
 package com.example.android_2425_gent2.extensions
 
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import java.time.ZoneId
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
-fun LocalDateTime.formatRelative(): String {
-    val now = LocalDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
-    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a", Locale.getDefault())
-    val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.getDefault())
+fun Date.formatRelative(): String {
+    val now = Date()
+    val formatter = SimpleDateFormat("h:mm a", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val dayFormatter = SimpleDateFormat("EEEE", Locale.getDefault())
 
-    val isToday = this.toLocalDate() == now.toLocalDate()
-    val isYesterday = this.toLocalDate() == now.toLocalDate().minusDays(1)
+    val calendarThis = Calendar.getInstance().apply { time = this@formatRelative }
+    val calendarNow = Calendar.getInstance().apply { time = now }
+
+    val isToday = isSameDay(calendarThis, calendarNow)
+    val isYesterday = isYesterday(calendarThis, calendarNow)
 
     return when {
-        isToday -> this.format(formatter)
-        isYesterday -> "Yesterday ${this.format(formatter)}"
-        isWithinLastWeek() -> "${this.format(dayFormatter)} ${this.format(formatter)}"
-        else -> this.format(dateFormatter)
+        isToday -> formatter.format(this)
+        isYesterday -> "Yesterday ${formatter.format(this)}"
+        isWithinLastWeek(calendarThis, calendarNow) -> "${dayFormatter.format(this)} ${formatter.format(this)}"
+        else -> dateFormatter.format(this)
     }
 }
 
-private fun LocalDateTime.isWithinLastWeek(): Boolean {
-    val now = LocalDateTime.now()
-    val daysBetween = ChronoUnit.DAYS.between(this, now)
-    return daysBetween in 0..7
+private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
+    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+}
+
+private fun isYesterday(cal1: Calendar, cal2: Calendar): Boolean {
+    val yesterday = Calendar.getInstance().apply {
+        time = cal2.time
+        add(Calendar.DAY_OF_YEAR, -1)
+    }
+    return isSameDay(cal1, yesterday)
+}
+
+private fun isWithinLastWeek(cal1: Calendar, cal2: Calendar): Boolean {
+    val weekAgo = Calendar.getInstance().apply {
+        time = cal2.time
+        add(Calendar.DAY_OF_YEAR, -7)
+    }
+    return cal1.after(weekAgo) && cal1.before(cal2)
+}
+
+fun LocalDateTime.toDate(): Date {
+    return Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
 }

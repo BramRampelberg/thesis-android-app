@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.profile_page
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,14 +10,18 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_2425_gent2.R
+import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.AppTopBar
+import com.example.android_2425_gent2.ui.screens.profile_page.partials.LogOutButton
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileActionCard
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileHeader
 import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileNavigationButton
@@ -26,10 +29,18 @@ import com.example.android_2425_gent2.ui.screens.profile_page.partials.ProfileNa
 @Composable
 fun ProfilePage(
     onNavigateToDashboard: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    logout: () -> Unit
     ) {
-    Column(
-    ) {
+
+    val viewModel: ProfilePageViewModel = viewModel(
+        factory = AppViewModelProvider.Factory,
+    )
+
+    val isAdmin by viewModel.isAdmin.collectAsState()
+
+
+    Column {
         AppTopBar(title=stringResource(R.string.profile))
 
         Column(
@@ -43,7 +54,7 @@ fun ProfilePage(
                 email = "john.doe@example.com"
             )
 
-            Spacer(modifier = modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
             val profileActions = listOf(
                 ProfileAction(
@@ -60,12 +71,23 @@ fun ProfilePage(
 
             ProfileActionCard(actions = profileActions)
 
-            Spacer(modifier = modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
-            ProfileNavigationButton(
-                text = stringResource(R.string.go_to_dashboard),
-                icon = Icons.Default.AccountBox,
-                onClick = onNavigateToDashboard
+            if (isAdmin) {
+                ProfileNavigationButton(
+                    text = stringResource(R.string.go_to_dashboard),
+                    icon = Icons.Default.AccountBox,
+                    onClick = onNavigateToDashboard
+                )
+
+                Spacer(modifier = Modifier.height(72.dp))
+            }
+
+            LogOutButton(
+                onClick = {
+                    viewModel.handleLogout()
+                    logout()
+                },
             )
         }
     }
