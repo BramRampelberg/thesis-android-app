@@ -13,7 +13,7 @@ import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
-import com.example.android_2425_gent2.data.network.model.ReservationDto
+import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.ui.screens.reservations_page.partials.ReservationDetailsBottomModalSheet
 import org.junit.Before
 import org.junit.Rule
@@ -26,13 +26,13 @@ class ReservationDetailsUITest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val mockReservation = ReservationDto(
-        id = 1,
+    private val mockReservation = OfflineReservation(
         start = LocalTime.of(10, 0),
         end = LocalTime.of(12, 0),
         date = LocalDate.now(),
         boatId = 1,
-        boatPersonalName = "Test Boat"
+        boatPersonalName = "Test Boat",
+        id = 1
     )
 
     private val mockDetails = ReservationDetailsDto(
