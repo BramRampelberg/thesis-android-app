@@ -15,6 +15,7 @@ data class OfflineReservationEntity(
     val date: LocalDate,
     val boatId: Int,
     val boatPersonalName: String,
+    val isDeleted: Boolean = false
 )
 
 fun OfflineReservationEntity.asExternalModel() = OfflineReservation(
@@ -23,5 +24,6 @@ fun OfflineReservationEntity.asExternalModel() = OfflineReservation(
     end = end,
     date = date,
     boatId = boatId,
-    boatPersonalName = boatPersonalName
+    boatPersonalName = boatPersonalName,
+    isDeleted = isDeleted
 )

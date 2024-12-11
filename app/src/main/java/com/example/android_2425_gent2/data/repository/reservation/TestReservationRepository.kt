@@ -23,7 +23,9 @@ class TestReservationRepository : ReservationRepository {
                 date = LocalDate.now(),
                 boatId = 1,
                 boatPersonalName = "Speedboat 1",
-                id = 1
+                id = 1,
+                isDeleted = false
+
             ),
             OfflineReservation(
                 start = LocalTime.of(11, 30),
@@ -31,7 +33,8 @@ class TestReservationRepository : ReservationRepository {
                 date = LocalDate.now(),
                 boatId = 2,
                 boatPersonalName = "Kayak 1",
-                id = 2
+                id = 2,
+                isDeleted = false
             ),
             OfflineReservation(
                 start = LocalTime.of(14, 0),
@@ -39,7 +42,8 @@ class TestReservationRepository : ReservationRepository {
                 date = LocalDate.now(),
                 boatId = 3,
                 boatPersonalName = "Canoe 1",
-                id = 3
+                id = 3,
+                isDeleted = false
             )
         )
 
@@ -58,6 +62,10 @@ class TestReservationRepository : ReservationRepository {
     override suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>> {
         delay(2000)
         return listOf(APIResource.Success(1)).asFlow()
+    }
+
+    override suspend fun cancelReservation(reservationId: Int): Flow<APIResource<Unit>> {
+        TODO("Not yet implemented")
     }
 
 

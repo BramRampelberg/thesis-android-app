@@ -56,8 +56,14 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                     is APIResource.Success -> {
                         val reservations = apiResource.data
                         if (reservations != null) {
+                            // Filter de reserveringen op basis van het type
+                            val filteredReservations = when (reservationTypeUiState.reservationType) {
+                                ReservationType.CANCELED -> reservations.filter { it.isDeleted }
+                                else -> reservations.filter { !it.isDeleted }
+                            }
+
                             _reservationsUiState.value = ReservationsUiState(
-                                reservations = reservations,
+                                reservations = filteredReservations,
                                 loading = false
                             )
                         } else {
@@ -73,6 +79,33 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                             errorMessage = apiResource.message,
                             loading = false
                         )
+                    }
+                }
+            }
+        }
+    }
+    private val _cancelReservationState = MutableStateFlow<APIResource<Unit>?>(null)
+    val cancelReservationState: StateFlow<APIResource<Unit>?> = _cancelReservationState
+
+    fun cancelReservation(reservationId: Int) {
+        viewModelScope.launch {
+            reservationRepository.cancelReservation(reservationId).collect { result ->
+                when (result) {
+                    is APIResource.Success -> {
+                        // Eerst bottom sheet sluiten
+                        setSelectedReservation(null)
+                        // Dan lijst herladen
+                        loadReservationsForCurrentType()
+                    }
+                    is APIResource.Error -> {
+                        // Hier kun je eventueel een error state toevoegen als je dat wilt
+                        _reservationsUiState.value = ReservationsUiState(
+                            hasError = true,
+                            errorMessage = result.message
+                        )
+                    }
+                    is APIResource.Loading -> {
+                        // Optioneel: loading state tonen
                     }
                 }
             }

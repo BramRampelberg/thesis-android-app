@@ -81,6 +81,9 @@ fun ReservationsPage(
                         viewModel.setSelectedReservation(it)
                     }
                 },
+                onCancelReservation = { reservationId ->
+                    viewModel.cancelReservation(reservationId)
+                },
                 modifier
             )
         }

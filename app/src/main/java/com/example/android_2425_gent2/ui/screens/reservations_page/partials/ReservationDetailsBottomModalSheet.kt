@@ -28,15 +28,16 @@ import com.example.android_2425_gent2.data.model.OfflineReservation
 fun ReservationDetailsBottomModalSheet(
     selectedReservation: OfflineReservation,
     onSelectedReservationChange: (OfflineReservation?) -> Unit,
+    onCancelReservation: (Int) -> Unit,
     modifier: Modifier
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     ModalBottomSheet(
         onDismissRequest = {
             onSelectedReservationChange(null)
         },
-        sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        )
+        sheetState = sheetState
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -57,6 +58,8 @@ fun ReservationDetailsBottomModalSheet(
             Spacer(modifier.height(60.dp))
             ElevatedButton(
                 onClick = {
+                    // Roep de cancel functie aan
+                    onCancelReservation(selectedReservation.id)
                 },
                 colors = ButtonColors(
                     Color(0xFFC44244),
@@ -64,7 +67,7 @@ fun ReservationDetailsBottomModalSheet(
                     disabledContainerColor = Color.Gray,
                     disabledContentColor = Color.Black,
                 ),
-                enabled = false,
+                enabled = true,
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()

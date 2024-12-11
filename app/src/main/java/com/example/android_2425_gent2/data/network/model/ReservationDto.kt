@@ -10,7 +10,9 @@ data class ReservationDto(
     val date: LocalDate,
     val boatId: Int,
     val boatPersonalName: String,
-    val id: Int
+    val id: Int,
+    val isDeleted: Boolean = false
+
 )
 
 
@@ -22,4 +24,5 @@ fun ReservationDto.asEntity() = OfflineReservationEntity(
     boatId = boatId,
     boatPersonalName = boatPersonalName,
     id = id,
+    isDeleted = isDeleted
 )

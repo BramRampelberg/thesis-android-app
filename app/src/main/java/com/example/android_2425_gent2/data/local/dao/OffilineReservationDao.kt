@@ -45,5 +45,8 @@ interface OfflineReservationDao : EntityDao<OfflineReservationEntity> {
     @Query("SELECT COUNT(*) FROM offline_reservation")
     suspend fun getCount(): Int
 
+    @Query("SELECT * FROM offline_reservation WHERE id = :id")
+    suspend fun getOfflineReservationById(id: Int): OfflineReservationEntity?
+
 
 }

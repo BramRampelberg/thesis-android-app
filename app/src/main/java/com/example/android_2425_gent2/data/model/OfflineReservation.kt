@@ -9,7 +9,8 @@ data class OfflineReservation (
     val date: LocalDate,
     val boatId: Int,
     val boatPersonalName: String,
-    val id: Int
+    val id: Int,
+    val isDeleted: Boolean = false
 )
 
 
