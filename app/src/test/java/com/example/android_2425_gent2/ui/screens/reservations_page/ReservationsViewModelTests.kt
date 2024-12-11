@@ -1,18 +1,18 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
 import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
 import com.example.android_2425_gent2.ui.screens.reservations_page.coroutine.MainDispatcherRule
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDate
@@ -67,17 +67,13 @@ class ReservationsViewModelTest {
     fun `setReservationType should update state and trigger loading`() = runTest {
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(emptyList()))
         }
 
         coEvery { reservationRepository.getReservations(
-
             getPast = true,
-
         ) } returns flow {
             emit(APIResource.Success(emptyList()))
         }
@@ -97,12 +93,9 @@ class ReservationsViewModelTest {
 
         coEvery { reservationRepository.getReservations(
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(
-
                     mockReservations
-
                 )
             )
         }
@@ -144,7 +137,6 @@ class ReservationsViewModelTest {
 
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-
             getPast = false,
         ) } returns flow {
             emit(APIResource.Success(initialReservations))
@@ -152,7 +144,6 @@ class ReservationsViewModelTest {
 
         coEvery { reservationRepository.getReservations(
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(listOf(sampleReservation2)))
         }
@@ -167,9 +158,7 @@ class ReservationsViewModelTest {
     fun `setSelectedReservation should update selected reservation state`() = runTest {
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(emptyList()))
         }
@@ -204,13 +193,8 @@ class ReservationsViewModelTest {
             currentHolderPostalCode = "1000"
         )
 
-        coEvery { reservationRepository.getReservations(any(), any(), any(), any()) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+        coEvery { reservationRepository.getReservations(getPast = any()) } returns flow {
+            emit(APIResource.Success(emptyList()))
         }
 
         coEvery { reservationRepository.getReservationDetails(1) } returns flow {
@@ -241,13 +225,8 @@ class ReservationsViewModelTest {
         // Arrange
         val errorMessage = "Failed to load details"
 
-        coEvery { reservationRepository.getReservations(any(), any(), any(), any()) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+        coEvery { reservationRepository.getReservations(getPast = any()) } returns flow {
+            emit(APIResource.Success(emptyList()))
         }
 
         coEvery { reservationRepository.getReservationDetails(1) } returns flow {
@@ -293,13 +272,8 @@ class ReservationsViewModelTest {
             currentHolderPostalCode = null
         )
 
-        coEvery { reservationRepository.getReservations(any(), any(), any(), any()) } returns flow {
-            emit(APIResource.Success(ReservationResponse(
-                data = emptyList(),
-                nextId = null,
-                previousId = null,
-                isFirstPage = true
-            )))
+        coEvery { reservationRepository.getReservations(getPast = any()) } returns flow {
+            emit(APIResource.Success(emptyList()))
         }
 
         coEvery { reservationRepository.getReservationDetails(1) } returns flow {
