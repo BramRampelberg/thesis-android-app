@@ -10,6 +10,8 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,6 +36,9 @@ fun ProfilePage(
     val viewModel: ProfilePageViewModel = viewModel(
         factory = AppViewModelProvider.Factory,
     )
+
+    val isAdmin by viewModel.isAdmin.collectAsState()
+
 
     Column {
         AppTopBar(title=stringResource(R.string.profile))
@@ -68,13 +73,15 @@ fun ProfilePage(
 
             Spacer(modifier = Modifier.height(64.dp))
 
-            ProfileNavigationButton(
-                text = stringResource(R.string.go_to_dashboard),
-                icon = Icons.Default.AccountBox,
-                onClick = onNavigateToDashboard
-            )
+            if (isAdmin) {
+                ProfileNavigationButton(
+                    text = stringResource(R.string.go_to_dashboard),
+                    icon = Icons.Default.AccountBox,
+                    onClick = onNavigateToDashboard
+                )
 
-            Spacer(modifier = Modifier.height(72.dp))
+                Spacer(modifier = Modifier.height(72.dp))
+            }
 
             LogOutButton(
                 onClick = {

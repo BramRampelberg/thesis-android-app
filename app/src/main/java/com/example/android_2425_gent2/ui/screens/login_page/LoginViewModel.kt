@@ -102,6 +102,7 @@ class LoginViewModel(
                     }
                     is APIResource.Success -> {
                         setLoading(false)
+
                         response.data?.let { login(it) } ?: setError("Invalid credentials")
                     }
                     is APIResource.Error -> {

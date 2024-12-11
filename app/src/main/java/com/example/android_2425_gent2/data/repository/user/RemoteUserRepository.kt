@@ -6,9 +6,9 @@ import com.example.android_2425_gent2.data.model.toDomain
 import com.example.android_2425_gent2.data.network.model.UpdateUserRoleRequest
 import com.example.android_2425_gent2.data.network.model.UserDetailsDto
 import com.example.android_2425_gent2.data.network.users.UserApiService
-import kotlinx.coroutines.flow.Flow
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext

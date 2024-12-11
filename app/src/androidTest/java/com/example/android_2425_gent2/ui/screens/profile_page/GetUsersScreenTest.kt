@@ -1,7 +1,8 @@
 package com.example.android_2425_gent2.ui.screens.guest_users
 
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.data.model.UserSurface

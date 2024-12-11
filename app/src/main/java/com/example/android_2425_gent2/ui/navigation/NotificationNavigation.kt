@@ -3,11 +3,8 @@ package com.example.android_2425_gent2.ui.navigation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.android_2425_gent2.data.model.Notification
-import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.ui.AppViewModelProvider
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationDetailsPage
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationPage

@@ -4,15 +4,19 @@ import com.example.android_2425_gent2.data.model.UserSurface
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.user.UserRepository
 import com.example.android_2425_gent2.ui.screens.reservations_page.coroutine.MainDispatcherRule
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import io.mockk.*
-import kotlinx.coroutines.test.advanceUntilIdle
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GuestUsersViewModelTest {

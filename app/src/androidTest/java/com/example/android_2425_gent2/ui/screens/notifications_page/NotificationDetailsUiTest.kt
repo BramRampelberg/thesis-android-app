@@ -6,14 +6,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.core.app.ApplicationProvider
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.data.model.Notification
-import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationDetailsPage
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDateTime
 import java.util.Date
 
 class NotificationDetailsUiTest {
