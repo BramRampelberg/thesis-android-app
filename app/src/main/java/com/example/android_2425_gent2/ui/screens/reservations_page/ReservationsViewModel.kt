@@ -94,11 +94,11 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                     is APIResource.Success -> {
                         // Eerst bottom sheet sluiten
                         setSelectedReservation(null)
-                        // Dan lijst herladen
-                        loadReservationsForCurrentType()
+
+                        // Herlaad de huidige reservatietype (zorgt voor het gewenste gedrag)
+                        setReservationType(reservationTypeUiState.reservationType)
                     }
                     is APIResource.Error -> {
-                        // Hier kun je eventueel een error state toevoegen als je dat wilt
                         _reservationsUiState.value = ReservationsUiState(
                             hasError = true,
                             errorMessage = result.message

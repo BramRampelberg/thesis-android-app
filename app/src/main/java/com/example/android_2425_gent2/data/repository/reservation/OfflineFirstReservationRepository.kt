@@ -110,19 +110,20 @@ class OfflineFirstReservationRepository(
         emit(APIResource.Loading())
 
         try {
-            // Cancel op de server
-            remoteApiService.cancelReservation(reservationId)
+            val response = remoteApiService.cancelReservation(reservationId)
 
-            // Update lokale database
-            withContext(Dispatchers.IO) {
-                // Haal de bestaande reservering op en update isDeleted
-                val existingReservation = reservationDao.getOfflineReservationById(reservationId)
-                existingReservation?.let {
-                    reservationDao.insert(it.copy(isDeleted = true))
+            if (response.isSuccessful) {
+                // Update lokale database
+                withContext(Dispatchers.IO) {
+                    val existingReservation = reservationDao.getOfflineReservationById(reservationId)
+                    existingReservation?.let {
+                        reservationDao.insert(it.copy(isDeleted = true))
+                    }
                 }
+                emit(APIResource.Success(Unit))
+            } else {
+                emit(APIResource.Error("Failed to cancel reservation"))
             }
-
-            emit(APIResource.Success(Unit))
         } catch (e: Exception) {
             emit(APIResource.Error("Failed to cancel reservation: ${e.message}"))
         }

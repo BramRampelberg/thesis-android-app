@@ -2,6 +2,7 @@ package com.example.android_2425_gent2.data.network.reservation
 
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -23,5 +24,5 @@ interface ReservationApiService {
     @PATCH("/api/Reservation/cancel/{id}")
     suspend fun cancelReservation(
         @Path("id") reservationId: Int
-    )
+    ): Response<Unit>
 }
