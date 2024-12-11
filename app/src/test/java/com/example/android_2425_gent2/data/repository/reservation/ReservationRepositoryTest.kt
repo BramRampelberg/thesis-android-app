@@ -7,6 +7,7 @@ import com.example.android_2425_gent2.data.repository.APIResource
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -48,6 +49,7 @@ class ReservationRepositoryTest {
     fun `getReservationDetails success returns details`() = runTest {
         // Arrange
         coEvery { mockApiService.getReservationDetails(1) } returns Response.success(mockReservationDetails)
+        coEvery { mockOfflineDao.getOfflineReservationById(1) } returns flow { emit(null) }
 
         // Act
         repository.getReservationDetails(1).collect { result ->
@@ -69,6 +71,7 @@ class ReservationRepositoryTest {
 
         // Verify
         coVerify { mockApiService.getReservationDetails(1) }
+        coVerify { mockOfflineDao.getOfflineReservationById(1) }
     }
 
     @Test
@@ -76,6 +79,7 @@ class ReservationRepositoryTest {
         // Arrange
         val errorResponse = Response.error<ReservationDetailsDto>(404, mockk(relaxed = true))
         coEvery { mockApiService.getReservationDetails(1) } returns errorResponse
+        coEvery { mockOfflineDao.getOfflineReservationById(1) } returns flow { emit(null) }
 
         // Act
         repository.getReservationDetails(1).collect { result ->
@@ -95,12 +99,14 @@ class ReservationRepositoryTest {
 
         // Verify
         coVerify { mockApiService.getReservationDetails(1) }
+        coVerify { mockOfflineDao.getOfflineReservationById(1) }
     }
 
     @Test
     fun `getReservationDetails exception returns error resource`() = runTest {
         // Arrange
         coEvery { mockApiService.getReservationDetails(1) } throws Exception("Network error")
+        coEvery { mockOfflineDao.getOfflineReservationById(1) } returns flow { emit(null) }
 
         // Act
         repository.getReservationDetails(1).collect { result ->
@@ -120,5 +126,6 @@ class ReservationRepositoryTest {
 
         // Verify
         coVerify { mockApiService.getReservationDetails(1) }
+        coVerify { mockOfflineDao.getOfflineReservationById(1) }
     }
 }
