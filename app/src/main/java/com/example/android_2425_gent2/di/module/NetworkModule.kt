@@ -80,11 +80,12 @@ class LocalDateTimeAdapter : JsonSerializer<LocalDateTime>, JsonDeserializer<Loc
 object NetworkModule {
     private const val BASE_URL = BuildConfig.BASE_URL
 
-    val gson =
+    private val gson =
             GsonBuilder()
                     .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
                     .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
                 .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
+                    .setLenient()
                     .create()
 
     private fun provideOkHttpClient(authRepo: IAuthRepo): OkHttpClient {
