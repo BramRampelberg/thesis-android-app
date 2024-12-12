@@ -39,7 +39,13 @@ fun BoatManagementScreen(
 
         when {
             uiState.isLoading -> {
-                LoadingIndicator()
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LoadingIndicator()
+                }
             }
             uiState.errorMessage.isNotEmpty() -> {
                 ErrorMessage(message = uiState.errorMessage)

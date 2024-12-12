@@ -16,6 +16,7 @@ import com.example.android_2425_gent2.ui.screens.profile_page.UserDetailsViewMod
 import com.example.android_2425_gent2.ui.screens.profile_page.ProfilePageViewModel
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationsViewModel
 import com.example.android_2425_gent2.ui.screens.profile_page.BoatManagementViewModel
+import com.example.android_2425_gent2.ui.screens.profile_page.BatteryManagementViewModel
 
 object AppViewModelProvider {
     val LOGIN_KEY = object : CreationExtras.Key<(Credentials) -> Unit> {}
@@ -70,6 +71,13 @@ object AppViewModelProvider {
             BoatManagementViewModel(
                 mainApplication().container.batteryRepository,
                 mainApplication().container.boatRepository,
+                mainApplication().container.userRepository
+            )
+        }
+
+        initializer {
+            BatteryManagementViewModel(
+                mainApplication().container.batteryRepository,
                 mainApplication().container.userRepository
             )
         }
