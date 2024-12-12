@@ -163,7 +163,7 @@ class OfflineFirstReservationRepository(
             if (response.isSuccessful) {
                 // Update lokale database
                 withContext(Dispatchers.IO) {
-                    val existingReservation = reservationDao.getOfflineReservationById(reservationId)
+                    val existingReservation = reservationDao.getOfflineReservationByIdForCancel(reservationId)
                     existingReservation?.let {
                         reservationDao.insert(it.copy(isDeleted = true))
                     }

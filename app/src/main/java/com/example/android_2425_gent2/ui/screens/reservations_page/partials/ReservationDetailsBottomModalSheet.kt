@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +22,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -39,8 +42,8 @@ fun ReservationDetailsBottomModalSheet(
     isLoading: Boolean,
     modifier: Modifier
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     // Check of annuleren nog mogelijk is (minimaal 2 dagen van tevoren)
     val today = LocalDate.now()
     val canCancel = selectedReservation.date.minusDays(2).isAfter(today)
@@ -65,19 +68,19 @@ fun ReservationDetailsBottomModalSheet(
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
-                                           .testTag("LoadingIndicator")
+                            .testTag("LoadingIndicator")
                     )
                 } else if (reservationDetails != null) {
                     // Check if any essential details are null or blank
                     val hasValidDetails = !(
-                        reservationDetails.currentBatteryUserName.isNullOrBlank() ||
-                        reservationDetails.currentHolderPhoneNumber.isNullOrBlank() ||
-                        reservationDetails.currentHolderEmail.isNullOrBlank() ||
-                        reservationDetails.currentHolderStreet.isNullOrBlank() ||
-                        reservationDetails.currentHolderNumber.isNullOrBlank() ||
-                        reservationDetails.currentHolderCity.isNullOrBlank() ||
-                        reservationDetails.currentHolderPostalCode.isNullOrBlank()
-                    )
+                            reservationDetails.currentBatteryUserName.isNullOrBlank() ||
+                                    reservationDetails.currentHolderPhoneNumber.isNullOrBlank() ||
+                                    reservationDetails.currentHolderEmail.isNullOrBlank() ||
+                                    reservationDetails.currentHolderStreet.isNullOrBlank() ||
+                                    reservationDetails.currentHolderNumber.isNullOrBlank() ||
+                                    reservationDetails.currentHolderCity.isNullOrBlank() ||
+                                    reservationDetails.currentHolderPostalCode.isNullOrBlank()
+                            )
 
                     if (hasValidDetails) {
                         ReservationDetailsPersonInfo(reservationDetails, modifier)
@@ -116,15 +119,7 @@ fun ReservationDetailsBottomModalSheet(
             Spacer(modifier.height(60.dp))
 
             // Toon waarschuwing als annuleren niet mogelijk is
-            if (!canCancel) {
-                Text(
-                    text = stringResource(R.string.cancel_not_possible_time),
-                    color = Color(0xFFC44244),
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-            }
+
 
             ElevatedButton(
                 onClick = {
@@ -136,11 +131,18 @@ fun ReservationDetailsBottomModalSheet(
                     disabledContainerColor = Color.Gray,
                     disabledContentColor = Color.Black,
                 ),
-                enabled = canCancel,  // Disable de knop als annuleren niet mogelijk is
+                enabled = canCancel,  // Hier de canCancel gebruiken ipv true
                 modifier = modifier
+                    .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-            )
+            ) {
+                Text(
+                    text = if (canCancel)
+                        stringResource(R.string.cancel_reservation)
+                    else
+                        stringResource(R.string.not_cancellable)
+                )
+            }
         }
     }
 }

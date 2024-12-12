@@ -10,9 +10,9 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.QueryMap
-import retrofit2.http.Path
+
 import retrofit2.http.Headers
-import retrofit2.Response
+
 
 interface ReservationApiService {
     @POST("/api/Reservation")
