@@ -16,6 +16,8 @@ interface UserApiService {
 
     @GET("/api/User/{id}")
     suspend fun getUserDetails(@Path("id") id: String): UserDetailsDto
+    @GET("/api/User/profile")
+    suspend fun getUserDetails(): UserDetailsDto
 
     @POST("/api/User/role")
     suspend fun updateUserRole(@Body request: UpdateUserRoleRequest)

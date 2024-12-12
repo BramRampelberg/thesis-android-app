@@ -46,6 +46,16 @@ class RemoteUserRepository (
         }
     }
 
+    override suspend fun getUserDetails(): Flow<APIResource<UserDetailsDto>> = flow {
+        try {
+            emit(APIResource.Loading())
+            val response = remoteUserRepository.getUserDetails()
+            emit(APIResource.Success(response))
+        } catch (e: Exception) {
+            emit(APIResource.Error(message = "An unexpected error occurred"))
+        }
+    }
+
     override suspend fun updateUserRole(userId: Int, role: String): Flow<APIResource<Unit>> = flow {
         try {
             emit(APIResource.Loading())
