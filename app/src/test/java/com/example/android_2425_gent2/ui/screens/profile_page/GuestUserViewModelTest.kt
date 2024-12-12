@@ -29,16 +29,12 @@ class GuestUsersViewModelTest {
 
     @Before
     fun setup() {
-        coEvery { mockUserRepository.getUsers() } returns flow {
-            emit(APIResource.Loading())
-            emit(APIResource.Success(emptyList()))
-        }
         viewModel = GuestUsersViewModel(mockUserRepository)
     }
 
     @Test
-    fun `initialization fetches users successfully`() = runTest {
-        val testUsers = listOf<UserSurface>(
+    fun `fetchUsers loads users successfully`() = runTest {
+        val testUsers = listOf(
             UserSurface(id = 1, familyName = "Test User 1"),
             UserSurface(id = 2, familyName = "Test User 2")
         )
@@ -48,7 +44,7 @@ class GuestUsersViewModelTest {
             emit(APIResource.Success(testUsers))
         }
 
-        viewModel = GuestUsersViewModel(mockUserRepository)
+        viewModel.fetchUsers()
         advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
@@ -60,7 +56,7 @@ class GuestUsersViewModelTest {
     }
 
     @Test
-    fun `initialization handles error state`() = runTest {
+    fun `fetchUsers handles error state`() = runTest {
         val errorMessage = "Network error"
 
         coEvery { mockUserRepository.getUsers() } returns flow {
@@ -68,8 +64,7 @@ class GuestUsersViewModelTest {
             emit(APIResource.Error(errorMessage))
         }
 
-        viewModel = GuestUsersViewModel(mockUserRepository)
-
+        viewModel.fetchUsers()
         advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
@@ -81,15 +76,14 @@ class GuestUsersViewModelTest {
     }
 
     @Test
-    fun `initialization handles null data in success state`() = runTest {
+    fun `fetchUsers handles null data in success state`() = runTest {
         coEvery { mockUserRepository.getUsers() } returns flow {
             emit(APIResource.Loading())
             emit(APIResource.Success(null))
         }
 
-        viewModel = GuestUsersViewModel(mockUserRepository)
+        viewModel.fetchUsers()
         advanceUntilIdle()
-
 
         val uiState = viewModel.uiState.value
         assertFalse(uiState.isLoading)
