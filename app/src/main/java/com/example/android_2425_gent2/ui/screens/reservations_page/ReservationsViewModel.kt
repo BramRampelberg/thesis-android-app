@@ -119,8 +119,7 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         println("Loading details for reservation: $reservationId")
         viewModelScope.launch {
             try {
-                selectedReservationUiState =
-                    selectedReservationUiState.copy(isLoadingDetails = true)
+                selectedReservationUiState = selectedReservationUiState.copy(isLoadingDetails = true)
                 reservationRepository.getReservationDetails(reservationId).collect { result ->
                     println("Received details result: $result")
                     selectedReservationUiState = when (result) {
@@ -161,10 +160,8 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                     }
                 }
             } catch (e: Exception) {
-                println("Error in loadReservationDetails: ${e.message}")
-                e.printStackTrace()
                 selectedReservationUiState = selectedReservationUiState.copy(
-                    error = "Failed to load details: ${e.message}",
+                    error = "Failed to load details",
                     isLoadingDetails = false
                 )
             }

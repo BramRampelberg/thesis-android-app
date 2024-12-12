@@ -110,20 +110,16 @@ class OfflineFirstReservationRepository(
 
      override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
         emit(APIResource.Loading())
-
-        // First try to get from local database
-        val localReservation = reservationDao.getOfflineReservationById(reservationId).first()
-        if (localReservation != null) {
-            emit(APIResource.Success(localReservation.asReservationDetails()))
-        }
-
+        
         try {
+            // Try remote first
             val response = remoteApiService.getReservationDetails(reservationId)
             if (response.isSuccessful && response.body() != null) {
                 val details = response.body()!!
-
-                // Update local database with new details
+                
+                // Update local database
                 withContext(Dispatchers.IO) {
+                    val localReservation = reservationDao.getOfflineReservationById(reservationId).first()
                     val updatedEntity = localReservation?.copy(
                         isDeleted = details.isDeleted,
                         mentorName = details.mentorName,
@@ -139,16 +135,25 @@ class OfflineFirstReservationRepository(
                     )
                     if (updatedEntity != null) {
                         reservationDao.update(updatedEntity)
-                        emit(APIResource.Success(details))
                     }
                 }
+                
+                emit(APIResource.Success(details))
             } else {
-                if (localReservation == null) {
+                // If remote fails, try local
+                val localReservation = reservationDao.getOfflineReservationById(reservationId).first()
+                if (localReservation != null) {
+                    emit(APIResource.Success(localReservation.asReservationDetails()))
+                } else {
                     emit(APIResource.Error("Failed to fetch reservation details"))
                 }
             }
         } catch (e: Exception) {
-            if (localReservation == null) {
+            // If exception occurs, try local
+            val localReservation = reservationDao.getOfflineReservationById(reservationId).first()
+            if (localReservation != null) {
+                emit(APIResource.Success(localReservation.asReservationDetails()))
+            } else {
                 emit(APIResource.Error("Failed to fetch reservation details: ${e.message}"))
             }
         }
