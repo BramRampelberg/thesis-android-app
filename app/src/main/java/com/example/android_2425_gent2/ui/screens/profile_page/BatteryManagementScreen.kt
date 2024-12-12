@@ -33,8 +33,11 @@ fun BatteriesList(
     users: List<UserNameDto>,
     onAssignMentor: (Int, Int) -> Unit
 ) {
+    // Sort batteries by ID
+    val sortedBatteries = batteries.sortedBy { it.id }
+    
     LazyColumn {
-        items(batteries) { battery ->
+        items(sortedBatteries) { battery ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -43,20 +46,22 @@ fun BatteriesList(
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Battery ID: ${battery.id}",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.headlineSmall
                     )
                     
                     Text(
                         text = "Type: ${battery.type}",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                     
                     Text(
                         text = "Current Mentor: ${battery.mentor?.fullName ?: "No mentor assigned"}",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     
                     var expanded by remember { mutableStateOf(false) }
                     var selectedUser by remember { mutableStateOf<UserNameDto?>(null) }

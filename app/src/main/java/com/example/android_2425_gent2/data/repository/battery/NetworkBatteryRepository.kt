@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.data.repository.battery
 
-import android.util.Log
 import com.example.android_2425_gent2.data.network.battery.BatteryApiService
 import com.example.android_2425_gent2.data.network.battery.BatteryDto
 import com.example.android_2425_gent2.data.network.battery.UpdateBatteryRequest
@@ -72,7 +71,11 @@ class NetworkBatteryRepository(
         val result = withContext(Dispatchers.IO) {
             try {
                 println("Making API call to assign mentor (batteryId: $batteryId, mentorId: $mentorId)...")
-                val request = UpdateBatteryRequest(mentorId = mentorId)
+                val request = UpdateBatteryRequest(
+                    type = "Lithium-Ion",
+                    mentorId = mentorId,
+                    newBattery = false
+                )
                 val response = batteryApiService.updateBattery(batteryId, request)
                 
                 println("Response raw: ${response.raw()}")

@@ -19,6 +19,10 @@ interface BatteryApiService {
     suspend fun getBatteriesByBoat(@Path("boatId") boatId: Int): Response<List<BatteryDto>>
     
     @PUT("/api/Battery/{id}")
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
     suspend fun updateBattery(
         @Path("id") id: Int,
         @Body request: UpdateBatteryRequest
@@ -27,5 +31,7 @@ interface BatteryApiService {
 
 
 data class UpdateBatteryRequest(
-    val mentorId: Int?
+    val type: String,
+    val mentorId: Int?,
+    val newBattery: Boolean
 ) 
