@@ -153,5 +153,28 @@ class OfflineFirstReservationRepository(
             }
         }
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun cancelReservation(reservationId: Int): Flow<APIResource<Unit>> = flow {
+        emit(APIResource.Loading())
+
+        try {
+            val response = remoteApiService.cancelReservation(reservationId)
+
+            if (response.isSuccessful) {
+                // Update lokale database
+                withContext(Dispatchers.IO) {
+                    val existingReservation = reservationDao.getOfflineReservationByIdForCancel(reservationId)
+                    existingReservation?.let {
+                        reservationDao.insert(it.copy(isDeleted = true))
+                    }
+                }
+                emit(APIResource.Success(Unit))
+            } else {
+                emit(APIResource.Error("Failed to cancel reservation"))
+            }
+        } catch (e: Exception) {
+            emit(APIResource.Error("Failed to cancel reservation: ${e.message}"))
+        }
+    }.flowOn(Dispatchers.IO)
 }
 

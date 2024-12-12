@@ -72,17 +72,22 @@ fun ReservationsPage(
             )
         }
 
-        if (selectedReservationUiState.selectedReservation != null) {
+        if (selectedReservationUiState.selectedReservation != null &&
+            !selectedReservationUiState.selectedReservation.isDeleted &&
+            reservationTypeUiState.reservationType != ReservationType.OLD) {
             ReservationDetailsBottomModalSheet(
-                selectedReservationUiState.selectedReservation,
+                selectedReservation = selectedReservationUiState.selectedReservation,
                 reservationDetails = selectedReservationUiState.details,
                 isLoading = selectedReservationUiState.isLoadingDetails,
-                modifier = modifier,
-                onSelectedReservationChange =   {
+                onSelectedReservationChange = {
                     coroutineScope.launch {
                         viewModel.setSelectedReservation(it)
                     }
                 },
+                onCancelReservation = { reservationId ->
+                    viewModel.cancelReservation(reservationId)
+                },
+                modifier = modifier
             )
         }
     }
