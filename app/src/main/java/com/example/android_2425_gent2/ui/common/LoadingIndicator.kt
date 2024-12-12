@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun LoadingIndicator(
@@ -16,7 +17,7 @@ fun LoadingIndicator(
     trackColor: Color = colorResource(R.color.primary_darken)
 ) {
     CircularProgressIndicator(
-        modifier = modifier.width(64.dp),
+        modifier = modifier.width(64.dp).testTag("loadingIndicator"),
         color = color,
         trackColor = trackColor
     )

@@ -41,6 +41,7 @@ import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.testTag
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +66,9 @@ fun BatteryManagementScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LoadingIndicator()
+                    LoadingIndicator(
+                        modifier = Modifier.testTag("LoadingIndicator")
+                    )
                 }
             }
             uiState.errorMessage.isNotEmpty() -> {
@@ -99,7 +102,7 @@ fun BatteriesList(
     onAssignMentor: (Int, Int) -> Unit
 ) {
     LazyColumn {
-        items(batteries) { battery ->
+        items(batteries.sortedBy { it.id }) { battery ->
             BatteryCard(
                 battery = battery,
                 users = users,
