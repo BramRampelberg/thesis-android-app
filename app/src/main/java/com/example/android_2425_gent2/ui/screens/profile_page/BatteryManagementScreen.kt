@@ -141,7 +141,7 @@ private fun BatteryCard(
             )
             
             Text(
-                text = "Huidige Mentor: ${battery.mentor?.fullName ?: "Geen mentor toegewezen"}",
+                text = "Huidige Meter/Peter: ${battery.mentor?.fullName ?: "Geen meter/peter toegewezen"}",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 8.dp)
             )
@@ -153,7 +153,7 @@ private fun BatteryCard(
                 onExpandedChange = { expanded = !expanded }
             ) {
                 TextField(
-                    value = selectedUser?.fullName ?: "Selecteer Mentor",
+                    value = selectedUser?.fullName ?: "Selecteer Meter/Peter",
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -185,8 +185,8 @@ private fun BatteryCard(
     if (showConfirmDialog && selectedUser != null) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
-            title = { Text("Mentor Toewijzen") },
-            text = { Text("Weet u zeker dat u ${selectedUser?.fullName} als mentor wilt toewijzen?") },
+            title = { Text("Meter/Peter Toewijzen") },
+            text = { Text("Weet u zeker dat u ${selectedUser?.fullName} als meter/peter wilt toewijzen?") },
             confirmButton = {
                 TextButton(onClick = {
                     onAssignMentor(battery.id, selectedUser!!.id)

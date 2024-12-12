@@ -17,7 +17,7 @@ fun ReservationDetailsMentor(
     if (!mentorName.isNullOrBlank()) {
         Column(modifier = modifier) {
             Text(
-                text = "Mentor",
+                text = "Meter/Peter",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(R.color.primary)

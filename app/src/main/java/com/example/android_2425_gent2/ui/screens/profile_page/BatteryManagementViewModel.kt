@@ -92,7 +92,7 @@ class BatteryManagementViewModel(
                             it.copy(
                                 isLoading = false,
                                 errorMessage = "",
-                                successMessage = "Mentor successfully assigned"
+                                successMessage = "Meter/Peter succesvol toegewezen"
                             )
                         }
                         loadBatteries() // Reload batteries to reflect changes
@@ -101,7 +101,7 @@ class BatteryManagementViewModel(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorMessage = result.message ?: "Failed to assign mentor"
+                                errorMessage = result.message ?: "Toewijzen meter/peter mislukt"
                             )
                         }
                     }

@@ -112,7 +112,7 @@ class BatteryManagementViewModelTest {
         with(viewModel.uiState.value) {
             assertFalse(isLoading)
             assertTrue(errorMessage.isEmpty())
-            assertEquals("Mentor successfully assigned", successMessage)
+            assertEquals("Meter/Peter succesvol toegewezen", successMessage)
         }
 
         coVerify { 
@@ -153,7 +153,7 @@ class BatteryManagementViewModelTest {
         viewModel.assignMentor(1, 2)
         advanceUntilIdle()
         
-        assertEquals("Mentor successfully assigned", viewModel.uiState.value.successMessage)
+        assertEquals("Meter/Peter succesvol toegewezen", viewModel.uiState.value.successMessage)
         
         viewModel.clearSuccessMessage()
         assertTrue(viewModel.uiState.value.successMessage.isEmpty())
