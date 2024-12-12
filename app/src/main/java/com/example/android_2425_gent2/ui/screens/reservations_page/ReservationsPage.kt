@@ -73,10 +73,12 @@ fun ReservationsPage(
             )
         }
 
-        if (selectedReservationUiState.selectedReservation != null) {
+        if (selectedReservationUiState.selectedReservation != null &&
+            !selectedReservationUiState.selectedReservation.isDeleted &&
+            reservationTypeUiState.reservationType != ReservationType.OLD) {
             ReservationDetailsBottomModalSheet(
                 selectedReservationUiState.selectedReservation,
-                {
+                onSelectedReservationChange = {
                     coroutineScope.launch {
                         viewModel.setSelectedReservation(it)
                     }

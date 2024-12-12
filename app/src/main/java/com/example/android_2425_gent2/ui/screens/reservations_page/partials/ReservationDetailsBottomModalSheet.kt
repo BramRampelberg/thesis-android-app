@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.OfflineReservation
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +33,10 @@ fun ReservationDetailsBottomModalSheet(
     modifier: Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // Check of annuleren nog mogelijk is (minimaal 2 dagen van tevoren)
+    val today = LocalDate.now()
+    val canCancel = selectedReservation.date.minusDays(2).isAfter(today)
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -56,9 +61,20 @@ fun ReservationDetailsBottomModalSheet(
                 Text("E-mail: phillipe.van.achter@gmail.com")
             }
             Spacer(modifier.height(60.dp))
+
+            // Toon waarschuwing als annuleren niet mogelijk is
+            if (!canCancel) {
+                Text(
+                    text = stringResource(R.string.cancel_not_possible_time),
+                    color = Color(0xFFC44244),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+
             ElevatedButton(
                 onClick = {
-                    // Roep de cancel functie aan
                     onCancelReservation(selectedReservation.id)
                 },
                 colors = ButtonColors(
@@ -67,7 +83,7 @@ fun ReservationDetailsBottomModalSheet(
                     disabledContainerColor = Color.Gray,
                     disabledContentColor = Color.Black,
                 ),
-                enabled = true,
+                enabled = canCancel,  // Disable de knop als annuleren niet mogelijk is
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()

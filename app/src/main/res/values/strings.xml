@@ -45,4 +45,5 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="notification_details">Notification Details</string>
     <string name="back">Back</string>
+    <string name="cancel_not_possible_time">Niet annuleerbaar</string>
 </resources>
