@@ -8,13 +8,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,8 +35,11 @@ fun BatteriesList(
     users: List<UserNameDto>,
     onAssignMentor: (Int, Int) -> Unit
 ) {
-    // Sort batteries by ID
     val sortedBatteries = batteries.sortedBy { it.id }
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    var selectedBatteryId by remember { mutableStateOf<Int?>(null) }
+    var selectedMentorId by remember { mutableStateOf<Int?>(null) }
+    var selectedMentorName by remember { mutableStateOf<String?>(null) }
     
     LazyColumn {
         items(sortedBatteries) { battery ->
@@ -45,7 +50,7 @@ fun BatteriesList(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Battery ID: ${battery.id}",
+                        text = "Batterij ID: ${battery.id}",
                         style = MaterialTheme.typography.headlineSmall
                     )
                     
@@ -56,7 +61,7 @@ fun BatteriesList(
                     )
                     
                     Text(
-                        text = "Current Mentor: ${battery.mentor?.fullName ?: "No mentor assigned"}",
+                        text = "Huidige Mentor: ${battery.mentor?.fullName ?: "Geen mentor toegewezen"}",
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(top = 8.dp)
                     )
@@ -71,7 +76,7 @@ fun BatteriesList(
                         onExpandedChange = { expanded = !expanded }
                     ) {
                         TextField(
-                            value = selectedUser?.fullName ?: "Select Mentor",
+                            value = selectedUser?.fullName ?: "Selecteer Mentor",
                             onValueChange = {},
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -91,7 +96,10 @@ fun BatteriesList(
                                     onClick = {
                                         selectedUser = user
                                         expanded = false
-                                        onAssignMentor(battery.id, user.id)
+                                        selectedBatteryId = battery.id
+                                        selectedMentorId = user.id
+                                        selectedMentorName = user.fullName
+                                        showConfirmDialog = true
                                     }
                                 )
                             }
@@ -100,5 +108,26 @@ fun BatteriesList(
                 }
             }
         }
+    }
+    
+    if (showConfirmDialog && selectedMentorName != null && selectedBatteryId != null && selectedMentorId != null) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            title = { Text("Mentor Toewijzen") },
+            text = { Text("Weet u zeker dat u ${selectedMentorName} als mentor wilt toewijzen?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onAssignMentor(selectedBatteryId!!, selectedMentorId!!)
+                    showConfirmDialog = false
+                }) {
+                    Text("Bevestigen")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) {
+                    Text("Annuleren")
+                }
+            }
+        )
     }
 }
