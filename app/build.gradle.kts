@@ -91,6 +91,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
+    implementation("androidx.compose.material3:material3-window-size-class")
 
     // Test dependencies
     testImplementation(libs.junit)
@@ -123,4 +124,7 @@ dependencies {
 
     //Auth
     implementation(libs.android.auth0)
+
+    implementation(libs.android.jwt)
+
 }

@@ -1,8 +1,7 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page
 
 import com.example.android_2425_gent2.data.model.OfflineReservation
-import com.example.android_2425_gent2.data.network.model.ReservationDto
-import com.example.android_2425_gent2.data.network.model.ReservationResponse
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
 import com.example.android_2425_gent2.ui.screens.reservations_page.coroutine.MainDispatcherRule
@@ -13,10 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDate
@@ -71,17 +67,13 @@ class ReservationsViewModelTest {
     fun `setReservationType should update state and trigger loading`() = runTest {
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(emptyList()))
         }
 
         coEvery { reservationRepository.getReservations(
-
             getPast = true,
-
         ) } returns flow {
             emit(APIResource.Success(emptyList()))
         }
@@ -101,12 +93,9 @@ class ReservationsViewModelTest {
 
         coEvery { reservationRepository.getReservations(
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(
-
                     mockReservations
-
                 )
             )
         }
@@ -148,7 +137,6 @@ class ReservationsViewModelTest {
 
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-
             getPast = false,
         ) } returns flow {
             emit(APIResource.Success(initialReservations))
@@ -156,7 +144,6 @@ class ReservationsViewModelTest {
 
         coEvery { reservationRepository.getReservations(
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(listOf(sampleReservation2)))
         }
@@ -171,9 +158,7 @@ class ReservationsViewModelTest {
     fun `setSelectedReservation should update selected reservation state`() = runTest {
         // Use every {} for mockk
         coEvery { reservationRepository.getReservations(
-
             getPast = false,
-
         ) } returns flow {
             emit(APIResource.Success(emptyList()))
         }
@@ -184,5 +169,131 @@ class ReservationsViewModelTest {
         viewModel.setSelectedReservation(sampleReservation1)
 
         assertEquals(sampleReservation1, viewModel.selectedReservationUiState.selectedReservation)
+    }
+
+    @Test
+    fun `loadReservationDetails success updates state correctly`() = runTest {
+        // Arrange
+        val mockDetails = ReservationDetailsDto(
+            id = 1,
+            start = "10:00",
+            end = "12:00",
+            date = "2024-01-01",
+            isDeleted = false,
+            boatPersonalName = "Test Boat",
+            mentorName = "Test Mentor",
+            batteryId = 1,
+            currentBatteryUserName = "John Doe",
+            currentBatteryUserId = 1,
+            currentHolderPhoneNumber = "123456789",
+            currentHolderEmail = "john@example.com",
+            currentHolderStreet = "Test Street",
+            currentHolderNumber = "123",
+            currentHolderCity = "Test City",
+            currentHolderPostalCode = "1000"
+        )
+
+        coEvery { reservationRepository.getReservations(getPast = any()) } returns flow {
+            emit(APIResource.Success(emptyList()))
+        }
+
+        coEvery { reservationRepository.getReservationDetails(1) } returns flow {
+            emit(APIResource.Loading())
+            emit(APIResource.Success(mockDetails))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        // Act
+        viewModel.setSelectedReservation(sampleReservation1)
+        advanceUntilIdle()
+
+        // Assert
+        with(viewModel.selectedReservationUiState) {
+            assertEquals(sampleReservation1, selectedReservation)
+            assertEquals(mockDetails, details)
+            assertFalse(isLoadingDetails)
+            assertNull(error)
+        }
+
+        coVerify { reservationRepository.getReservationDetails(1) }
+    }
+
+    @Test
+    fun `loadReservationDetails error updates state correctly`() = runTest {
+        // Arrange
+        val errorMessage = "Failed to load details"
+
+        coEvery { reservationRepository.getReservations(getPast = any()) } returns flow {
+            emit(APIResource.Success(emptyList()))
+        }
+
+        coEvery { reservationRepository.getReservationDetails(1) } returns flow {
+            emit(APIResource.Loading())
+            emit(APIResource.Error(errorMessage))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        // Act
+        viewModel.setSelectedReservation(sampleReservation1)
+        advanceUntilIdle()
+
+        // Assert
+        with(viewModel.selectedReservationUiState) {
+            assertEquals(sampleReservation1, selectedReservation)
+            assertNull(details)
+            assertFalse(isLoadingDetails)
+            assertEquals(errorMessage, error)
+        }
+    }
+
+    @Test
+    fun `loadReservationDetails with unknown user updates state correctly`() = runTest {
+        // Arrange
+        val mockDetails = ReservationDetailsDto(
+            id = 1,
+            start = "10:00",
+            end = "12:00",
+            date = "2024-01-01",
+            isDeleted = false,
+            boatPersonalName = "Test Boat",
+            mentorName = null,
+            batteryId = 1,
+            currentBatteryUserName = "Unknown",
+            currentBatteryUserId = 1,
+            currentHolderPhoneNumber = null,
+            currentHolderEmail = null,
+            currentHolderStreet = null,
+            currentHolderNumber = null,
+            currentHolderCity = null,
+            currentHolderPostalCode = null
+        )
+
+        coEvery { reservationRepository.getReservations(getPast = any()) } returns flow {
+            emit(APIResource.Success(emptyList()))
+        }
+
+        coEvery { reservationRepository.getReservationDetails(1) } returns flow {
+            emit(APIResource.Loading())
+            emit(APIResource.Success(mockDetails))
+        }
+
+        viewModel = ReservationsViewModel(reservationRepository)
+        advanceUntilIdle()
+
+        // Act
+        viewModel.setSelectedReservation(sampleReservation1)
+        advanceUntilIdle()
+
+        // Assert
+        with(viewModel.selectedReservationUiState) {
+            assertEquals(sampleReservation1, selectedReservation)
+            assertNull(details)
+            assertFalse(isLoadingDetails)
+            assertEquals("Details temporarily unavailable", error)
+        }
     }
 }

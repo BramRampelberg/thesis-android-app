@@ -1,5 +1,6 @@
 package com.example.android_2425_gent2.ui.screens.app_page;
 
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -27,7 +28,7 @@ class AppUITest {
 
         composeTestRule.setContent {
             Android2425gent2Theme {
-                App()
+                App(windowSize = WindowWidthSizeClass.Compact)
             }
         }
     }

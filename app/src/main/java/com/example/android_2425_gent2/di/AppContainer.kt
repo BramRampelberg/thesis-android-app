@@ -19,9 +19,9 @@ import com.example.android_2425_gent2.data.repository.timeslot.NetworkTimeSlotRe
 import com.example.android_2425_gent2.data.repository.timeslot.TestTimeSlotRepository
 import com.example.android_2425_gent2.data.repository.timeslot.TimeSlotRepository
 import com.example.android_2425_gent2.data.repository.user.RemoteUserRepository
-import com.example.android_2425_gent2.di.module.NetworkModule
 import com.example.android_2425_gent2.data.repository.user.TestUserRepository
 import com.example.android_2425_gent2.data.repository.user.UserRepository
+import com.example.android_2425_gent2.di.module.NetworkModule
 
 
 interface AppContainer {

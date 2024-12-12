@@ -35,7 +35,6 @@ fun ReservationsPage(
     val selectedReservationUiState = viewModel.selectedReservationUiState
     val reservationTypeUiState = viewModel.reservationTypeUiState
 
-
     Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ReservationTypeSelectionDropDownMenu(
             reservationTypeUiState.reservationType,
@@ -78,7 +77,10 @@ fun ReservationsPage(
             reservationTypeUiState.reservationType != ReservationType.OLD) {
             ReservationDetailsBottomModalSheet(
                 selectedReservationUiState.selectedReservation,
-                onSelectedReservationChange = {
+                reservationDetails = selectedReservationUiState.details,
+                isLoading = selectedReservationUiState.isLoadingDetails,
+                modifier = modifier,
+                onSelectedReservationChange =   {
                     coroutineScope.launch {
                         viewModel.setSelectedReservation(it)
                     }

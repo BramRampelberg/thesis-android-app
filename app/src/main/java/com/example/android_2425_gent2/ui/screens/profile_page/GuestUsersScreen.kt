@@ -3,6 +3,7 @@ package com.example.android_2425_gent2.ui.screens.profile_page
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,10 @@ fun GuestUsersScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchUsers()
+    }
+
     Column() {
         AppTopBar(
             title = stringResource(R.string.users_list),
@@ -39,7 +44,6 @@ fun GuestUsersScreen(
             uiState.errorMessage.isNotEmpty() -> {
                 ErrorMessage(
                     message = uiState.errorMessage,
-
                 )
             }
             else -> {

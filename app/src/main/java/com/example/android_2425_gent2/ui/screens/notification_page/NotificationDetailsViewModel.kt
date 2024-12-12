@@ -3,7 +3,6 @@ package com.example.android_2425_gent2.ui.screens.notification_page
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_2425_gent2.data.model.Notification
-import com.example.android_2425_gent2.data.network.model.NotificationDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.notification.NotificationRepository
 import kotlinx.coroutines.flow.MutableStateFlow

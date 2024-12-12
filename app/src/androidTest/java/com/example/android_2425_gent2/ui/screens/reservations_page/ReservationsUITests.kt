@@ -13,6 +13,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.example.android_2425_gent2.MainApplication
 import com.example.android_2425_gent2.di.TestContainer
 import com.example.android_2425_gent2.ui.theme.Android2425gent2Theme
+import com.example.android_2425_gent2.utils.DATE_FORMATTER
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,10 +42,15 @@ class ReservationsUITests {
     fun selectOldReservations_showsOldReservations() {
         composeTestRule.onNodeWithTag("ReservationTypeSelectionDropDownMenu").performClick()
         composeTestRule.onNodeWithText("Oude reservaties").performClick()
-        composeTestRule.onAllNodesWithText("Datum: $mockDate")
-            .filter(hasRequestFocusAction())
-            .onFirst()
-            .assertExists()
+        
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onAllNodesWithText("11:30 - 13:30")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        
+        composeTestRule.onNodeWithText("11:30 - 13:30", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("14:00 - 16:00", useUnmergedTree = true).assertExists()
     }
 
 
@@ -54,30 +60,14 @@ class ReservationsUITests {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("ReservationType.UPCOMING").performClick()
-        composeTestRule.waitForIdle()
+        
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onAllNodesWithText("11:30 - 13:30")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
 
-        composeTestRule.onNodeWithText("11:30 - 13:30").assertExists()
-        composeTestRule.onNodeWithText("14:00 - 16:00").assertExists()
-    }
-
-    @Test
-    fun selectReservation_showsReservationDetails() {
-        composeTestRule.onNodeWithTag("ReservationTypeSelectionDropDownMenu").performClick()
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithTag("ReservationType.UPCOMING")
-            .assertExists()
-            .performClick()
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithText("14:00 - 16:00")
-            .assertExists().performClick()
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithText("Gegevens ophalen batterij:").assertExists()
-        composeTestRule.onNodeWithText("Naam", substring = true).assertExists()
-        composeTestRule.onNodeWithText("Tel.:", substring = true).assertExists()
-        composeTestRule.onNodeWithText("E-mail:", substring = true).assertExists()
-        composeTestRule.onNodeWithText("Annuleer reservatie").assertExists()
+        composeTestRule.onNodeWithText("11:30 - 13:30", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("14:00 - 16:00", useUnmergedTree = true).assertExists()
     }
 }

@@ -2,6 +2,9 @@ package com.example.android_2425_gent2.data.repository.reservation
 
 import com.example.android_2425_gent2.data.model.OfflineReservation
 import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
+import com.example.android_2425_gent2.data.network.model.ReservationDto
+import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -67,6 +70,30 @@ class TestReservationRepository : ReservationRepository {
     override suspend fun cancelReservation(reservationId: Int): Flow<APIResource<Unit>> {
         TODO("Not yet implemented")
     }
+    override suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>> = flow {
+        emit(APIResource.Loading())
+        delay(500) // Simulate network delay
 
+        emit(APIResource.Success(
+            ReservationDetailsDto(
+                id = reservationId,
+                start = "10:00:00",
+                end = "13:00:00",
+                date = "2024-10-30",
+                isDeleted = false,
+                boatPersonalName = "Limba",
+                mentorName = "Her De Gaver",
+                batteryId = 42,
+                currentBatteryUserName = "Jane Smith",
+                currentBatteryUserId = 42,
+                currentHolderPhoneNumber = "+32477587465",
+                currentHolderEmail = "jane@example.com",
+                currentHolderStreet = "Main Street",
+                currentHolderNumber = "123",
+                currentHolderCity = "Brussels",
+                currentHolderPostalCode = "1000"
+            )
+        ))
+    }
 
 }

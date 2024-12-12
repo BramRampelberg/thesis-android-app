@@ -46,4 +46,6 @@
     <string name="notification_details">Notification Details</string>
     <string name="back">Back</string>
     <string name="cancel_not_possible_time">Niet annuleerbaar</string>
+    <string name="user_details">Gast Details</string>
+    <string name="approve">Goedkeuren</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.android_2425_gent2.data.repository.auth
 
 import com.auth0.android.result.Credentials
+import com.example.android_2425_gent2.data.model.UserRole
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ class TestAuth0Repo: IAuthRepo {
 
 
     private var loggedIn: Boolean = false
+    private var hasRole : Boolean = false
 
     private var _stateFlow = MutableStateFlow<APIResource<Credentials>>(APIResource.Loading())
     val stateFlow: StateFlow<APIResource<Credentials>> get() = _stateFlow
@@ -40,6 +42,10 @@ class TestAuth0Repo: IAuthRepo {
 
     override fun logout() {
         loggedIn = false
+    }
+
+    override suspend fun hasRole(role: UserRole): Boolean {
+        return hasRole
     }
 
     override fun isLoggedIn(): Boolean {

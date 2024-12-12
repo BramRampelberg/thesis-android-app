@@ -17,6 +17,9 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
     private val _unreadCount = MutableStateFlow(0)
     val unreadCount: StateFlow<Int> = _unreadCount.asStateFlow()
 
+    private val _selectedNotification = MutableStateFlow<Notification?>(null)
+    val selectedNotification: StateFlow<Notification?> = _selectedNotification.asStateFlow()
+
     init {
         viewModelScope.launch {
             notificationRepository.notifications
@@ -25,6 +28,15 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
                 }
         }
         loadNotifications()
+    }
+
+    fun selectNotification(notification: Notification) {
+        _selectedNotification.value = notification
+        markAsRead(notification.id)
+    }
+
+    fun clearSelectedNotification() {
+        _selectedNotification.value = null
     }
 
     private fun updateUiState(apiResource: APIResource<List<Notification>>) {
@@ -37,7 +49,7 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
                 if (response != null) {
                     _notificationsUiState.value = NotificationsUiState(
                         loading = false,
-                        notifications = response
+                        notifications = response.sortedByDescending { it.timeStamp }
                     )
                     // Update unread count
                     _unreadCount.value = response.count { !it.isRead }
@@ -63,8 +75,26 @@ class NotificationViewModel(private val notificationRepository: NotificationRepo
             notificationRepository.getNotifications().collect(::updateUiState)
         }
     }
-}
 
+    private fun markAsRead(notificationId: Int) {
+        viewModelScope.launch {
+            notificationRepository.markNotificationAsRead(notificationId)
+                .collect { apiResource ->
+                    when (apiResource) {
+                        is APIResource.Error -> {
+                            // Handle error if needed
+                        }
+                        is APIResource.Loading -> {
+                            // We don't need to show loading state for mark as read
+                        }
+                        is APIResource.Success -> {
+                            // No need to manually reload - shared flow will handle updates
+                        }
+                    }
+                }
+        }
+    }
+}
 
 data class NotificationsUiState(
     val notifications: List<Notification> = emptyList(),
