@@ -3,10 +3,12 @@ package com.example.android_2425_gent2.data.repository.user
 import com.example.android_2425_gent2.data.model.UserSurface
 import com.example.android_2425_gent2.data.network.model.UserDetailsDto
 import com.example.android_2425_gent2.data.network.model.AddressDto
+import com.example.android_2425_gent2.data.network.users.UserNameDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 
 class TestUserRepository : UserRepository {
     private var _stateFlow = MutableStateFlow<APIResource<List<UserSurface>>>(APIResource.Loading())
@@ -24,6 +26,29 @@ class TestUserRepository : UserRepository {
     override suspend fun getUserDetails(): Flow<APIResource<UserDetailsDto>> = userDetailsStateFlow
 
     override suspend fun updateUserRole(userId: Int, role: String): Flow<APIResource<Unit>> = updateRoleStateFlow
+
+    override suspend fun getUserNames(): Flow<APIResource<List<UserNameDto>>> = flow {
+        emit(APIResource.Success(listOf(
+            UserNameDto(
+                id = 1,
+                fullName = "Her De Gaver, Patrick",
+                firstName = "Patrick",
+                familyName = "Her De Gaver"
+            ),
+            UserNameDto(
+                id = 2,
+                fullName = "de Clerk, Bram",
+                firstName = "Bram",
+                familyName = "de Clerk"
+            ),
+            UserNameDto(
+                id = 3,
+                fullName = "Piatti, Simon",
+                firstName = "Simon",
+                familyName = "Piatti"
+            )
+        )))
+    }
 
     fun triggerLoading() {
         _stateFlow.value = APIResource.Loading()

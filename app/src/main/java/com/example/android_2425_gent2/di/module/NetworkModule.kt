@@ -1,6 +1,8 @@
 package com.example.android_2425_gent2.di.module
 
 import com.example.android_2425_gent2.BuildConfig
+import com.example.android_2425_gent2.data.network.battery.BatteryApiService
+import com.example.android_2425_gent2.data.network.boat.BoatApiService
 import com.example.android_2425_gent2.data.network.notification.NotificationApiService
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
 import com.example.android_2425_gent2.data.network.timeslot.TimeSlotApiService
@@ -123,4 +125,14 @@ object NetworkModule {
         return retrofit.create(UserApiService::class.java)
     }
 
+    // make a function to provide the battery api service
+    fun provideBatteryApiService(authRepo: IAuthRepo): BatteryApiService {
+        val retrofit = provideRetrofit(authRepo)
+        return retrofit.create(BatteryApiService::class.java)
+    }
+
+    fun provideBoatApiService(authRepo: IAuthRepo): BoatApiService {
+        val retrofit = provideRetrofit(authRepo)
+        return retrofit.create(BoatApiService::class.java)
+    }
 }
