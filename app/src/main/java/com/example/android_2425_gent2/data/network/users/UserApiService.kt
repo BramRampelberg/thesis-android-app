@@ -5,6 +5,7 @@ import com.example.android_2425_gent2.data.network.model.UpdateUserRoleRequest
 import com.example.android_2425_gent2.data.network.model.UserDetailsDto
 import com.example.android_2425_gent2.data.network.model.UserSurfaceInfoDto
 import retrofit2.http.Body
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -21,4 +22,7 @@ interface UserApiService {
 
     @POST("/api/User/role")
     suspend fun updateUserRole(@Body request: UpdateUserRoleRequest)
+
+    @GET("/api/User/names")
+    suspend fun getUserNames(): Response<List<UserNameDto>>
 }

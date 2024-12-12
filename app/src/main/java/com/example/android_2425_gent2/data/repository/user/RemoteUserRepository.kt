@@ -1,11 +1,11 @@
 package com.example.android_2425_gent2.data.repository.user
 
-import android.net.http.HttpException
 import com.example.android_2425_gent2.data.model.UserSurface
 import com.example.android_2425_gent2.data.model.toDomain
 import com.example.android_2425_gent2.data.network.model.UpdateUserRoleRequest
 import com.example.android_2425_gent2.data.network.model.UserDetailsDto
 import com.example.android_2425_gent2.data.network.users.UserApiService
+import com.example.android_2425_gent2.data.network.users.UserNameDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -65,4 +65,28 @@ class RemoteUserRepository (
             emit(APIResource.Error(message = "An unexpected error occurred"))
         }
     }
+
+    override suspend fun getUserNames(): Flow<APIResource<List<UserNameDto>>> = flow {
+        emit(APIResource.Loading())
+        
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val response = remoteUserRepository.getUserNames()
+                if (!response.isSuccessful) {
+                    return@withContext APIResource.Error("Failed to fetch user names: ${response.code()}")
+                }
+                
+                val users = response.body()
+                if (users != null) {
+                    APIResource.Success(users)
+                } else {
+                    APIResource.Error("Empty response body")
+                }
+            } catch (e: Exception) {
+                APIResource.Error("Failed to fetch user names: ${e.message}")
+            }
+        }
+        
+        emit(result)
+    }.flowOn(Dispatchers.IO)
 }

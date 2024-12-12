@@ -48,4 +48,6 @@
     <string name="not_cancellable">Niet annuleerbaar</string>
     <string name="user_details">Gast Details</string>
     <string name="approve">Goedkeuren</string>
+    <string name="manage_batteries">Overzicht boten</string>
+    <string name="no_batteries_found">Geen batterijen gevonden</string>
 </resources>

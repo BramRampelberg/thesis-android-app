@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ data class QuickAction(
 @Composable
 fun AdminDashBoard(
     onNavigateToUsers: () -> Unit,
+    onNavigateToBatteries: () -> Unit,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit
 ) {
@@ -56,10 +58,12 @@ fun AdminDashBoard(
                     text = stringResource(R.string.manage_guests),
                     icon = Icons.Default.Face,
                     onClick = onNavigateToUsers
+                ),
+                QuickAction(
+                    text = stringResource(R.string.manage_batteries),
+                    icon = Icons.Default.Build,
+                    onClick = onNavigateToBatteries
                 )
-                /*
-                *more can be added here
-                * */
             )
 
             QuickActionsSection(

@@ -10,11 +10,13 @@ import com.example.android_2425_gent2.ui.screens.profile_page.AdminDashBoard
 import com.example.android_2425_gent2.ui.screens.profile_page.GuestUsersScreen
 import com.example.android_2425_gent2.ui.screens.profile_page.ProfilePage
 import com.example.android_2425_gent2.ui.screens.profile_page.UserDetailsScreen
+import com.example.android_2425_gent2.ui.screens.profile_page.BoatManagementScreen
 
 object ProfileNavigation {
     const val PROFILE_ADMIN_DASHBOARD = "profile/admin-dashboard"
     const val PROFILE_ADMIN_USERS = "profile/admin-users"
     const val USER_DETAILS = "profile/user/{userId}"
+    const val BATTERY_MANAGEMENT = "profile/batteries"
 
     fun userDetailsRoute(userId: String) = "profile/user/$userId"
 }
@@ -39,6 +41,9 @@ fun NavGraphBuilder.profileNavigation(
             modifier = modifier,
             onNavigateToUsers = {
                 navController.navigate(ProfileNavigation.PROFILE_ADMIN_USERS)
+            },
+            onNavigateToBatteries = {
+                navController.navigate(ProfileNavigation.BATTERY_MANAGEMENT)
             },
             onNavigateBack = {
                 navController.popBackStack()
@@ -66,6 +71,14 @@ fun NavGraphBuilder.profileNavigation(
         UserDetailsScreen(
             userId = userId,
             modifier = modifier,
+            onNavigateBack = {
+                navController.popBackStack()
+            }
+        )
+    }
+
+    composable(route = ProfileNavigation.BATTERY_MANAGEMENT) {
+        BoatManagementScreen(
             onNavigateBack = {
                 navController.popBackStack()
             }
