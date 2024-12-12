@@ -36,7 +36,8 @@ fun OfflineReservationEntity.asExternalModel() = OfflineReservation(
     end = end,
     date = date,
     boatId = boatId,
-    boatPersonalName = boatPersonalName
+    boatPersonalName = boatPersonalName,
+    isDeleted = isDeleted
 )
 
 fun OfflineReservationEntity.asReservationDetails() = ReservationDetailsDto(

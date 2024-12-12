@@ -14,6 +14,7 @@ interface ReservationRepository {
     ): Flow<APIResource<List<OfflineReservation>>>
 
     suspend fun insertReservation(createRemoteReservationRequest: CreateRemoteReservationRequest): Flow<APIResource<Int>>
+    suspend fun cancelReservation(reservationId: Int): Flow<APIResource<Unit>>
 
     suspend fun getReservationDetails(reservationId: Int): Flow<APIResource<ReservationDetailsDto>>
 

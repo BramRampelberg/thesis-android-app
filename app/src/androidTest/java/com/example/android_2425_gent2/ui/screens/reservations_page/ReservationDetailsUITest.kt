@@ -71,7 +71,8 @@ class ReservationDetailsUITest {
                     reservationDetails = details,
                     isLoading = isLoading,
                     onSelectedReservationChange = {},
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onCancelReservation = {  }
                 )
             }
         }
