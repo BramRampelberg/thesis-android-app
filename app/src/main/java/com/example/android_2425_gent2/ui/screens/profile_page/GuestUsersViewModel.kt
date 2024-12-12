@@ -23,10 +23,6 @@ class GuestUsersViewModel(
     private val _uiState = MutableStateFlow(GuestUsersUiState())
     val uiState: StateFlow<GuestUsersUiState> = _uiState.asStateFlow()
 
-    init {
-        fetchUsers()
-    }
-
     fun fetchUsers() {
         viewModelScope.launch {
             userRepository.getUsers().collect { result ->
