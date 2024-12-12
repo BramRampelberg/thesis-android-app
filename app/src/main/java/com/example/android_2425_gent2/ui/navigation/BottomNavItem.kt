@@ -14,7 +14,6 @@ enum class BottomNavItem(
     val labelStringResourceId: Int,
     var badgeCount: Int
 ) {
-    Home("home", Icons.Default.Home, R.string.home, 0),
     Calendar("calendar", Icons.Default.DateRange, R.string.calendar, 0),
     Notifications("notifications", Icons.Default.Notifications, R.string.notifications, 0),
     Profile("profile", Icons.Default.Person, R.string.profile, 0);
