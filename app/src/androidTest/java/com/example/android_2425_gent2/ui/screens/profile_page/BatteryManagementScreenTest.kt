@@ -36,7 +36,7 @@ class BatteryManagementScreenTest {
     fun showsUnassignedBattery() {
         composeTestRule.onNodeWithText("Batterij ID: 2").assertExists()
         composeTestRule.onNodeWithText("Type: Loodzuur").assertExists()
-        composeTestRule.onNodeWithText("Huidige Mentor: Geen mentor toegewezen").assertExists()
+        composeTestRule.onNodeWithText("Huidige Meter/Peter: Geen meter/peter toegewezen").assertExists()
     }
 
 
