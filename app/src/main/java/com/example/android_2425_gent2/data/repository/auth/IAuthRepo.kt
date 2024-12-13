@@ -11,7 +11,7 @@ interface IAuthRepo {
 
     suspend fun login(userName: String, password: String): Flow<APIResource<Credentials>>
 
-    fun logout()
+    suspend fun logout()
 
     suspend fun hasRole(role: UserRole) : Boolean
 

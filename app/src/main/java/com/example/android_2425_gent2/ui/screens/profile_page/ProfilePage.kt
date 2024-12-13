@@ -103,7 +103,7 @@ fun ProfilePage(
                         onClick = {
                             viewModel.handleLogout()
                             logout()
-                        },
+                        }
                     )
                 }
             }

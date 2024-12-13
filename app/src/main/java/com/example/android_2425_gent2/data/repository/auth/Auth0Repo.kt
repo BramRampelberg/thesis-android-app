@@ -8,6 +8,7 @@ import com.auth0.android.authentication.storage.SecureCredentialsManager
 import com.auth0.android.callback.Callback
 import com.auth0.android.jwt.JWT
 import com.auth0.android.result.Credentials
+import com.example.android_2425_gent2.data.local.AppDatabase
 import com.example.android_2425_gent2.data.model.UserRole
 import com.example.android_2425_gent2.data.repository.APIResource
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,9 @@ import kotlin.coroutines.suspendCoroutine
 
 class Auth0Repo(
     private val authentication: AuthenticationAPIClient,
-    private val credentialsManager: SecureCredentialsManager
+    private val credentialsManager: SecureCredentialsManager,
+    private val appDatabase: AppDatabase
+
 ) : IAuthRepo {
 
     override suspend fun getStoredCredentials(): Flow<APIResource<Credentials>> = flow {
@@ -114,15 +117,20 @@ class Auth0Repo(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun logout() {
-        credentialsManager.clearCredentials()
+    override suspend fun logout() {
+        withContext(Dispatchers.IO) {
+            try {
+                appDatabase.clearAllTables()
+                credentialsManager.clearCredentials()
+            } catch (e: Exception) {
+                Log.e("Auth0Repo", "Error during logout: ${e.message}")
+            }
+        }
     }
 
 
 
     override fun isLoggedIn(): Boolean {
-
-
         return credentialsManager.hasValidCredentials()
     }
 }
