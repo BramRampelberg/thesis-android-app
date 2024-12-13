@@ -8,6 +8,7 @@ import com.auth0.android.authentication.storage.SecureCredentialsManager
 import com.auth0.android.callback.Callback
 import com.auth0.android.request.AuthenticationRequest
 import com.auth0.android.result.Credentials
+import com.example.android_2425_gent2.data.local.AppDatabase
 import com.example.android_2425_gent2.data.repository.APIResource
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -33,6 +34,7 @@ class Auth0RepoTest {
     private lateinit var auth0Repo: Auth0Repo
     private val mockAuthenticationAPIClient = mockk<AuthenticationAPIClient>(relaxed = true)
     private val mockCredentialsManager = mockk<SecureCredentialsManager>(relaxed = true)
+    private val mockAppDatabase = mockk<AppDatabase>(relaxed = true)
 
     private val testCredentials = Credentials(
         idToken = "testIdToken",
@@ -45,7 +47,7 @@ class Auth0RepoTest {
 
     @Before
     fun setup() {
-        auth0Repo = Auth0Repo(mockAuthenticationAPIClient, mockCredentialsManager)
+        auth0Repo = Auth0Repo(mockAuthenticationAPIClient, mockCredentialsManager,mockAppDatabase)
 
         mockkStatic(Log::class)
         every { Log.e(any(), any()) } returns 0
@@ -168,12 +170,11 @@ class Auth0RepoTest {
     }
 
     @Test
-    fun logout_LogsOut_LoggedOut() {
+    fun logout_LogsOut_LoggedOut() = runTest {
         auth0Repo.logout()
-        
+
         coVerify { mockCredentialsManager.clearCredentials() }
     }
-
     @Test
     fun isLoggedIn_LoggedIn_True() {
         every { mockCredentialsManager.hasValidCredentials() } returns true

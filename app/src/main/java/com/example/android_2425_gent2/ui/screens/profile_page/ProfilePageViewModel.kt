@@ -28,12 +28,12 @@ class ProfilePageViewModel(
     private val _uiState = MutableStateFlow(ProfilePageUiState())
     val uiState: StateFlow<ProfilePageUiState> = _uiState.asStateFlow()
 
-    fun handleLogout() {
+    fun handleLogout(onLogoutComplete: () -> Unit) {
         viewModelScope.launch {
             try {
                 authRepo.logout()
+                onLogoutComplete()
             } catch (e: Exception) {
-                // Optionally handle any errors
                 _uiState.update {
                     it.copy(errorMessage = "Logout failed: ${e.message}")
                 }
