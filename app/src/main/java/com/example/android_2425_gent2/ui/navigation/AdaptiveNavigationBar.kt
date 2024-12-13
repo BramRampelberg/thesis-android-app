@@ -48,8 +48,6 @@ fun AdaptiveNavigationBar(
     navController: NavHostController,
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
-    notificationViewModel: NotificationViewModel
-
 ) {
     when (windowSize) {
         WindowWidthSizeClass.Expanded -> {

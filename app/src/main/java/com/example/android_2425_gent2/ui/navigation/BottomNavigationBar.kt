@@ -43,11 +43,11 @@ import java.util.Locale
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,
+    notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier,
-    notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .shadow(
                 elevation = 8.dp,
@@ -57,7 +57,7 @@ fun BottomNavigationBar(
             )
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .border(
                     width = 1.dp,
@@ -66,7 +66,7 @@ fun BottomNavigationBar(
                 )
         ) {
             NavigationBar(
-                modifier = Modifier.navigationBarsPadding(),
+                modifier = modifier.navigationBarsPadding(),
                 tonalElevation = 0.dp
             ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()

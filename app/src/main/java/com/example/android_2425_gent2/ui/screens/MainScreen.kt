@@ -1,5 +1,4 @@
 package com.example.android_2425_gent2.ui.screens
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,12 +17,13 @@ import com.example.android_2425_gent2.ui.navigation.BottomNavigationBar
 import com.example.android_2425_gent2.ui.navigation.NavigationHost
 import com.example.android_2425_gent2.ui.screens.notification_page.NotificationViewModel
 
+
+
 @Composable
 fun MainScreen(
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     logout: () -> Unit = {}
 ) {
     Row(modifier = modifier.testTag("MainScreen")) {
@@ -32,7 +32,6 @@ fun MainScreen(
                 navController = navController,
                 windowSize = windowSize,
                 modifier = modifier,
-                notificationViewModel = notificationViewModel
             )
         }
 
@@ -48,7 +47,6 @@ fun MainScreen(
                         navController = navController,
                         windowSize = windowSize,
                         modifier = modifier,
-                        notificationViewModel = notificationViewModel
                     )
                 }
             }
