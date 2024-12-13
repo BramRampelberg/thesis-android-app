@@ -101,9 +101,10 @@ fun ProfilePage(
 
                     LogOutButton(
                         onClick = {
-                            viewModel.handleLogout()
-                            logout()
-                        },
+                            viewModel.handleLogout {
+                                logout()
+                            }
+                        }
                     )
                 }
             }

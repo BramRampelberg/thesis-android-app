@@ -43,6 +43,8 @@ interface AppContainer {
 class AppDataContainer(private val context: Context) : AppContainer {
     private val auth0: Auth0 = Auth0.getInstance(context)
     private val authentication: AuthenticationAPIClient = AuthenticationAPIClient(auth0)
+    private val database by lazy { AppDatabase.getDatabase(context) }
+
     private val credentialsManager = SecureCredentialsManager(
         context,
         auth0,
@@ -50,7 +52,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
     )
 
     override val authRepo: IAuthRepo by lazy {
-        Auth0Repo(authentication, credentialsManager)
+        Auth0Repo(authentication, credentialsManager,database)
     }
 
     override val reservationRepository: ReservationRepository by lazy {

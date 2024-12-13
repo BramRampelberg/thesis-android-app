@@ -40,7 +40,7 @@ class TestAuth0Repo: IAuthRepo {
         loggedIn = true
     }
 
-    override fun logout() {
+    suspend override fun logout() {
         loggedIn = false
     }
 
