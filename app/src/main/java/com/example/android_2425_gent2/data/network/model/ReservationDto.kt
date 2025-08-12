@@ -12,7 +12,6 @@ data class ReservationDto(
     val boatPersonalName: String,
     val id: Int,
     val isDeleted: Boolean = false
-
 )
 
 

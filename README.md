@@ -16,7 +16,7 @@
 
 ```env
 PROD_BASE_URL=https:yourproductionurl.com/ 
-DEV_BASE_URL=http://10.0.2.2:5000/
+DEV_BASE_URL=http://10.0.2.2:5001/
 ```
 
 2. Sync gradle files and run MainActivity on an android emulator.
