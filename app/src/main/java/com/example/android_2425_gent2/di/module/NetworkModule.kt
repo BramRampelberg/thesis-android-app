@@ -1,11 +1,7 @@
 package com.example.android_2425_gent2.di.module
 
 import com.example.android_2425_gent2.BuildConfig
-import com.example.android_2425_gent2.data.network.battery.BatteryApiService
-import com.example.android_2425_gent2.data.network.boat.BoatApiService
-import com.example.android_2425_gent2.data.network.notification.NotificationApiService
 import com.example.android_2425_gent2.data.network.reservation.ReservationApiService
-import com.example.android_2425_gent2.data.network.timeslot.TimeSlotApiService
 import com.example.android_2425_gent2.data.network.users.UserApiService
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
 import com.google.gson.GsonBuilder
@@ -26,17 +22,17 @@ import java.time.format.DateTimeFormatter
 
 class LocalTimeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
     override fun serialize(
-            src: LocalTime?,
-            typeOfSrc: Type?,
-            context: JsonSerializationContext?
+        src: LocalTime?,
+        typeOfSrc: Type?,
+        context: JsonSerializationContext?
     ): JsonElement {
         return JsonPrimitive(src?.format(DateTimeFormatter.ISO_LOCAL_TIME))
     }
 
     override fun deserialize(
-            json: JsonElement?,
-            typeOfT: Type?,
-            context: JsonDeserializationContext?
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
     ): LocalTime {
         return LocalTime.parse(json?.asString, DateTimeFormatter.ISO_LOCAL_TIME)
     }
@@ -44,17 +40,17 @@ class LocalTimeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> 
 
 class LocalDateAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
     override fun serialize(
-            src: LocalDate?,
-            typeOfSrc: Type?,
-            context: JsonSerializationContext?
+        src: LocalDate?,
+        typeOfSrc: Type?,
+        context: JsonSerializationContext?
     ): JsonElement {
         return JsonPrimitive(src?.format(DateTimeFormatter.ISO_LOCAL_DATE))
     }
 
     override fun deserialize(
-            json: JsonElement?,
-            typeOfT: Type?,
-            context: JsonDeserializationContext?
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
     ): LocalDate {
         return LocalDate.parse(json?.asString, DateTimeFormatter.ISO_LOCAL_DATE)
     }
@@ -83,12 +79,12 @@ object NetworkModule {
     private const val BASE_URL = BuildConfig.BASE_URL
 
     private val gson =
-            GsonBuilder()
-                    .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
-                    .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
-                .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
-                    .setLenient()
-                    .create()
+        GsonBuilder()
+            .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
+            .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+            .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
+            .setLenient()
+            .create()
 
     private fun provideOkHttpClient(authRepo: IAuthRepo): OkHttpClient {
         return OkHttpClient.Builder()
@@ -105,34 +101,13 @@ object NetworkModule {
             .build()
     }
 
-    fun provideTimeSlotApiService(authRepo: IAuthRepo): TimeSlotApiService {
-        val retrofit = provideRetrofit(authRepo)
-        return retrofit.create(TimeSlotApiService::class.java)
-    }
-
     fun provideReservationApiService(authRepo: IAuthRepo): ReservationApiService {
         val retrofit = provideRetrofit(authRepo)
         return retrofit.create(ReservationApiService::class.java)
     }
 
-    fun provideNotificationApiService(authRepo: IAuthRepo): NotificationApiService {
-        val retrofit = provideRetrofit(authRepo)
-        return retrofit.create(NotificationApiService::class.java)
-    }
-
     fun provideUserApiSerivce(authRepo: IAuthRepo): UserApiService {
         val retrofit = provideRetrofit(authRepo)
         return retrofit.create(UserApiService::class.java)
-    }
-
-    // make a function to provide the battery api service
-    fun provideBatteryApiService(authRepo: IAuthRepo): BatteryApiService {
-        val retrofit = provideRetrofit(authRepo)
-        return retrofit.create(BatteryApiService::class.java)
-    }
-
-    fun provideBoatApiService(authRepo: IAuthRepo): BoatApiService {
-        val retrofit = provideRetrofit(authRepo)
-        return retrofit.create(BoatApiService::class.java)
     }
 }

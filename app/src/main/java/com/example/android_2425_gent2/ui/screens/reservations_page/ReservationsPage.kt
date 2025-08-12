@@ -72,9 +72,7 @@ fun ReservationsPage(
             )
         }
 
-        if (selectedReservationUiState.selectedReservation != null &&
-            !selectedReservationUiState.selectedReservation.isDeleted &&
-            reservationTypeUiState.reservationType != ReservationType.OLD) {
+        if (selectedReservationUiState.selectedReservation != null ) {
             ReservationDetailsBottomModalSheet(
                 selectedReservation = selectedReservationUiState.selectedReservation,
                 reservationDetails = selectedReservationUiState.details,

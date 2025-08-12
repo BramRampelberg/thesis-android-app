@@ -14,8 +14,6 @@ data class ReservationDto(
     val isDeleted: Boolean = false
 )
 
-
-
 fun ReservationDto.asEntity() = OfflineReservationEntity(
     start = start,
     end = end,

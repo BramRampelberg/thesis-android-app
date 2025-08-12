@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
-class ReservationsViewModel(private val reservationRepository: ReservationRepository) : ViewModel() {
+class ReservationsViewModel(private val reservationRepository: ReservationRepository) :
+    ViewModel() {
     var reservationTypeUiState by mutableStateOf(ReservationTypeUiSate(ReservationType.UPCOMING))
         private set
 
@@ -59,10 +60,11 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                         val reservations = apiResource.data
                         if (reservations != null) {
                             // Filter de reserveringen op basis van het type
-                            val filteredReservations = when (reservationTypeUiState.reservationType) {
-                                ReservationType.CANCELED -> reservations.filter { it.isDeleted }
-                                else -> reservations.filter { !it.isDeleted }
-                            }
+                            val filteredReservations =
+                                when (reservationTypeUiState.reservationType) {
+                                    ReservationType.CANCELED -> reservations.filter { it.isDeleted }
+                                    else -> reservations.filter { !it.isDeleted }
+                                }
 
                             _reservationsUiState.value = ReservationsUiState(
                                 reservations = filteredReservations,
@@ -87,8 +89,6 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
             }
         }
     }
-    private val _cancelReservationState = MutableStateFlow<APIResource<Unit>?>(null)
-    val cancelReservationState: StateFlow<APIResource<Unit>?> = _cancelReservationState
 
     fun cancelReservation(reservationId: Int) {
         viewModelScope.launch {
@@ -101,14 +101,17 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                         // Herlaad de huidige reservatietype (zorgt voor het gewenste gedrag)
                         setReservationType(reservationTypeUiState.reservationType)
                     }
+
                     is APIResource.Error -> {
                         _reservationsUiState.value = ReservationsUiState(
                             hasError = true,
                             errorMessage = result.message
                         )
                     }
+
                     is APIResource.Loading -> {
                         // Optioneel: loading state tonen
+
                     }
                 }
             }
@@ -119,7 +122,8 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         println("Loading details for reservation: $reservationId")
         viewModelScope.launch {
             try {
-                selectedReservationUiState = selectedReservationUiState.copy(isLoadingDetails = true)
+                selectedReservationUiState =
+                    selectedReservationUiState.copy(isLoadingDetails = true)
                 reservationRepository.getReservationDetails(reservationId).collect { result ->
                     println("Received details result: $result")
                     selectedReservationUiState = when (result) {
@@ -168,21 +172,22 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
         }
     }
 }
-    data class ReservationsUiState(
-        val reservations: List<OfflineReservation> = emptyList(),
-        val loading: Boolean = false,
-        val hasError: Boolean = false,
-        val errorMessage: String? = null
-    )
 
-    data class SelectedReservationUiState(
-        val selectedReservation: OfflineReservation?,
-        val details: ReservationDetailsDto? = null,
-        val isLoadingDetails: Boolean = false,
-        val error: String? = null
-    )
+data class ReservationsUiState(
+    val reservations: List<OfflineReservation> = emptyList(),
+    val loading: Boolean = false,
+    val hasError: Boolean = false,
+    val errorMessage: String? = null
+)
 
-    data class ReservationTypeUiSate(
-        val reservationType: ReservationType
-    )
+data class SelectedReservationUiState(
+    val selectedReservation: OfflineReservation?,
+    val details: ReservationDetailsDto? = null,
+    val isLoadingDetails: Boolean = false,
+    val error: String? = null
+)
+
+data class ReservationTypeUiSate(
+    val reservationType: ReservationType
+)
 

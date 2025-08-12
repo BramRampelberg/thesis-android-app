@@ -1,6 +1,5 @@
 package com.example.android_2425_gent2.ui.screens.reservations_page.partials
 
-import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,11 +42,10 @@ fun ReservationDetailsBottomModalSheet(
     isLoading: Boolean,
     modifier: Modifier
 ) {
-
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     // Check of annuleren nog mogelijk is (minimaal 2 dagen van tevoren)
     val today = LocalDate.now()
-    val canCancel = selectedReservation.date.minusDays(2).isAfter(today)
+    val canCancel =
+        selectedReservation.date.minusDays(2).isAfter(today) && !selectedReservation.isDeleted
 
     ModalBottomSheet(
         onDismissRequest = { onSelectedReservationChange(null) },
@@ -67,7 +66,8 @@ fun ReservationDetailsBottomModalSheet(
 
                 if (isLoading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
                             .testTag("LoadingIndicator")
                     )
                 } else if (reservationDetails != null) {
@@ -131,7 +131,7 @@ fun ReservationDetailsBottomModalSheet(
                     disabledContainerColor = Color.Gray,
                     disabledContentColor = Color.Black,
                 ),
-                enabled = canCancel,  // Hier de canCancel gebruiken ipv true
+                enabled = canCancel,
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()

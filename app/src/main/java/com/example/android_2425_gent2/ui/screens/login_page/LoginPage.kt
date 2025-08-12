@@ -21,7 +21,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -53,7 +52,10 @@ fun LoginPage(
 
     val extras = MutableCreationExtras().apply {
         set(AppViewModelProvider.LOGIN_KEY, login)
-        set(ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY, LocalContext.current.applicationContext as Application)
+        set(
+            ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY,
+            LocalContext.current.applicationContext as Application
+        )
     }
     val viewModel: LoginViewModel = viewModel(
         factory = AppViewModelProvider.Factory,
@@ -87,7 +89,6 @@ fun LoginPage(
         onUsernameChange = { viewModel.setEmail(it); viewModel.onAnyInputChanged() },
         onPasswordChange = { viewModel.setPassword(it); viewModel.onAnyInputChanged() },
         onLoginClick = { viewModel.handleLogin() },
-        onRegisterClick = { viewModel.handleRegister() },
         modifier = modifier
     )
 }
@@ -102,7 +103,6 @@ private fun LoginPageContent(
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -123,7 +123,7 @@ private fun LoginPageContent(
                 contentDescription = "App Logo",
                 modifier = modifier.size(100.dp)
             )
-            if(!isLoading) {
+            if (!isLoading) {
                 Column(
                     horizontalAlignment = Alignment.Start,
                     modifier = modifier.fillMaxWidth(),
@@ -139,7 +139,9 @@ private fun LoginPageContent(
                         value = email,
                         onValueChange = onUsernameChange,
                         label = { Text("Email") },
-                        modifier = modifier.fillMaxWidth().testTag("EmailField"),
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .testTag("EmailField"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
@@ -158,7 +160,9 @@ private fun LoginPageContent(
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password
                         ),
-                        modifier = modifier.fillMaxWidth().testTag("PasswordField"),
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .testTag("PasswordField"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
@@ -169,7 +173,11 @@ private fun LoginPageContent(
                             cursorColor = Color.White
                         )
                     )
-                    if(error != null) Text(error, modifier = modifier.testTag("ErrorText"), color = Color.Red)
+                    if (error != null) Text(
+                        error,
+                        modifier = modifier.testTag("ErrorText"),
+                        color = Color.Red
+                    )
                 }
 
                 Spacer(modifier = modifier.height(16.dp))
@@ -179,7 +187,9 @@ private fun LoginPageContent(
                 ) {
                     OutlinedButton(
                         onClick = onLoginClick,
-                        modifier = modifier.fillMaxWidth().testTag("LoginButton"),
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .testTag("LoginButton"),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = Color.White
                         ),
@@ -188,21 +198,14 @@ private fun LoginPageContent(
                     ) {
                         Text("Login")
                     }
-
-                    TextButton(
-                        onClick = onRegisterClick,
-                        modifier = modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text("Register")
-                    }
                 }
 
                 Spacer(modifier = modifier.height(48.dp))
             } else {
-                LoadingIndicator(modifier.testTag("LoadingIndicator"), colorResource(R.color.secondary))
+                LoadingIndicator(
+                    modifier.testTag("LoadingIndicator"),
+                    colorResource(R.color.secondary)
+                )
             }
         }
     }
@@ -220,6 +223,5 @@ private fun LoginPagePreview() {
         onUsernameChange = {},
         onPasswordChange = {},
         onLoginClick = {},
-        onRegisterClick = {}
     )
 }

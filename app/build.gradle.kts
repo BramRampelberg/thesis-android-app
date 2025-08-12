@@ -14,10 +14,6 @@ fun getBaseUrl(propertyName: String): String {
     return p.getProperty(propertyName)
 }
 
-fun getRegistrationUrl(baseUrl: String): String {
-    return "\"${baseUrl}login/registration\""
-}
-
 android {
     namespace = "com.example.android_2425_gent2"
     compileSdk = 34

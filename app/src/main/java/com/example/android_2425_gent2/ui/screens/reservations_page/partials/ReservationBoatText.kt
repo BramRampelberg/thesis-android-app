@@ -18,6 +18,7 @@ fun ReservationBoatText(reservation: OfflineReservation, modifier: Modifier) {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }: ${reservation.boatPersonalName}", fontSize = 20.sp
+        }: ${reservation.boatPersonalName}",
+        fontSize = 20.sp, modifier = modifier,
     )
 }

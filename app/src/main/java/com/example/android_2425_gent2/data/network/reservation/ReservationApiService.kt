@@ -1,25 +1,16 @@
 package com.example.android_2425_gent2.data.network.reservation
 
-import com.example.android_2425_gent2.data.network.model.CreateRemoteReservationRequest
+import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.network.model.ReservationResponse
 import retrofit2.Response
-import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
-import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
-import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.QueryMap
 
-import retrofit2.http.Headers
-
 
 interface ReservationApiService {
-    @POST("/api/Reservation")
-    suspend fun createReservation(
-        @Body reservation: CreateRemoteReservationRequest
-    ): Int
-
     @GET("/api/Reservation/me")
     suspend fun getReservationPage(
         @QueryMap queryParams: Map<String, @JvmSuppressWildcards Any>

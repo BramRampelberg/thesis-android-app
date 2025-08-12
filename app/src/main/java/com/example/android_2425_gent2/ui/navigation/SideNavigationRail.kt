@@ -10,18 +10,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.ui.AppViewModelProvider
-import com.example.android_2425_gent2.ui.screens.notification_page.NotificationViewModel
 import java.util.Locale
 
 @Composable
 fun SideNavigationRail(
     navController: NavHostController,
-    notificationViewModel: NotificationViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -41,15 +37,11 @@ fun SideNavigationRail(
         ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
-            val unreadCount by notificationViewModel.unreadCount.collectAsState()
             val primaryColor = colorResource(id = R.color.primary)
 
             Spacer(modifier.height(16.dp))
 
             BottomNavItem.entries.forEach { item ->
-                if (item == BottomNavItem.Notifications) {
-                    item.badgeCount = unreadCount
-                }
                 NavigationRailItem(
                     selected = currentRoute == item.route,
                     onClick = { navController.navigate(item.route) },
