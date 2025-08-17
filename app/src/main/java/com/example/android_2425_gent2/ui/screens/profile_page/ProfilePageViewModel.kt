@@ -2,7 +2,6 @@ package com.example.android_2425_gent2.ui.screens.profile_page
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_2425_gent2.data.network.model.AddressDto
 import com.example.android_2425_gent2.data.network.model.UserDetailsDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
@@ -18,9 +17,6 @@ data class ProfilePageUiState(
         "firstName",
         "email",
         "phoneNumber",
-        AddressDto("street", "number", "city", "postalCode", "country"),
-        "familyName",
-        0
     ),
     val isLoading: Boolean = false,
     val errorMessage: String = ""
@@ -77,9 +73,6 @@ class ProfilePageViewModel(
                                     "firstName",
                                     "email",
                                     "phoneNumber",
-                                    AddressDto("street", "number", "city", "postalCode", "country"),
-                                    "familyName",
-                                    0
                                 ),
                                 isLoading = false,
                                 errorMessage = ""

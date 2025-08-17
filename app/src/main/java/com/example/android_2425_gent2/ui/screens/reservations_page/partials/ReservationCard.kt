@@ -7,12 +7,12 @@ import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.model.Reservation
 
 @Composable
 fun ReservationCard(
-    reservation: OfflineReservation,
-    onSelectedReservationChange: (OfflineReservation) -> Unit,
+    reservation: Reservation,
+    onSelectedReservationChange: (Reservation) -> Unit,
     modifier: Modifier
 ) {
 

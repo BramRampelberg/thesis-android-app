@@ -6,12 +6,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.model.Reservation
 
 @Composable
 fun ReservationList(
-    reservations: List<OfflineReservation>,
-    onSelectedReservationChange: (OfflineReservation) -> Unit,
+    reservations: List<Reservation>,
+    onSelectedReservationChange: (Reservation) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(

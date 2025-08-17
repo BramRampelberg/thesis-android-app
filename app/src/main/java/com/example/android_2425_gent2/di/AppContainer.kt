@@ -5,11 +5,10 @@ import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.storage.SecureCredentialsManager
 import com.auth0.android.authentication.storage.SharedPreferencesStorage
-import com.example.android_2425_gent2.data.local.AppDatabase
 import com.example.android_2425_gent2.data.repository.auth.Auth0Repo
 import com.example.android_2425_gent2.data.repository.auth.IAuthRepo
-import com.example.android_2425_gent2.data.repository.reservation.OfflineFirstReservationRepository
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
+import com.example.android_2425_gent2.data.repository.reservation.ReservationRepositoryImpl
 import com.example.android_2425_gent2.data.repository.user.RemoteUserRepository
 import com.example.android_2425_gent2.data.repository.user.UserRepository
 import com.example.android_2425_gent2.di.module.NetworkModule
@@ -24,7 +23,6 @@ interface AppContainer {
 class AppDataContainer(private val context: Context) : AppContainer {
     private val auth0: Auth0 = Auth0.getInstance(context)
     private val authentication: AuthenticationAPIClient = AuthenticationAPIClient(auth0)
-    private val database by lazy { AppDatabase.getDatabase(context) }
 
     private val credentialsManager = SecureCredentialsManager(
         context,
@@ -33,12 +31,11 @@ class AppDataContainer(private val context: Context) : AppContainer {
     )
 
     override val authRepo: IAuthRepo by lazy {
-        Auth0Repo(authentication, credentialsManager, database)
+        Auth0Repo(authentication, credentialsManager)
     }
 
     override val reservationRepository: ReservationRepository by lazy {
-        OfflineFirstReservationRepository(
-            AppDatabase.getDatabase(context).offlineReservationDao(),
+        ReservationRepositoryImpl(
             NetworkModule.provideReservationApiService(authRepo)
         )
     }

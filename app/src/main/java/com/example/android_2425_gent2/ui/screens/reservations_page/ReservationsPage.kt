@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 @Preview
 @Composable
 fun ReservationsPage(
+    modifier: Modifier = Modifier,
     viewModel: ReservationsViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
     val reservationsUiState by viewModel.reservationsUiState.collectAsState()
@@ -72,7 +72,7 @@ fun ReservationsPage(
             )
         }
 
-        if (selectedReservationUiState.selectedReservation != null ) {
+        if (selectedReservationUiState.selectedReservation != null) {
             ReservationDetailsBottomModalSheet(
                 selectedReservation = selectedReservationUiState.selectedReservation,
                 reservationDetails = selectedReservationUiState.details,

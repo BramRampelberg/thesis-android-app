@@ -28,15 +28,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationDetailsBottomModalSheet(
-    selectedReservation: OfflineReservation,
-    onSelectedReservationChange: (OfflineReservation?) -> Unit,
+    selectedReservation: Reservation,
+    onSelectedReservationChange: (Reservation?) -> Unit,
     onCancelReservation: (Int) -> Unit,
     reservationDetails: ReservationDetailsDto?,
     isLoading: Boolean,

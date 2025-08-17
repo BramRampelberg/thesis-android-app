@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
 import com.example.android_2425_gent2.data.repository.APIResource
 import com.example.android_2425_gent2.data.repository.reservation.ReservationRepository
@@ -35,7 +35,7 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
     }
 
 
-    fun setSelectedReservation(reservation: OfflineReservation?) {
+    fun setSelectedReservation(reservation: Reservation?) {
         selectedReservationUiState = SelectedReservationUiState(reservation)
         if (reservation != null) {
             loadReservationDetails(reservation.id)
@@ -174,14 +174,14 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
 }
 
 data class ReservationsUiState(
-    val reservations: List<OfflineReservation> = emptyList(),
+    val reservations: List<Reservation> = emptyList(),
     val loading: Boolean = false,
     val hasError: Boolean = false,
     val errorMessage: String? = null
 )
 
 data class SelectedReservationUiState(
-    val selectedReservation: OfflineReservation?,
+    val selectedReservation: Reservation?,
     val details: ReservationDetailsDto? = null,
     val isLoadingDetails: Boolean = false,
     val error: String? = null

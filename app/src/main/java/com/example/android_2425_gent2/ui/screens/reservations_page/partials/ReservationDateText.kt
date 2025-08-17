@@ -6,12 +6,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
-import com.example.android_2425_gent2.data.model.OfflineReservation
+import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.utils.DATE_FORMATTER
 import java.util.Locale
 
 @Composable
-fun ReservationDateText(reservation: OfflineReservation, modifier: Modifier) {
+fun ReservationDateText(reservation: Reservation, modifier: Modifier) {
     Text(
         "${
             stringResource(R.string.date).replaceFirstChar {
