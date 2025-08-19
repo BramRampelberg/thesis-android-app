@@ -19,6 +19,7 @@ class ReservationRepositoryImpl(
 
     override suspend fun getReservations(
         getPast: Boolean,
+        getCanceled: Boolean,
     ): Flow<APIResource<List<Reservation>>> =
         flow {
             emit(APIResource.Loading())
@@ -33,6 +34,7 @@ class ReservationRepositoryImpl(
                         put("getPast", getPast)
                         put("pageSize", pageSize)
                         put("isNextPage", true)
+                        put("canceled", getCanceled)
                     }
 
                     val response = remoteApiService.getReservationPage(queryParams)

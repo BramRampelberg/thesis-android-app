@@ -9,6 +9,7 @@ interface ReservationRepository {
 
     suspend fun getReservations(
         getPast: Boolean = false,
+        getCanceled: Boolean,
     ): Flow<APIResource<List<Reservation>>>
 
     suspend fun cancelReservation(reservationId: Int): Flow<APIResource<Unit>>

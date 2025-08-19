@@ -118,30 +118,26 @@ fun ReservationDetailsBottomModalSheet(
             }
             Spacer(modifier.height(60.dp))
 
-            // Toon waarschuwing als annuleren niet mogelijk is
-
-
-            ElevatedButton(
-                onClick = {
-                    onCancelReservation(selectedReservation.id)
-                },
-                colors = ButtonColors(
-                    Color(0xFFC44244),
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.Gray,
-                    disabledContentColor = Color.Black,
-                ),
-                enabled = canCancel,
-                modifier = modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = if (canCancel)
-                        stringResource(R.string.cancel_reservation)
-                    else
-                        stringResource(R.string.not_cancellable)
-                )
+            if (canCancel) {
+                ElevatedButton(
+                    onClick = {
+                        onCancelReservation(selectedReservation.id)
+                    },
+                    colors = ButtonColors(
+                        Color(0xFFC44244),
+                        contentColor = Color.White,
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.Black,
+                    ),
+                    enabled = true,
+                    modifier = modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.cancel_reservation)
+                    )
+                }
             }
         }
     }

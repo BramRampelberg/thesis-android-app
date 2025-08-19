@@ -50,43 +50,50 @@ class ReservationsViewModel(private val reservationRepository: ReservationReposi
                 ReservationType.CANCELED -> false
             }
 
-            reservationRepository.getReservations(getPast = getPast).collect { apiResource ->
-                when (apiResource) {
-                    is APIResource.Loading -> {
-                        _reservationsUiState.value = ReservationsUiState(loading = true)
-                    }
+            val getCanceled = when (reservationTypeUiState.reservationType) {
+                ReservationType.UPCOMING -> false
+                ReservationType.OLD -> false
+                ReservationType.CANCELED -> true
+            }
 
-                    is APIResource.Success -> {
-                        val reservations = apiResource.data
-                        if (reservations != null) {
-                            // Filter de reserveringen op basis van het type
-                            val filteredReservations =
-                                when (reservationTypeUiState.reservationType) {
-                                    ReservationType.CANCELED -> reservations.filter { it.isDeleted }
-                                    else -> reservations.filter { !it.isDeleted }
-                                }
+            reservationRepository.getReservations(getPast = getPast, getCanceled = getCanceled)
+                .collect { apiResource ->
+                    when (apiResource) {
+                        is APIResource.Loading -> {
+                            _reservationsUiState.value = ReservationsUiState(loading = true)
+                        }
 
-                            _reservationsUiState.value = ReservationsUiState(
-                                reservations = filteredReservations,
-                                loading = false
-                            )
-                        } else {
+                        is APIResource.Success -> {
+                            val reservations = apiResource.data
+                            if (reservations != null) {
+                                // Filter de reserveringen op basis van het type
+                                val filteredReservations =
+                                    when (reservationTypeUiState.reservationType) {
+                                        ReservationType.CANCELED -> reservations.filter { it.isDeleted }
+                                        else -> reservations.filter { !it.isDeleted }
+                                    }
+
+                                _reservationsUiState.value = ReservationsUiState(
+                                    reservations = filteredReservations,
+                                    loading = false
+                                )
+                            } else {
+                                _reservationsUiState.value = ReservationsUiState(
+                                    hasError = true,
+                                    errorMessage = "No data available"
+                                )
+                            }
+                        }
+
+                        is APIResource.Error -> {
                             _reservationsUiState.value = ReservationsUiState(
                                 hasError = true,
-                                errorMessage = "No data available"
+                                errorMessage = apiResource.message,
+                                loading = false
                             )
                         }
                     }
-
-                    is APIResource.Error -> {
-                        _reservationsUiState.value = ReservationsUiState(
-                            hasError = true,
-                            errorMessage = apiResource.message,
-                            loading = false
-                        )
-                    }
                 }
-            }
         }
     }
 
