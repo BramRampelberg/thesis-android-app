@@ -22,11 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.android_2425_gent2.R
 import com.example.android_2425_gent2.data.model.Reservation
 import com.example.android_2425_gent2.data.network.model.ReservationDetailsDto
@@ -50,25 +51,24 @@ fun ReservationDetailsBottomModalSheet(
     ModalBottomSheet(
         onDismissRequest = { onSelectedReservationChange(null) },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        modifier = Modifier.testTag("ModalBottomSheet")
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = modifier.padding(16.dp)
         ) {
-            ReservationDetailsHeader(stringResource(R.string.reservation_details))
-
+            Text(
+                text = stringResource(R.string.reservation_details),
+                fontSize = 32.sp,
+                modifier = modifier
+            )
             Column {
-                ReservationDateText(selectedReservation, modifier)
-                ReservationTimeSlotText(selectedReservation, modifier)
-                ReservationBoatText(selectedReservation, modifier)
+                ImportantReservationInfo(selectedReservation, modifier)
                 Spacer(modifier.height(20.dp))
 
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .testTag("LoadingIndicator")
                     )
                 } else if (reservationDetails != null) {
                     // Check if any essential details are null or blank
@@ -83,13 +83,40 @@ fun ReservationDetailsBottomModalSheet(
                             )
 
                     if (hasValidDetails) {
-                        ReservationDetailsPersonInfo(reservationDetails, modifier)
+                        Column(modifier = modifier) {
+                            Text(
+                                text = "Gegevens ophaal persoon",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(R.color.primary)
+                            )
+                            Text("Naam: ${reservationDetails.currentBatteryUserName}")
+                            Text("Tel.: ${reservationDetails.currentHolderPhoneNumber}")
+                            Text("E-mail: ${reservationDetails.currentHolderEmail}")
+                        }
                         Spacer(modifier.height(16.dp))
-                        ReservationDetailsAddress(reservationDetails, modifier)
+                        Column(modifier = modifier) {
+                            Text(
+                                text = "Adres",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(R.color.primary)
+                            )
+                            Text("${reservationDetails.currentHolderStreet} ${reservationDetails.currentHolderNumber}")
+                            Text("${reservationDetails.currentHolderPostalCode} ${reservationDetails.currentHolderCity}")
+                        }
 
                         if (!reservationDetails.mentorName.isNullOrBlank()) {
                             Spacer(modifier.height(16.dp))
-                            ReservationDetailsMentor(reservationDetails.mentorName, modifier)
+                            Column(modifier = modifier) {
+                                Text(
+                                    text = "Meter/Peter",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(R.color.primary)
+                                )
+                                Text(reservationDetails.mentorName)
+                            }
                         }
                     } else {
                         Column(

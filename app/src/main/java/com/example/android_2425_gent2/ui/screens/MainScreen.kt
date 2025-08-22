@@ -7,7 +7,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -22,7 +21,7 @@ fun MainScreen(
     navController: NavHostController = rememberNavController(),
     logout: () -> Unit = {}
 ) {
-    Row(modifier = modifier.testTag("MainScreen")) {
+    Row(modifier = modifier) {
         if (windowSize == WindowWidthSizeClass.Expanded) {
             AdaptiveNavigationBar(
                 navController = navController,

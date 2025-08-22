@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.example.android_2425_gent2.ui.screens.reservations_page.ReservationType
 
@@ -55,7 +54,7 @@ fun ReservationTypeSelectionDropDownMenu(
                     onReservationTypeChange(ReservationType.UPCOMING)
                     expanded = !expanded
                 },
-                modifier = Modifier.testTag("ReservationType.UPCOMING")
+                modifier = modifier
             )
             DropdownMenuItem(
                 text = {

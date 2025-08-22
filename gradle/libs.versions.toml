@@ -26,10 +26,12 @@ navigationRuntimeKtx = "2.8.2"
 runner = "1.6.1"
 places = "4.0.0"
 jwt = "2.0.2"
+iconsExtended = "1.7.8"
 
 [libraries]
 android-auth0 = { module = "com.auth0.android:auth0", version.ref = "auth0" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "iconsExtended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
