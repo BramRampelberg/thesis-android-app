@@ -65,22 +65,17 @@ fun ProfilePage(
             }
 
             else -> {
-                Column(
-                    modifier = modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = uiState.user.firstName + " " + uiState.user.familyName,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.secondary_contrast_text)
-                    )
-                    Text(
-                        text = uiState.user.email,
-                        fontSize = 16.sp,
-                        color = colorResource(R.color.secondary_contrast_text)
-                    )
-                }
+                Text(
+                    text = uiState.user.firstName + " " + uiState.user.familyName,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.secondary_contrast_text)
+                )
+                Text(
+                    text = uiState.user.email,
+                    fontSize = 16.sp,
+                    color = colorResource(R.color.secondary_contrast_text)
+                )
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
@@ -103,9 +98,9 @@ fun ProfilePage(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ExitToApp,
-                contentDescription = null,
-                modifier = modifier.size(24.dp)
+                contentDescription = "Exit Icon",
             )
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
             Text(stringResource(R.string.logout))
         }
     }
